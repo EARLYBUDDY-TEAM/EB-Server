@@ -6,8 +6,9 @@ from database import models
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-# from router import auth_router
-# app.include_router(auth_router.app)
+
+from domain.user import user_routers
+app.include_router(user_routers.router)
 
 @app.get("/")
 def read_root():
