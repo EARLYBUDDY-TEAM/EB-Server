@@ -1,9 +1,8 @@
 from sqlalchemy.orm import Session
 import bcrypt
-from typing import Optional
 from email_validator import validate_email
 
-from eb_server.domain.user.features.user_schema import UserCreate
+from eb_server.domain.register.sources.register_schema import RegisterInfo
 from eb_server.database.models import User
 
 def is_valid_email(email: str) -> bool:
@@ -18,7 +17,11 @@ def is_valid_password(password: str) -> bool:
         return True
     return False
 
-def create_user(db: Session, user_create: UserCreate):
+def is_exist_user(db: Session, user_create: RegisterInfo) -> bool:
+    user = db.query(User).filter(User.email == user_create.email).first()
+    return True if user != None else False
+
+def create_user(db: Session, user_create: RegisterInfo):
     db_user = User(
         email=user_create.email,
         password=hash_password(user_create.password),
@@ -38,6 +41,6 @@ def hash_password(password: str) -> bytes:
 # #     password_byte_enc = plain_password.encode('utf-8')
 # #     return bcrypt.checkpw(password = password_byte_enc , hashed_password = hashed_password)
 
-def get_existing_user(db: Session, user_create: UserCreate) -> Optional[User]:
-    user = db.query(User).filter(User.email == user_create.email).first()
-    return user
+# def get_existing_user(db: Session, user_create: UserCreate) -> Optional[User]:
+#     user = db.query(User).filter(User.email == user_create.email).first()
+#     return user

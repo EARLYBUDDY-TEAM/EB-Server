@@ -6,8 +6,8 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-from eb_server.domain.user.features import user_routers
-app.include_router(user_routers.router)
+from eb_server.domain.register.sources import register_routers
+app.include_router(register_routers.router)
 
 @app.get("/")
 def read_root():
