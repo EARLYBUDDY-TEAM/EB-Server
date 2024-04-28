@@ -1,4 +1,4 @@
-from eb_server.domain.register.sources import register_feature
+from eb_server.domain.auth.register.sources import register_feature
 
 def test_is_valid_email_success():
     email = 'abc@abc.com'
