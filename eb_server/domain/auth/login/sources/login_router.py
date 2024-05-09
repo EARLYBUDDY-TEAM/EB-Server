@@ -14,9 +14,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 10
 SECRET_KEY = secrets.token_hex(32)
 ALGORITHM = "HS256"
 
-router = APIRouter(prefix="/auth")
+router = APIRouter(prefix="/auth/login")
 
-@router.post("/login", response_model=login_schema.Token)
+@router.post("/", response_model=login_schema.Token)
 def login_for_access_token(
     _login_info: login_schema.LoginInfo, db: Session = Depends(get_db)
 ):
