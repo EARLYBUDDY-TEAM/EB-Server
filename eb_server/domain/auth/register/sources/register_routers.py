@@ -6,9 +6,9 @@ from eb_server.domain.auth.register.sources import register_schema
 from eb_server.domain.auth.register.sources import register_feature
 from eb_server.database.database import get_db
 
-router = APIRouter(prefix="/auth")
+router = APIRouter(prefix="/auth/register")
 
-@router.post("/register")
+@router.post("/")
 def user_create(_register_info: register_schema.RegisterInfo, db: Session = Depends(get_db)):
     if not register_feature.is_valid_email(
         _register_info.email

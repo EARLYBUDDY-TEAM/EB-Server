@@ -10,13 +10,16 @@ app = FastAPI()
 
 from eb_server.domain.auth.register.sources import register_routers
 from eb_server.domain.auth.login.sources import login_router
+from eb_server.domain.map.place.sources import place_router
 app.include_router(register_routers.router)
 app.include_router(login_router.router)
+app.include_router(place_router.router)
 
 @app.middleware('http')
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
     request_body = await request.body()
+    print(f'REQUEST_URL : {request.url}')
     print(f'REQUEST_BODY : {request_body}')
 
     response = await call_next(request)

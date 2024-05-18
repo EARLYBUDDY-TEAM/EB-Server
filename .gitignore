@@ -1,3 +1,5 @@
 __pycache__
 .pytest_cache
-*.db
+
+eb_server/database/earlybuddy.db
+eb_server/env/.env
