@@ -19,6 +19,7 @@ app.include_router(place_router.router)
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
     request_body = await request.body()
+    print(f'REQUEST_URL : {request.url}')
     print(f'REQUEST_BODY : {request_body}')
 
     response = await call_next(request)
