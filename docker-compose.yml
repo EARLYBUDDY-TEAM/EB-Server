@@ -1,0 +1,9 @@
+services:
+  eb_server:
+    container_name: eb_server
+    build:
+      context: .
+      dockerfile: eb_server.Dockerfile
+    ports:
+      - 8000:8000
+    entrypoint: python /mycode/eb_server/main.py
