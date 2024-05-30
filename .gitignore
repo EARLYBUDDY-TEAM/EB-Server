@@ -3,3 +3,5 @@ __pycache__
 
 eb_server/database/earlybuddy.db
 eb_server/env/.env
+
+jenkins/

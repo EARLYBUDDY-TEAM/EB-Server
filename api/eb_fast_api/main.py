@@ -2,15 +2,15 @@ from fastapi import FastAPI, Request, Response
 import time
 import uvicorn
 
-from eb_server.database.database import engine
-from eb_server.database import models
+from eb_fast_api.database.database import engine
+from eb_fast_api.database import models
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-from eb_server.domain.auth.register.sources import register_routers
-from eb_server.domain.auth.login.sources import login_router
-from eb_server.domain.map.place.sources import place_router
+from eb_fast_api.domain.auth.register.sources import register_routers
+from eb_fast_api.domain.auth.login.sources import login_router
+from eb_fast_api.domain.map.place.sources import place_router
 app.include_router(register_routers.router)
 app.include_router(login_router.router)
 app.include_router(place_router.router)

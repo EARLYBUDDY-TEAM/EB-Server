@@ -1,9 +1,19 @@
 services:
-  eb_server:
-    container_name: eb_server
+  eb_fast_api:
+    container_name: eb_fast_api
+    depends_on:
+      - jenkins
     build:
       context: .
-      dockerfile: eb_server.Dockerfile
+      dockerfile: dockerfiles/eb_fast_api.Dockerfile
     ports:
       - 8000:8000
-    entrypoint: python /mycode/eb_server/main.py
+
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:lts
+    user: root
+    volumes:
+      - ./jenkins:/var/jenkins_home
+    ports:
+      - 8080:8080

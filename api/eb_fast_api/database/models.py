@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from eb_server.database.database import Base
+from eb_fast_api.database.database import Base
 
 class User(Base):
     __tablename__ = "Users"

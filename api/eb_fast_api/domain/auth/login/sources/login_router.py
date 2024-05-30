@@ -6,9 +6,9 @@ from sqlalchemy.orm import Session
 from starlette import status
 import secrets
 
-from eb_server.database.database import get_db
-from eb_server.domain.auth.login.sources import login_feature
-from eb_server.domain.auth.login.sources import login_schema
+from eb_fast_api.database.database import get_db
+from eb_fast_api.domain.auth.login.sources import login_feature
+from eb_fast_api.domain.auth.login.sources import login_schema
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 10
 SECRET_KEY = secrets.token_hex(32)
