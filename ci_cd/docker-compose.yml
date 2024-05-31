@@ -1,0 +1,16 @@
+services:
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:lts
+    user: root
+    volumes:
+      - ./jenkins:/var/jenkins_home
+    ports:
+      - 8080:8080
+    networks:
+      - eb_server
+
+networks:
+  eb_server:
+    name: eb_server
+    driver: bridge
