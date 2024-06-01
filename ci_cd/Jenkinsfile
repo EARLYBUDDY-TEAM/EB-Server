@@ -9,9 +9,9 @@ pipeline {
         }
         stage('Build & Deploy') {
             steps {
-                // dir('api')
-                sh 'ls -al'
-                    // sh 'sudo docker-compose up -d'
+                dir('api') {
+                    sh 'sudo docker-compose up -d'
+                }
             }
         }
     }
