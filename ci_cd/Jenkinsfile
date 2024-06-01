@@ -6,8 +6,8 @@ pipeline {
             env.GIT_BRANCH
             when { 
                 anyOf { 
-                    env.GIT_BRANCH == 'main'
-                    env.GIT_BRANCH == 'develop' 
+                    expression { env.GIT_BRANCH == 'main' }
+                    expression { env.GIT_BRANCH == 'develop' }
                 } 
             }
             steps {
