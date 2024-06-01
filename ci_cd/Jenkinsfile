@@ -1,44 +1,39 @@
 pipeline {
     agent any
 
-    
-
     stages {
-        stage('Test') {
+        stage('Github') {
+            when { 
+                anyOf { 
+                    expression { env.GIT_BRANCH == 'origin/main' }
+                    expression { env.GIT_BRANCH == 'origin/develop' }
+                } 
+            }
             steps {
-                sh "echo ${env.BRANCH_NAME}"
-                sh "echo ${env.GIT_BRANCH}"
+                script {
+                    if (env.GIT_BRANCH == 'origin/main') {
+                        git branch: 'main', url: 'https://github.com/EARLYBUDDY-TEAM/EB-Server.git'
+                    } else if (env.GIT_BRANCH == 'origin/develop') {
+                        git branch: 'develop', url: 'https://github.com/EARLYBUDDY-TEAM/EB-Server.git'
+                    }
+                }
             }
         }
-        // stage('Github') {
-        //     when { 
-        //         anyOf { 
-        //             expression { env.GIT_BRANCH == 'origin/main' }
-        //             expression { env.GIT_BRANCH == 'origin/develop' }
-        //         } 
-        //     }
-        //     steps {
-        //         script {
-        //             if (env.Branc)
-        //             git branch: 'develop', url: 'https://github.com/EARLYBUDDY-TEAM/EB-Server.git'
-        //         }
-        //     }
-        // }
-        // stage('main 브랜치 배포') {
-        //     when { expression { env.GIT_BRANCH == 'origin/main' } }
-        //     steps {
-        //         dir('api') {
-        //             sh 'sudo docker compose up -d'
-        //         }
-        //     }
-        // }
-        // stage('develop 브랜치 배포') {
-        //     when { expression { env.GIT_BRANCH == 'origin/develop' } }
-        //     steps {
-        //         dir('api') {
-        //             sh 'sudo docker compose up -d'
-        //         }
-        //     }
-        // }
+        stage('main 브랜치 배포') {
+            when { expression { env.GIT_BRANCH == 'origin/main' } }
+            steps {
+                dir('api') {
+                    sh 'sudo docker compose up -d'
+                }
+            }
+        }
+        stage('develop 브랜치 배포') {
+            when { expression { env.GIT_BRANCH == 'origin/develop' } }
+            steps {
+                dir('api') {
+                    sh 'sudo docker compose up -d'
+                }
+            }
+        }
     }
 }
