@@ -8,6 +8,9 @@ pipeline {
            }
         }
         stage('Build & Deploy') {
+            when {
+                anyOf { branch 'main'; branch 'develop' }
+            }
             steps {
                 dir('api') {
                     sh 'sudo docker compose up -d'
