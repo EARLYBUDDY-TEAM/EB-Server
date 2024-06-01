@@ -5,10 +5,8 @@ pipeline {
         stage('Github') {
             when { 
                 anyOf { 
-                    // expression { env.GIT_BRANCH == 'origin/main' }
-                    // expression { env.GIT_BRANCH == 'origin/develop' }
-                    branch 'origin/main'
-                    branch 'origin/develop'
+                    expression { env.GIT_BRANCH == 'origin/main' }
+                    expression { env.GIT_BRANCH == 'origin/develop' }
                 } 
             }
             steps {
@@ -16,7 +14,7 @@ pipeline {
             }
         }
         stage('main 브랜치 배포') {
-            when { branch 'origin/main' }
+            when { expression { env.GIT_BRANCH == 'origin/main' } }
             steps {
                 dir('api') {
                     sh 'sudo docker compose up -d'
@@ -24,7 +22,7 @@ pipeline {
             }
         }
         stage('develop 브랜치 배포') {
-            when { branch 'origin/develop' }
+            when { expression { env.GIT_BRANCH == 'origin/develop' } }
             steps {
                 dir('api') {
                     sh 'sudo docker compose up -d'
