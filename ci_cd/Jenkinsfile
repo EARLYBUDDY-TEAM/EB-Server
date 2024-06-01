@@ -3,7 +3,6 @@ pipeline {
 
     stages {
         stage('Github') {
-            env.GIT_BRANCH
             when { 
                 anyOf { 
                     expression { env.GIT_BRANCH == 'main' }
