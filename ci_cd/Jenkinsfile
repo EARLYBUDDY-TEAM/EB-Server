@@ -10,7 +10,7 @@ pipeline {
                 } 
             }
             steps {
-                git branch: env.GIT_BRANCH, url: 'https://github.com/EARLYBUDDY-TEAM/EB-Server.git'
+                git branch: 'develop', url: 'https://github.com/EARLYBUDDY-TEAM/EB-Server.git'
             }
         }
         stage('main 브랜치 배포') {
