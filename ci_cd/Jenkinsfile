@@ -8,9 +8,11 @@ pipeline {
            }
         }
         stage('Build & Deploy') {
-            dir('api')
             steps {
-                sh 'sudo docker-compose up -d'
+                dir('api')
+                steps {
+                    sh 'sudo docker-compose up -d'
+                }
             }
         }
     }
