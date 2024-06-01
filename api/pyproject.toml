@@ -1,7 +1,7 @@
 [project]
-name = "eb_server"
+name = "eb_fast_api"
 version = "0.1.0"
-description = "Early Buddy Server"
+description = "Early Buddy Fast API"
 
 [build-system]
 build-backend = "flit_core.buildapi"

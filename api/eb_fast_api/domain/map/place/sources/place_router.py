@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from eb_server.domain.map.place.sources import place_feature
+from eb_fast_api.domain.map.place.sources import place_feature
 
 router = APIRouter(prefix="/map/place")
 

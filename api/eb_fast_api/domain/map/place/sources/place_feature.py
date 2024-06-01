@@ -1,5 +1,5 @@
 import httpx
-from eb_server.env.env import settings
+from eb_fast_api.env.env import settings
 
 
 async def getPlaceData(query: str, x: str, y: str):

@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-dot_env = 'eb_server/env/.env'
+dot_env = 'eb_fast_api/env/.env'
 
 class Settings(BaseSettings):
     kakao_rest_api_key: str

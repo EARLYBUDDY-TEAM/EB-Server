@@ -2,8 +2,8 @@ from sqlalchemy.orm import Session
 import bcrypt
 from email_validator import validate_email
 
-from eb_server.domain.auth.register.sources.register_schema import RegisterInfo
-from eb_server.database.models import User
+from eb_fast_api.domain.auth.register.sources.register_schema import RegisterInfo
+from eb_fast_api.database.models import User
 
 def is_valid_email(email: str) -> bool:
     try:

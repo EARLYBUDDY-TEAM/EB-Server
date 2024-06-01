@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Github') {
+           steps {
+               git branch: 'develop', url: 'https://github.com/EARLYBUDDY-TEAM/EB-Server.git'
+           }
+        }
+        stage('Build & Deploy') {
+            when {
+                anyOf { branch 'main'; branch 'develop' }
+            }
+            steps {
+                dir('api') {
+                    sh 'sudo docker compose up -d'
+                }
+            }
+        }
+    }
+}
+

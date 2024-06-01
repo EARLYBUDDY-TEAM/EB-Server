@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
 
-from eb_server.domain.auth.register.sources import register_schema
-from eb_server.domain.auth.register.sources import register_feature
-from eb_server.database.database import get_db
+from eb_fast_api.domain.auth.register.sources import register_schema
+from eb_fast_api.domain.auth.register.sources import register_feature
+from eb_fast_api.database.database import get_db
 
 router = APIRouter(prefix="/auth/register")
 
