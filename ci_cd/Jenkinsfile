@@ -2,21 +2,22 @@ pipeline {
     agent any
 
     stages {
-        stage('Github') {
-           steps {
-               git branch: 'develop', url: 'https://github.com/EARLYBUDDY-TEAM/EB-Server.git'
-           }
-        }
-        stage('Build & Deploy') {
+        stage('Check Branch') {
             when {
-                anyOf { branch 'main'; branch 'develop' }
+               anyOf { branch 'main'; branch 'develop' }
             }
-            steps {
-                dir('api') {
-                    sh 'sudo docker compose up -d'
+            stage('Github') {
+                steps {
+                    git branch: 'develop', url: 'https://github.com/EARLYBUDDY-TEAM/EB-Server.git'
+                }
+            }
+            stage('Build & Deploy') {
+                steps {
+                    dir('api') {
+                        sh 'sudo docker compose up -d'
+                    }
                 }
             }
         }
     }
 }
-
