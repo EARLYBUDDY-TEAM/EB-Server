@@ -23,6 +23,7 @@ pipeline {
             when { expression { env.GIT_BRANCH == 'origin/main' } }
             steps {
                 dir('api') {
+                    sh 'sudo docker stop eb_fast_api_main'
                     sh 'sudo docker compose -f docker-compose_main.yml up -d'
                 }
             }
@@ -31,6 +32,7 @@ pipeline {
             when { expression { env.GIT_BRANCH == 'origin/develop' } }
             steps {
                 dir('api') {
+                    sh 'sudo docker stop eb_fast_api_dev'
                     sh 'sudo docker compose -f docker-compose_dev.yml up -d'
                 }
             }

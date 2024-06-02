@@ -8,7 +8,6 @@ services:
       - 8000:8000
     networks:
       - eb_server
-    entrypoint: python eb_fast_api/main.py
 
 networks:
   eb_server:
