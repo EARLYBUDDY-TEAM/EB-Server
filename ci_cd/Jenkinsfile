@@ -3,37 +3,17 @@ pipeline {
 
     stages {
         stage('Github') {
-            when { 
-                anyOf { 
-                    expression { env.GIT_BRANCH == 'origin/main' }
-                    expression { env.GIT_BRANCH == 'origin/develop' }
-                } 
-            }
+            when { expression { env.GIT_BRANCH == 'origin/main' } } 
             steps {
-                script {
-                    if (env.GIT_BRANCH == 'origin/main') {
-                        git branch: 'main', url: 'https://github.com/EARLYBUDDY-TEAM/EB-Server.git'
-                    } else if (env.GIT_BRANCH == 'origin/develop') {
-                        git branch: 'develop', url: 'https://github.com/EARLYBUDDY-TEAM/EB-Server.git'
-                    }
-                }
+                git branch: 'main', url: 'https://github.com/EARLYBUDDY-TEAM/EB-Server.git'
             }
         }
         stage('main 브랜치 배포') {
             when { expression { env.GIT_BRANCH == 'origin/main' } }
             steps {
                 dir('api') {
-                    sh 'sudo docker stop eb_fast_api_main || true'
-                    sh 'sudo docker compose -f docker-compose_main.yml up -d'
-                }
-            }
-        }
-        stage('develop 브랜치 배포') {
-            when { expression { env.GIT_BRANCH == 'origin/develop' } }
-            steps {
-                dir('api') {
-                    sh 'sudo docker stop eb_fast_api_dev || true'
-                    sh 'sudo docker compose -f docker-compose_dev.yml up -d'
+                    sh 'sudo docker stop eb_fast_api || true'
+                    sh 'sudo docker compose -f docker-compose.yml up -d'
                 }
             }
         }

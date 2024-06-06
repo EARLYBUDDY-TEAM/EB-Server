@@ -1,6 +1,6 @@
 services:
-  eb_fast_api_main:
-    container_name: eb_fast_api_main
+  eb_fast_api:
+    container_name: eb_fast_api
     build:
       context: .
       dockerfile: eb_fast_api.Dockerfile
