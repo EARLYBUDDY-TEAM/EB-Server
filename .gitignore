@@ -1,1 +1,7 @@
 __pycache__
+.pytest_cache
+
+eb_server/database/earlybuddy.db
+eb_server/env/.env
+
+jenkins/

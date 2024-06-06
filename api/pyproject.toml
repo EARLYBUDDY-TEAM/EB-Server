@@ -1,0 +1,8 @@
+[project]
+name = "eb_fast_api"
+version = "0.1.0"
+description = "Early Buddy Fast API"
+
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = ["flit_core >=3.2,<4"]
