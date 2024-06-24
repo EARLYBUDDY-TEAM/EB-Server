@@ -1,7 +1,7 @@
 __pycache__
 .pytest_cache
 
-eb_server/database/earlybuddy.db
-eb_server/env/.env
+api/eb_fast_api/database/earlybuddy.db
+api/eb_fast_api/env/.env
 
 jenkins/

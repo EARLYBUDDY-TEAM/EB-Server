@@ -5,10 +5,10 @@ services:
       context: .
       dockerfile: eb_fast_api.Dockerfile
     ports:
-      - 8000:8000
+      - 8001:8001
     networks:
       - eb_server
-    entrypoint: uvicorn --app-dir ./eb_fast_api eb_fast_api.main:app --reload --host=0.0.0.0 --port=8000
+    entrypoint: python ./eb_fast_api/main.py
 
 networks:
   eb_server:
