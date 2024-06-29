@@ -1,6 +1,18 @@
 from pydantic import BaseModel
 from typing import List
 
+class SubPath(BaseModel):
+    trafficType: int
+    subPathTime: int
+
+    @classmethod
+    def fromJson(cls, j: dict):
+        subPath = SubPath(
+            trafficType = j['trafficType'],
+            subPathTime = j['sectionTime']
+        )
+        return subPath
+
 class PathInfo(BaseModel):
     totalTime: int
     payment: int
@@ -10,13 +22,16 @@ class PathInfo(BaseModel):
 class Path(BaseModel):
     pathType: int
     info: PathInfo
+    subPaths: List[SubPath]
 
     @classmethod
     def fromJson(cls, j: dict):
         info = PathInfo.model_validate(j['info'])
+        subPaths = list(map(SubPath.fromJson, j['subPath']))
         path = Path(
             pathType = j['pathType'],
-            info = info
+            info = info,
+            subPaths = subPaths
         )
         return path
 
