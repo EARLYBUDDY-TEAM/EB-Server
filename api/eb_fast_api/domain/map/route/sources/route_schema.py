@@ -3,18 +3,11 @@ from typing import List
 
 class SubPath(BaseModel):
     trafficType: int
-    subPathTime: int
-
-    @classmethod
-    def fromJson(cls, j: dict):
-        subPath = SubPath(
-            trafficType = j['trafficType'],
-            subPathTime = j['sectionTime']
-        )
-        return subPath
+    sectionTime: int
 
 class PathInfo(BaseModel):
     totalTime: int
+    totalWalkTime: int = 0
     payment: int
     busTransitCount: int
     subwayTransitCount: int
@@ -27,7 +20,7 @@ class Path(BaseModel):
     @classmethod
     def fromJson(cls, j: dict):
         info = PathInfo.model_validate(j['info'])
-        subPaths = list(map(SubPath.fromJson, j['subPath']))
+        subPaths = list(map(SubPath.model_validate, j['subPath']))
         path = Path(
             pathType = j['pathType'],
             info = info,

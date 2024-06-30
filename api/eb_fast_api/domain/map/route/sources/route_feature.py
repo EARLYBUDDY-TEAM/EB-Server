@@ -16,4 +16,14 @@ async def getRouteData() -> route_schema.Route:
         response = await client.get(url=url, params=params)
         responseJson = response.json()['result']
         route = route_schema.Route.fromJson(responseJson)
+        for path in route.paths:
+            calTotalWalkTime(path)
         return route
+
+def calTotalWalkTime(path: route_schema.Path):
+    totalWalkTime = sum([
+        subPath.sectionTime
+        for subPath in path.subPaths 
+        if subPath.trafficType == 3
+    ])
+    path.info.totalWalkTime = totalWalkTime
