@@ -21,9 +21,9 @@ async def getRouteData() -> route_schema.Route:
         return route
 
 def calTotalWalkTime(path: route_schema.Path):
-    totalWalkTime = sum([
-        subPath.sectionTime
+    walkTime = sum([
+        subPath.time
         for subPath in path.subPaths 
-        if subPath.trafficType == 3
+        if subPath.type == 3
     ])
-    path.info.totalWalkTime = totalWalkTime
+    path.walkTime = walkTime
