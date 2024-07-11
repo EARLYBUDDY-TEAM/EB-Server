@@ -31,3 +31,14 @@
 #     mockResponseDict: dict = mockResponse.json()['result']
 #     mockResponseDict
 #     route = route_schema.Route.fromJson(mockResponseDict)
+
+
+from eb_fast_api.domain.map.route.sources import route_schema
+
+def test_simplifySubwayName():
+    raws = ['수도권 3호선', '수도권 수인.분당선']
+    results = ['3호선', '수인분당선']
+    for i, name in enumerate(raws):
+        result = route_schema.simplifySubwayName(name)
+        if result != results[i]:
+            raise Exception('Fail Test!')

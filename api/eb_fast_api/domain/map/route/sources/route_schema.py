@@ -2,19 +2,23 @@ from pydantic import BaseModel
 from typing import List, Optional, Self
 from eb_fast_api.snippets import snippets
     
+
 class Transport(BaseModel):
     subwayName: Optional[str] = None
-    busName: Optional[str] = None
+    busNumber: Optional[str] = None
 
     @classmethod
     def fromJson(cls, j: dict) -> Self:
         subwayName = snippets.getDataFromJson('name', j)
-        busName = snippets.getDataFromJson('busNo', j)
+        if subwayName != None:
+            subwayName = simplifySubwayName(subwayName)
+        busNumber = snippets.getDataFromJson('busNo', j)
         trans = Transport(
             subwayName = subwayName,
-            busName = busName
+            busNumber = busNumber
             )
         return trans
+
 
 class SubPath(BaseModel):
     type: int
@@ -31,6 +35,7 @@ class SubPath(BaseModel):
             transports = transports
         )
         return subPath
+    
     
 class Path(BaseModel):
     type: int
@@ -68,3 +73,12 @@ class Route(BaseModel):
             paths = paths
         )
         return route
+    
+
+def simplifySubwayName(name: str) -> str:
+    toRemove = ['수도권', '.']
+    for r in toRemove:
+        name = name.replace(r, '')
+    tmp = name.strip().split()
+    name = ''.join(tmp)
+    return name
