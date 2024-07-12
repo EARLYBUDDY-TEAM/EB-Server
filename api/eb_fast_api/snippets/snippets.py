@@ -1,6 +1,6 @@
 from typing import Optional
 
-def getDataFromJson(k: str, j: dict) -> Optional[any]:
+def safeDict(k: any, j: dict) -> Optional[any]:
     try:
         return j[k]
     except:
