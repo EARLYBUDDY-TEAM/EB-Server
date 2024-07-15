@@ -3,6 +3,11 @@ from typing import List, Optional, Self
 from eb_fast_api.snippets import snippets
     
 
+class Coordi(BaseModel):
+    x: float
+    y: float
+
+
 class Transport(BaseModel):
     subwayType: Optional[str] = None
     busNumber: Optional[str] = None
@@ -27,6 +32,9 @@ class Transport(BaseModel):
 class SubPath(BaseModel):
     type: int
     time: int
+    # startName: str
+    # endName: str
+    # distance: int
     transports: Optional[List[Transport]]
 
     @classmethod
@@ -36,6 +44,9 @@ class SubPath(BaseModel):
         subPath = SubPath(
             type = j['trafficType'],
             time = j['sectionTime'],
+            # startName = j['startName'],
+            # endName = j['endName'],
+            # distance = int(j['distance']),
             transports = transports
         )
         return subPath
@@ -78,15 +89,6 @@ class Route(BaseModel):
         )
         return route
 
-
-# {
-#     "busNo": "서울01(출근.평일운행)",
-#     "type": 14,
-#     "busID": 2824016,
-#     "busLocalBlID": "107000006",
-#     "busCityCode": 1000,
-#     "busProviderCode": 4
-# }
 
 busCodeToType = {
     1 : '일반',
@@ -134,4 +136,20 @@ subwayCodeToType = {
     115 : '김포골드라인',
     116 : '수인분당선', 
     117 : '신림선',
-    }
+}
+
+
+'''
+
+{
+    "busNo": "서울01(출근.평일운행)",
+    "type": 14,
+    "busID": 2824016,
+    "busLocalBlID": "107000006",
+    "busCityCode": 1000,
+    "busProviderCode": 4
+}
+
+가까운거리일때 예외처리
+
+'''

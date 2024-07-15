@@ -11,14 +11,14 @@ from eb_fast_api.domain.map.route.sources import route_schema
 	}
 }
 '''
-async def getRouteData() -> route_schema.Route:
+async def getRouteData(sx: float, sy: float, ex: float, ey: float) -> route_schema.Route:
     url = 'https://api.odsay.com/v1/api/searchPubTransPathT'
     params = {
         'apiKey': settings.odsay,
-        'SX': 127.10297988971773,
-        'SY': 37.48800665367514,
-        'EX': 126.994596,
-        'EY': 37.534542,
+        'SX': sx,
+        'SY': sy,
+        'EX': ex,
+        'EY': ey,
         'OPT': 0
     }
     async with httpx.AsyncClient() as client:
