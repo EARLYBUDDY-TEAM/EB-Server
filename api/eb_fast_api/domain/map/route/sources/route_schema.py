@@ -1,7 +1,15 @@
 from pydantic import BaseModel
 from typing import List, Optional, Self
-from eb_fast_api.snippets import snippets
-    
+from eb_fast_api.snippets.sources import snippets
+
+
+class Station(BaseModel):
+    name: str
+
+    @classmethod
+    def fromJson(cls, j: dict) -> Self:
+        return Station(name = j['stationName'])
+
 
 class Transport(BaseModel):
     subwayType: Optional[str] = None
@@ -10,11 +18,11 @@ class Transport(BaseModel):
 
     @classmethod
     def fromJson(cls, j: dict) -> Self:
-        subwayCode = snippets.safeDict('subwayCode', j)
-        subwayType = snippets.safeDict(subwayCode, subwayCodeToType)
-        busNumber = snippets.safeDict('busNo', j)
-        busCode = snippets.safeDict('type', j)
-        busType = snippets.safeDict(busCode, busCodeToType)
+        subwayCode = snippets.safeDict(['subwayCode'], j)
+        subwayType = snippets.safeDict([subwayCode], subwayCodeToType)
+        busNumber = snippets.safeDict(['busNo'], j)
+        busCode = snippets.safeDict(['type'], j)
+        busType = snippets.safeDict([busCode], busCodeToType)
 
         trans = Transport(
             subwayType = subwayType,
@@ -27,16 +35,26 @@ class Transport(BaseModel):
 class SubPath(BaseModel):
     type: int
     time: int
+    startName: str
+    endName: str
+    distance: int
     transports: Optional[List[Transport]]
+    stations: Optional[List[Station]]
 
     @classmethod
     def fromJson(cls, j: dict) -> Self:
-        tmpTrans = snippets.safeDict('lane', j)
+        tmpTrans = snippets.safeDict(['lane'], j)
         transports = list(map(Transport.fromJson, tmpTrans)) if tmpTrans != None else None
+        tmpStations = snippets.safeDict(['passStopList', 'stations'], j)
+        stations = list(map(Station.fromJson, tmpStations)) if tmpStations != None else None
         subPath = SubPath(
             type = j['trafficType'],
             time = j['sectionTime'],
-            transports = transports
+            startName = snippets.safeDict(['startName'], j) or '',
+            endName = snippets.safeDict(['endName'], j) or '',
+            distance = int(j['distance']),
+            transports = transports,
+            stations = stations,
         )
         return subPath
     
@@ -77,16 +95,38 @@ class Route(BaseModel):
             paths = paths
         )
         return route
+    
+
+def modifyWalkSubPath(subPaths: List[SubPath], startPlace: str, endPlace: str):
+    if not subPaths:
+        return
+    elif len(subPaths) == 1 and subPaths[0].type == 3:
+        subPaths[0].startName = startPlace
+        subPaths[0].endName = endPlace
+        return
+    else:
+        for index, subPath in enumerate(subPaths):
+            if subPath.type != 3:
+                continue
+            if index == 0:
+                subPath.startName = startPlace
+                subPath.endName = subPaths[index + 1].startName
+            elif index == len(subPaths) - 1:
+                subPath.startName = subPaths[index - 1].endName
+                subPath.endName = endPlace
+            else:
+                subPath.startName = subPaths[index - 1].endName
+                subPath.endName = subPaths[index + 1].startName
 
 
-# {
-#     "busNo": "서울01(출근.평일운행)",
-#     "type": 14,
-#     "busID": 2824016,
-#     "busLocalBlID": "107000006",
-#     "busCityCode": 1000,
-#     "busProviderCode": 4
-# }
+def calTotalWalkTime(path: Path):
+    walkTime = sum([
+        subPath.time
+        for subPath in path.subPaths 
+        if subPath.type == 3
+    ])
+    path.walkTime = walkTime
+
 
 busCodeToType = {
     1 : '일반',
@@ -134,4 +174,20 @@ subwayCodeToType = {
     115 : '김포골드라인',
     116 : '수인분당선', 
     117 : '신림선',
-    }
+}
+
+
+'''
+
+{
+    "busNo": "서울01(출근.평일운행)",
+    "type": 14,
+    "busID": 2824016,
+    "busLocalBlID": "107000006",
+    "busCityCode": 1000,
+    "busProviderCode": 4
+}
+
+가까운거리일때 예외처리
+
+'''
