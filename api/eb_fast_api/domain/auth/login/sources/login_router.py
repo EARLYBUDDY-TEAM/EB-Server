@@ -22,16 +22,19 @@ def login_for_access_token(
 ):
     user = login_feature.get_user(db, _login_info.email)
 
-    if not (
-        user
-        and login_feature.check_password(
-            password=_login_info.password, hashed_password=user.password
+    if not user:
+        raise HTTPException(
+            status_code = 400,
+            detail = '유저정보가 없습니다.',
         )
+    
+    if not login_feature.check_password(
+        password = _login_info.password, 
+        hashed_password = user.password
     ):
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="잘못된 유저정보 또는 패스워드입니다.",
-            headers={"WWW-Authenticate": "Bearer"},
+            status_code = 401,
+            detail = '잘못된 패스워드 입니다.',
         )
 
     data = {
@@ -45,13 +48,3 @@ def login_for_access_token(
         token_type="bearer",
         email=user.email,
     )
-
-# {
-#   "email": "abcd@naver.com",
-#   "password": "password"
-# }
-
-# {
-#   "email": "abc@naver.com",
-#   "password": "password12"
-# }
