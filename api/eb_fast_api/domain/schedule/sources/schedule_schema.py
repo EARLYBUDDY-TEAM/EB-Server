@@ -13,11 +13,10 @@ class Place(BaseModel):
     distance: str
     coordi: Coordi
 
-class Schedule(BaseModel):
+class ScheduleInfo(BaseModel):
     title: str
     memo: Optional[str] = None
     time: datetime
     isNotify: bool
     startPlace: Optional[Place] = None
     endPlace: Optional[Place] = None
-

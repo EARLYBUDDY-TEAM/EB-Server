@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 import secrets
 
-from eb_fast_api.database.database import get_db
+from eb_fast_api.database.sources.database import get_db
 from eb_fast_api.domain.auth.login.sources import login_feature
 from eb_fast_api.domain.auth.login.sources import login_schema
 

@@ -2,8 +2,8 @@ from fastapi import FastAPI, Request, Response
 import time
 import uvicorn
 
-from eb_fast_api.database.database import engine
-from eb_fast_api.database import models
+from eb_fast_api.database.sources.database import engine
+from eb_fast_api.database.sources import models
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -12,10 +12,12 @@ from eb_fast_api.domain.auth.register.sources import register_routers
 from eb_fast_api.domain.auth.login.sources import login_router
 from eb_fast_api.domain.map.place.sources import place_router
 from eb_fast_api.domain.map.route.sources import route_router
+from eb_fast_api.domain.schedule.sources import schedule_router
 app.include_router(register_routers.router)
 app.include_router(login_router.router)
 app.include_router(place_router.router)
 app.include_router(route_router.router)
+app.include_router(schedule_router.router)
 
 @app.middleware('http')
 async def add_process_time_header(request: Request, call_next):

@@ -2,7 +2,7 @@ import bcrypt
 from typing import Optional
 from sqlalchemy.orm import Session
 
-from eb_fast_api.database.models import User
+from eb_fast_api.database.sources.models import User
 
 def get_user(db: Session, email: str) -> Optional[User]:
     return db.query(User).filter(User.email == email).first()
