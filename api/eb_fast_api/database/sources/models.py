@@ -12,6 +12,9 @@ class User(Base):
     password: Mapped[str]
     schedules: Mapped[List["Schedule"]] = relationship()
 
+    def __eq__(self, other):
+        return self.email == other.email
+
 
 class Schedule(Base):
     __tablename__ = "schedule"
@@ -24,6 +27,9 @@ class Schedule(Base):
     isNotify: Mapped[bool]
 #     startPlace: Mapped[Optional["Place"]] = relationship(back_populates = "startPlace")
 #     endPlace: Mapped[Optional["Place"]] = relationship(back_populates = "endPlace")
+
+    def __eq__(self, other):
+        return self.id == other.id
 
 
 # # 참조카운트 0되면 삭제되게 만들기
