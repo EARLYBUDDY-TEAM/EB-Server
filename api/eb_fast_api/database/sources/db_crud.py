@@ -36,12 +36,3 @@ def schedule_create(
         raise Exception('no user')
     user.schedules.append(schedule) # 중복체크?
     session.flush()
-
-# def schedule_read(
-#     userEmail: str,
-#     scheduleID: int,    
-#     session: Session = Depends(get_db),
-# ) -> Schedule:
-#     user = user_read(userEmail, session)
-#     schedule = session.query(Schedule).filter(Schedule.id == scheduleID).first()
-#     return schedule

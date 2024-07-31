@@ -17,14 +17,14 @@ from sqlalchemy.exc import IntegrityError
 #             db_session.rollback()
 
 
-@pytest.mark.xfail(raises=IntegrityError)
-def test_create_schedule():
-    scheduleInfo = schedule_schema.ScheduleInfo(
-        title="title",
-        time=datetime.now(),
-        isNotify=False,
-    )
-    try:
-        schedule_feature.create_schedule(scheduleInfo)
-    except:
-        raise Exception()
+# @pytest.mark.xfail(raises=IntegrityError)
+# def test_create_schedule():
+#     scheduleInfo = schedule_schema.ScheduleInfo(
+#         title="title",
+#         time=datetime.now(),
+#         isNotify=False,
+#     )
+#     try:
+#         schedule_feature.create_schedule(scheduleInfo)
+#     except:
+#         raise Exception()

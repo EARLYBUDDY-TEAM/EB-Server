@@ -11,7 +11,8 @@ def create_schedule(scheduleInfo: ScheduleInfo):
     db: Session = Depends(get_db)
     schedule = Schedule(
         title=scheduleInfo.title,
-        time=datetime.fromisoformat(scheduleInfo.time),
+        # time=datetime.fromisoformat(scheduleInfo.time),
+        time=scheduleInfo.time,
         isNotify=scheduleInfo.isNotify,
         startPlace=None,
         endPlace=None,
