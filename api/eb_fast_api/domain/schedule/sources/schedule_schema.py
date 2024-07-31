@@ -7,6 +7,7 @@ class Coordi(BaseModel):
     y: str
 
 class Place(BaseModel):
+    id: str
     name: str
     address: str
     category: str
