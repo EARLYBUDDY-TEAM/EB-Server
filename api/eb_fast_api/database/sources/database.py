@@ -6,11 +6,3 @@ DB_URL = "sqlite:///./eb_fast_api/database/earlybuddy.db"
 Base = declarative_base()
 engine = create_engine(DB_URL, connect_args={"check_same_thread" : False})
 SessionLocal = sessionmaker(autoflush=False, bind=engine)
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()

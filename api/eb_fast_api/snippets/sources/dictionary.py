@@ -1,9 +1,9 @@
-from typing import Optional, TypeVar
+from typing import Optional, TypeVar, List
 
 K = TypeVar('K')
 V = TypeVar('V')
 
-def safeDict(keyList: [K], fromDict: dict) -> Optional[V]:
+def safeDict(keyList: List[K], fromDict: dict) -> Optional[V]:
     try:
         if not keyList:
             return None

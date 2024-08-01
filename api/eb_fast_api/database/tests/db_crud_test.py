@@ -1,89 +1,79 @@
 from eb_fast_api.database.sources.models import User, Schedule, Place
-from eb_fast_api.database.sources import db_crud
-from datetime import datetime
 
 
-def test_user_create(mockSession):
+def test_user_create(mockCRUD):
     email = "email"
-    mockUser = User.mock(email = email)
-    userCount1 = mockSession.query(User).count()
-    fetchedUser: User
+    user = User.mock(email = email)
+    userCount1 = mockCRUD.session.query(User).count()
 
-    db_crud.user_create(user=mockUser, session=mockSession)
-    fetchedUser = db_crud.user_read(email=email, session=mockSession)
+    mockCRUD.userCreate(user=user)
 
-    assert mockUser == fetchedUser
-    userCount2 = mockSession.query(User).count()
+    fetchedUser = mockCRUD.userRead(email=email)
+    assert user == fetchedUser
+    userCount2 = mockCRUD.session.query(User).count()
     assert userCount2 - userCount1 == 1
 
 
-def test_user_read(mockSession):
+def test_user_read(mockCRUD):
     email = "email"
-    mockUser = User.mock(email = email)
+    user = User.mock(email = email)
 
-    db_crud.user_create(user=mockUser, session=mockSession)
-    fetchedUser = db_crud.user_read(email=email, session=mockSession)
+    mockCRUD.userCreate(user=user)
+    fetchedUser = mockCRUD.userRead(email=email)
 
-    assert mockUser == fetchedUser
+    assert user == fetchedUser
 
 
-def test_schedule_create(mockSession):
+def test_schedule_create(mockCRUD):
     email = "email"
-    mockUser = User.mock(email = email)
-    db_crud.user_create(user=mockUser, session=mockSession)
-    mockSchedule = Schedule.mock()
-    mockStartPlace = Place.mock(id = 'mockStartPlace')
-    mockEndPlace = Place.mock(id = 'mockEndPlace')
-    mockSchedule.startPlaceID = mockStartPlace.id
-    mockSchedule.endPlaceID = mockEndPlace.id
+    user = User.mock(email = email)
+    mockCRUD.userCreate(user=user)
+    schedule = Schedule.mock()
+    startPlace = Place.mock(id = 'mockStartPlace')
+    endPlace = Place.mock(id = 'mockEndPlace')
+    schedule.startPlaceID = startPlace.id
+    schedule.endPlaceID = endPlace.id
 
-    db_crud.schedule_create(
+    mockCRUD.scheduleCreate(
         userEmail=email,
-        schedule=mockSchedule,
-        startPlace = mockStartPlace,
-        endPlace = mockEndPlace,
-        session=mockSession,
+        schedule=schedule,
+        startPlace = startPlace,
+        endPlace = endPlace,
     )
 
-    placeCount = mockSession.query(Place).count()
+    placeCount = mockCRUD.session.query(Place).count()
     assert placeCount == 2
-    fetchedUser = db_crud.user_read(email=email, session=mockSession)
+    fetchedUser = mockCRUD.userRead(email=email)
     assert len(fetchedUser.schedules) == 1
-    assert mockSchedule in fetchedUser.schedules
+    assert schedule in fetchedUser.schedules
 
 
-def test_place_create(mockSession):
-    mockPlace = Place.mock()
+def test_place_create(mockCRUD):
+    place = Place.mock()
 
-    db_crud.place_create(
-        place=mockPlace,
-        session=mockSession,
-    )
+    mockCRUD.placeCreate(place=place)
 
-    fetchedPlace = db_crud.place_read(
-        placeID=mockPlace.id,
-        session=mockSession,
-    )
-    assert mockPlace == fetchedPlace
+    fetchedPlace = mockCRUD.placeRead(placeID=place.id)
+    assert place == fetchedPlace
 
 
-def test_place_read(mockSession):
-    mockPlace = Place.mock()
+def test_place_read(mockCRUD):
+    place = Place.mock()
 
-    db_crud.place_create(place = mockPlace, session = mockSession)
-    fetchedPlace = db_crud.place_read(placeID = mockPlace.id, session = mockSession)
+    mockCRUD.placeCreate(place = place)
 
-    assert mockPlace == fetchedPlace
+    fetchedPlace = mockCRUD.placeRead(placeID = place.id)
+    assert place == fetchedPlace
 
 
-def test_place_create_check_duplicate(mockSession):
-    mockPlace1 = Place.mock()
-    mockPlace2 = Place.mock()
-    mockPlace3 = Place.mock()
+def test_place_create_check_duplicate(mockCRUD):
+    place1 = Place.mock()
+    place2 = Place.mock()
+    place3 = Place.mock()
 
-    db_crud.place_create(place = mockPlace1, session = mockSession)
-    db_crud.place_create(place = mockPlace2, session = mockSession)
-    db_crud.place_create(place = mockPlace3, session = mockSession)
+    mockCRUD.placeCreate(place = place1)
+    mockCRUD.placeCreate(place = place2)
+    mockCRUD.placeCreate(place = place3)
 
-    placeCount = mockSession.query(Place).count()
+    placeCount = mockCRUD.session.query(Place).count()
     assert placeCount == 1

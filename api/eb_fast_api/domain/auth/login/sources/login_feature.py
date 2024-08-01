@@ -1,13 +1,14 @@
-import bcrypt
-from typing import Optional
-from sqlalchemy.orm import Session
+from datetime import datetime, timedelta
+from jose import jwt
+import secrets
 
-from eb_fast_api.database.sources.models import User
+ACCESS_TOKEN_EXPIRE_MINUTES = 10
+SECRET_KEY = secrets.token_hex(32)
 
-def get_user(db: Session, email: str) -> Optional[User]:
-    return db.query(User).filter(User.email == email).first()
-
-def check_password(password: str, hashed_password: str) -> bool:
-    return bcrypt.checkpw(
-        password=password.encode(), hashed_password=hashed_password
-    )
+def create_token(email: str) -> str:
+    data = {
+        "sub": email,
+        "exp" : datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    }
+    access_token = jwt.encode(data, SECRET_KEY)
+    return access_token

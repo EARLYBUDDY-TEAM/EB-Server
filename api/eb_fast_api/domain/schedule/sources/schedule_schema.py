@@ -6,7 +6,7 @@ class Coordi(BaseModel):
     x: str
     y: str
 
-class Place(BaseModel):
+class PlaceInfo(BaseModel):
     id: str
     name: str
     address: str
@@ -19,5 +19,5 @@ class ScheduleInfo(BaseModel):
     memo: Optional[str] = None
     time: datetime
     isNotify: bool
-    startPlace: Optional[Place] = None
-    endPlace: Optional[Place] = None
+    startPlace: Optional[PlaceInfo] = None
+    endPlace: Optional[PlaceInfo] = None

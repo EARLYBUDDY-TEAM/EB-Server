@@ -1,26 +1,22 @@
-from datetime import timedelta, datetime
 from fastapi import APIRouter, HTTPException
-from fastapi import Depends
-from jose import jwt
-from sqlalchemy.orm import Session
-from starlette import status
-import secrets
+
+from eb_fast_api.domain.auth.login.sources.login_schema import LoginInfo, Token
+from eb_fast_api.domain.auth.login.sources import login_feature
+from eb_fast_api.database.sources import db_crud
+from eb_fast_api.snippets.sources import password
+
 
 from eb_fast_api.database.sources.database import get_db
-from eb_fast_api.domain.auth.login.sources import login_feature
-from eb_fast_api.domain.auth.login.sources import login_schema
+from fastapi import Depends
+from sqlalchemy.orm import Session
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 10
-SECRET_KEY = secrets.token_hex(32)
-ALGORITHM = "HS256"
 
 router = APIRouter(prefix="/auth/login")
 
-@router.post("/", response_model=login_schema.Token)
-def login_for_access_token(
-    _login_info: login_schema.LoginInfo, db: Session = Depends(get_db)
-):
-    user = login_feature.get_user(db, _login_info.email)
+
+@router.post('', response_model=Token)
+def login_for_access_token(login_info: LoginInfo, session: Session = Depends(get_db)):
+    user = db_crud.user_read(login_info.email, session)
 
     if not user:
         raise HTTPException(
@@ -28,8 +24,8 @@ def login_for_access_token(
             detail = '유저정보가 없습니다.',
         )
     
-    if not login_feature.check_password(
-        password = _login_info.password, 
+    if not password.check(
+        password = login_info.password, 
         hashed_password = user.password
     ):
         raise HTTPException(
@@ -37,13 +33,9 @@ def login_for_access_token(
             detail = '잘못된 패스워드 입니다.',
         )
 
-    data = {
-        "sub": user.email,
-        "exp" : datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    }
-    access_token = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
+    access_token = login_feature.create_token(user.email)
 
-    return login_schema.Token(
+    return Token(
         access_token=access_token,
         token_type="bearer",
         email=user.email,

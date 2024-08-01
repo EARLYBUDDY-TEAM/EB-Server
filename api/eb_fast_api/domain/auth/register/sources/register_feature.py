@@ -11,13 +11,20 @@ def is_valid_email(email: str) -> bool:
     
 
 def is_valid_password(password: str) -> bool:
-    if password.strip():
-        return True
-    return False
+    if ' ' in password or not password.strip():
+        return False
+    
+    if len(password) < 6:
+        return False
 
+    digitFlag = False
+    alphaFlag = False
+    for p in password:
+        if digitFlag and alphaFlag:
+            break
+        if p.isdigit():
+            digitFlag = True
+        elif p.isalpha():
+            alphaFlag = True
 
-def hash_password(password: str) -> bytes:
-    pwd_bytes = password.encode("utf-8")
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password=pwd_bytes, salt=salt)
-    return hashed_password
+    return digitFlag and alphaFlag
