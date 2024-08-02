@@ -1,8 +1,18 @@
+from pathlib import Path
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
 
-DB_URL = "sqlite:///./eb_fast_api/database/earlybuddy.db"
 Base = declarative_base()
-engine = create_engine(DB_URL, connect_args={"check_same_thread" : False})
-SessionLocal = sessionmaker(autoflush=False, bind=engine)
+
+
+def createSessionMaker(
+    filePath: str = str(Path(__file__).parent.absolute()),
+    fileName: str = "earlybuddy.db",
+) -> sessionmaker[Session]:
+    filePath += f"/{fileName}"
+    DB_URL = "sqlite:///" + filePath
+    engine = create_engine(DB_URL, connect_args={"check_same_thread": False})
+    Base.metadata.create_all(bind=engine)
+    sessionMaker = sessionmaker(autoflush=False, bind=engine)
+    return sessionMaker

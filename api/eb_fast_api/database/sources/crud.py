@@ -1,14 +1,14 @@
 from eb_fast_api.database.sources.models import User, Schedule, Place
-from eb_fast_api.database.sources.database import SessionLocal
-from sqlalchemy.orm import Session
+from eb_fast_api.database.sources.database import createSessionMaker
+from sqlalchemy.orm import Session, sessionmaker
 from typing import Optional
 
 
 class CRUD():
     session: Session
 
-    def __init__(self, session: Session = SessionLocal()):
-        self.session = session
+    def __init__(self, sessionMaker: sessionmaker[Session] = createSessionMaker()):
+        self.session = sessionMaker()
 
     def __enter__(self):
         return self
