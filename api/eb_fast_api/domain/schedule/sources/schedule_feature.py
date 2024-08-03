@@ -1,9 +1,14 @@
+from fastapi import Depends
 from eb_fast_api.domain.schedule.sources.schedule_schema import ScheduleInfo
 from eb_fast_api.database.sources.models import Schedule, Place
-from eb_fast_api.database.sources import db_crud
+from eb_fast_api.database.sources.crud import getDB
 
 
-def create_schedule(userEmail: str, scheduleInfo: ScheduleInfo):
+def create_schedule(
+    userEmail: str,
+    scheduleInfo: ScheduleInfo,
+    db=Depends(getDB), # router에서 주입하기
+):
     schedule = Schedule(
         title=scheduleInfo.title,
         memo=scheduleInfo.memo,
@@ -23,7 +28,7 @@ def create_schedule(userEmail: str, scheduleInfo: ScheduleInfo):
             coordiX=p.coordi.x,
             coordiY=p.coordi.y,
         )
-        db_crud.place_create(startPlace)
+        db.placeCreate(startPlace)
 
     if scheduleInfo.endPlace is not None:
         p = scheduleInfo.endPlace
@@ -37,13 +42,13 @@ def create_schedule(userEmail: str, scheduleInfo: ScheduleInfo):
             coordiX=p.coordi.x,
             coordiY=p.coordi.y,
         )
-        db_crud.place_create(endPlace)
+        db.placeCreate(endPlace)
 
-    db_crud.schedule_create(
+    db.scheduleCreate(
         userEmail,
         schedule,
         startPlace,
         endPlace,
     )
 
-    db_crud.commit()
+    db.commit()

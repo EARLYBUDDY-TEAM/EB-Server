@@ -1,20 +1,19 @@
-from eb_fast_api.database.sources.models import User, Schedule, Place
-from eb_fast_api.database.sources.database import createSessionMaker
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session
 from typing import Optional
+from eb_fast_api.database.sources.models import User, Schedule, Place
+from eb_fast_api.database.sources.database import sessionMaker
+from eb_fast_api.snippets.sources import pwdcrypt
+
 
 
 class CRUD():
     session: Session
 
-    def __init__(self, sessionMaker: sessionmaker[Session] = createSessionMaker()):
-        self.session = sessionMaker()
+    # def __init__(self, sessionMaker: sessionmaker[Session]):
+    #     self.session = sessionMaker()
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.session.close()
+    def __init__(self, session: Session):
+        self.session = session
 
         # db
     def rollback(self):
@@ -26,6 +25,7 @@ class CRUD():
 
     # user
     def userCreate(self, user: User):
+        user.hashedPassword = pwdcrypt.hash(user.hashedPassword)
         self.session.add(user)
         self.session.flush()
 
@@ -67,3 +67,13 @@ class CRUD():
         if not fetchedPlace:
             self.session.add(place)
             self.session.flush()
+
+
+def getDB():
+    session = sessionMaker()
+    crud = CRUD(session = session)
+    try:
+        yield crud
+    finally:
+        session.close()
+        del crud

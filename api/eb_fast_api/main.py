@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request, Response
 import time
 import uvicorn
 
+from eb_fast_api.database.sources.database import createDB
+
 app = FastAPI()
 
 from eb_fast_api.domain.auth.register.sources import register_routers

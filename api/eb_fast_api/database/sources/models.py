@@ -9,16 +9,16 @@ class User(Base):
     __tablename__ = "user"
 
     email: Mapped[str] = mapped_column(primary_key=True)
-    password: Mapped[str]
+    hashedPassword: Mapped[str]
     schedules: Mapped[List["Schedule"]] = relationship()
 
     def __init__(
         self,
         email: str,
-        password: str,
+        hashedPassword: str,
     ):
         self.email = email
-        self.password = password
+        self.hashedPassword = hashedPassword
 
     def __eq__(self, other):
         return self.email == other.email
@@ -27,7 +27,7 @@ class User(Base):
     def mock(cls, email: str = 'email') -> Self:
         return User(
             email=email,
-            password="password",
+            hashedPassword="hashedPassword",
         )
 
 

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional, Self
+from typing import List, Optional
 from eb_fast_api.snippets.sources import dictionary
 
 
@@ -7,7 +7,7 @@ class Station(BaseModel):
     name: str
 
     @classmethod
-    def fromJson(cls, j: dict) -> Self:
+    def fromJson(cls, j: dict):
         return Station(name = j['stationName'])
 
 
@@ -17,7 +17,7 @@ class Transport(BaseModel):
     busType: Optional[str] = None
 
     @classmethod
-    def fromJson(cls, j: dict) -> Self:
+    def fromJson(cls, j: dict):
         subwayCode = dictionary.safeDict(['subwayCode'], j)
         subwayType = dictionary.safeDict([subwayCode], subwayCodeToType)
         busNumber = dictionary.safeDict(['busNo'], j)
@@ -42,7 +42,7 @@ class SubPath(BaseModel):
     stations: Optional[List[Station]]
 
     @classmethod
-    def fromJson(cls, j: dict) -> Self:
+    def fromJson(cls, j: dict):
         tmpTrans = dictionary.safeDict(['lane'], j)
         transports = list(map(Transport.fromJson, tmpTrans)) if tmpTrans != None else None
         tmpStations = dictionary.safeDict(['passStopList', 'stations'], j)
@@ -69,7 +69,7 @@ class Path(BaseModel):
     subPaths: List[SubPath]
 
     @classmethod
-    def fromJson(cls, j: dict) -> Self:
+    def fromJson(cls, j: dict):
         info = j['info']
         subPaths = list(map(SubPath.fromJson, j['subPath']))
         path = Path(
@@ -88,7 +88,7 @@ class Route(BaseModel):
     paths: List[Path]
 
     @classmethod
-    def fromJson(cls, j: dict) -> Self:
+    def fromJson(cls, j: dict):
         paths = list(map(Path.fromJson, j['path']))
         route = Route(
             type = j['searchType'],

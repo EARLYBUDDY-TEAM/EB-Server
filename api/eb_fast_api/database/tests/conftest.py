@@ -1,20 +1,21 @@
 import pytest
-from pathlib import Path
+from eb_fast_api.database.testings.mock_crud import mockSessionMaker
 from eb_fast_api.database.sources.crud import CRUD
-from eb_fast_api.database.sources.database import createSessionMaker
 
 
-@pytest.fixture(scope="session")
-def withMockCRUD():
-    sessionMaker = createSessionMaker(
-        filePath=str(Path(__file__).parent.absolute()),
-        fileName="mockdatabase.db",
-    )
-    with CRUD(sessionMaker=sessionMaker) as crud:
-        yield crud
+@pytest.fixture(scope='session')
+def createDB():
+    session = mockSessionMaker()
+    crud = CRUD(session = session)
+    print('create CRUD !!!')
+    yield crud
+    session.close()
+    del crud
+    print('deinit CRUD !!!')
 
 
-@pytest.fixture(scope="function")
-def mockCRUD(withMockCRUD):
-    yield withMockCRUD
-    withMockCRUD.rollback()
+@pytest.fixture(scope='function')
+def mockDB(createDB):
+    yield createDB
+    createDB.rollback()
+    print('rollback !!!')
