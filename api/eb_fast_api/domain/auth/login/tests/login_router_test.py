@@ -39,3 +39,32 @@ def test_login_for_access_token_ERROR_invalid_password(loginMockDB):
     assert response.status_code == 401
 
     del app.dependency_overrides[getDB]
+
+
+def test_login_for_access_token_SUCCESS(loginMockDB):
+    # given
+    email = "email"
+    password = "password12"
+    user = User(
+        email=email,
+        hashedPassword=pwdcrypt.hash(password),
+    )
+    loginMockDB.userCreate(user)
+
+    def getMockDB():
+        yield loginMockDB
+
+    app.dependency_overrides[getDB] = getMockDB
+    testClient = TestClient(app)
+
+    # when
+    json = {
+        "email": email,
+        "password": password,
+    }
+    response = testClient.post("/auth/login", json=json)
+
+    # then
+    assert response.status_code == 200
+
+    del app.dependency_overrides[getDB]

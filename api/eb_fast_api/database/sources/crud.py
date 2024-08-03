@@ -9,9 +9,6 @@ from eb_fast_api.snippets.sources import pwdcrypt
 class CRUD():
     session: Session
 
-    # def __init__(self, sessionMaker: sessionmaker[Session]):
-    #     self.session = sessionMaker()
-
     def __init__(self, session: Session):
         self.session = session
 
@@ -25,7 +22,6 @@ class CRUD():
 
     # user
     def userCreate(self, user: User):
-        user.hashedPassword = pwdcrypt.hash(user.hashedPassword)
         self.session.add(user)
         self.session.flush()
 
