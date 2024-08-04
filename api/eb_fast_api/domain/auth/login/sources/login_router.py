@@ -1,15 +1,16 @@
 from fastapi import APIRouter, HTTPException, Depends
-from eb_fast_api.domain.auth.login.sources.login_schema import LoginInfo, Token
 from eb_fast_api.domain.auth.login.sources import login_feature
 from eb_fast_api.snippets.sources import pwdcrypt
 from eb_fast_api.database.sources.crud import getDB
+from eb_fast_api.domain.auth.login.sources.login_schema import Token
+from eb_fast_api.domain.schema.user_info import UserInfo
 
 
 router = APIRouter(prefix="/auth/login")
 
 
 @router.post('', response_model=Token)
-def login(loginInfo: LoginInfo, db = Depends(getDB)):
+def login(loginInfo: UserInfo, db = Depends(getDB)):
     user = db.userRead(loginInfo.email)
 
     if not user:
@@ -30,7 +31,7 @@ def login(loginInfo: LoginInfo, db = Depends(getDB)):
     accessToken = login_feature.createToken(user.email)
 
     return Token(
-        access_token=accessToken,
-        token_type="bearer",
+        accessToken=accessToken,
+        tokenType="bearer",
         email=user.email,
     )

@@ -1,12 +1,11 @@
 import pytest
-from eb_fast_api.database.testings.mock_crud import mockSessionMaker
-from eb_fast_api.database.sources.crud import CRUD
+from eb_fast_api.database.testings.mock_crud import mockSessionMaker, MockCRUD
 
 
 @pytest.fixture(scope='session')
 def createDB():
     session = mockSessionMaker()
-    crud = CRUD(session = session)
+    crud = MockCRUD(session = session)
     print('create CRUD !!!')
     yield crud
     session.close()

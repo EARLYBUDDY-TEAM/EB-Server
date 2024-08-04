@@ -1,48 +1,18 @@
-from fastapi import Depends
-from eb_fast_api.domain.schedule.sources.schedule_schema import ScheduleInfo
-from eb_fast_api.database.sources.models import Schedule, Place
-from eb_fast_api.database.sources.crud import getDB
+from eb_fast_api.domain.schema.schedule_info import ScheduleInfo
 
 
-def create_schedule(
+def createSchedule(
     userEmail: str,
     scheduleInfo: ScheduleInfo,
-    db=Depends(getDB), # router에서 주입하기
+    db,
 ):
-    schedule = Schedule(
-        title=scheduleInfo.title,
-        memo=scheduleInfo.memo,
-        time=scheduleInfo.time,
-        isNotify=scheduleInfo.isNotify,
+    schedule = scheduleInfo.toSchedule()
+    startPlace = (
+        scheduleInfo.startPlace.toPlace() if scheduleInfo.startPlace != None else None
     )
-
-    if scheduleInfo.startPlace is not None:
-        p = scheduleInfo.startPlace
-        schedule.startPlaceID = p.id
-        startPlace = Place(
-            id=p.id,
-            name=p.name,
-            address=p.address,
-            category=p.category,
-            distance=p.distance,
-            coordiX=p.coordi.x,
-            coordiY=p.coordi.y,
-        )
-        db.placeCreate(startPlace)
-
-    if scheduleInfo.endPlace is not None:
-        p = scheduleInfo.endPlace
-        schedule.endPlaceID = p.id
-        endPlace = Place(
-            id=p.id,
-            name=p.name,
-            address=p.address,
-            category=p.category,
-            distance=p.distance,
-            coordiX=p.coordi.x,
-            coordiY=p.coordi.y,
-        )
-        db.placeCreate(endPlace)
+    endPlace = (
+        scheduleInfo.endPlace.toPlace() if scheduleInfo.endPlace != None else None
+    )
 
     db.scheduleCreate(
         userEmail,
@@ -50,5 +20,3 @@ def create_schedule(
         startPlace,
         endPlace,
     )
-
-    db.commit()

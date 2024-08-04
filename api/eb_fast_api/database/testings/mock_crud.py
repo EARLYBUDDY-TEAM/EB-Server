@@ -1,7 +1,11 @@
 from pathlib import Path
 from eb_fast_api.database.sources.crud import CRUD
 from eb_fast_api.database.sources.database import createSessionMaker, createEngine
-from sqlalchemy.orm import sessionmaker
+
+
+class MockCRUD(CRUD):
+    def commit(self):
+        return
 
 
 mockEngine = createEngine(

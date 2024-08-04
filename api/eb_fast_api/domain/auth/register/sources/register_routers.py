@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
-from eb_fast_api.domain.auth.register.sources import register_schema
 from eb_fast_api.domain.auth.register.sources import register_feature
-from eb_fast_api.database.sources.models import User
+from eb_fast_api.database.sources.model import User
 from eb_fast_api.database.sources.crud import getDB
 from eb_fast_api.snippets.sources import pwdcrypt
+from eb_fast_api.domain.schema.user_info import UserInfo
 
 
 router = APIRouter(prefix="/auth/register")
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/auth/register")
 
 @router.post("")
 def register(
-    registerInfo: register_schema.RegisterInfo,
+    registerInfo: UserInfo,
     db=Depends(getDB),
 ):
     if not register_feature.isValidEmail(
@@ -28,9 +28,6 @@ def register(
             status_code=401,
             detail="이미 존재하는 사용자입니다.",
         )
-    hashedPassword = pwdcrypt.hash(registerInfo.password)
-    user = User(
-        email=registerInfo.email,
-        hashedPassword=hashedPassword,
-    )
+    user = registerInfo.toUser()
     db.userCreate(user)
+    db.commit()

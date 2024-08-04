@@ -1,8 +1,7 @@
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.database.sources.models import User
+from eb_fast_api.domain.schema.user_info import UserInfo
 from eb_fast_api.database.sources.crud import getDB
-from eb_fast_api.snippets.sources import pwdcrypt
 
 
 def test_login_ERROR_no_user(testClient):
@@ -16,10 +15,8 @@ def test_login_ERROR_invalid_password(loginMockDB):
     # given
     email = "email"
     password = "password12"
-    user = User(
-        email=email,
-        hashedPassword=pwdcrypt.hash(password),
-    )
+    userInfo = UserInfo(email = email, password = password)
+    user = userInfo.toUser()
     loginMockDB.userCreate(user)
 
     def getMockDB():
@@ -44,10 +41,8 @@ def test_login_SUCCESS(loginMockDB):
     # given
     email = "email"
     password = "password12"
-    user = User(
-        email=email,
-        hashedPassword=pwdcrypt.hash(password),
-    )
+    userInfo = UserInfo(email, password)
+    user = userInfo.toUser()
     loginMockDB.userCreate(user)
 
     def getMockDB():

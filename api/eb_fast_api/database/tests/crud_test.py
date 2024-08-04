@@ -1,4 +1,4 @@
-from eb_fast_api.database.sources.models import User, Schedule, Place
+from eb_fast_api.database.sources.model import User, Schedule, Place
 
 
 def test_user_create(mockDB):
