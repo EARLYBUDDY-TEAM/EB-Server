@@ -1,7 +1,7 @@
 from email_validator import validate_email
 
 
-def is_valid_email(email: str) -> bool:
+def isValidEmail(email: str) -> bool:
     try:
         validate_email(email, check_deliverability=True)
         return True
@@ -9,7 +9,7 @@ def is_valid_email(email: str) -> bool:
         return False
     
 
-def is_valid_password(password: str) -> bool:
+def isValidPassword(password: str) -> bool:
     if ' ' in password or not password.strip():
         return False
     

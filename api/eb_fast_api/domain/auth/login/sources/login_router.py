@@ -9,7 +9,7 @@ router = APIRouter(prefix="/auth/login")
 
 
 @router.post('', response_model=Token)
-def login_for_access_token(loginInfo: LoginInfo, db = Depends(getDB)):
+def login(loginInfo: LoginInfo, db = Depends(getDB)):
     user = db.userRead(loginInfo.email)
 
     if not user:
@@ -27,10 +27,10 @@ def login_for_access_token(loginInfo: LoginInfo, db = Depends(getDB)):
             detail = '잘못된 패스워드 입니다.',
         )
 
-    access_token = login_feature.create_token(user.email)
+    accessToken = login_feature.createToken(user.email)
 
     return Token(
-        access_token=access_token,
+        access_token=accessToken,
         token_type="bearer",
         email=user.email,
     )

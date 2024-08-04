@@ -1,34 +1,37 @@
 from eb_fast_api.domain.auth.register.sources import register_feature
 
 
-def test_is_valid_email_success():
+def test_isValidEmail_SUCCESS():
     email = "abc@abc.com"
     try:
-        register_feature.is_valid_email(email)
+        register_feature.isValidEmail(email)
         return
     except:
         raise Exception("test fail")
 
 
-def test_is_valid_email_fail():
-    email = ""
-    try:
-        register_feature.is_valid_email(email)
-        raise Exception("test fail")
-    except:
-        return
+def test_isValidEmail_FAIL():
+    failEmailList = [
+        "",
+        "abc@"
+        "abc@abc"
+    ]
+
+    for email in failEmailList:
+        if register_feature.isValidEmail(email):
+            raise Exception("test fail")
 
 
-def test_is_valid_password_success():
+def test_isValidPassword_SUCCESS():
     password = "abcdefg12"
     try:
-        register_feature.is_valid_password(password)
+        register_feature.isValidPassword(password)
         return
     except:
         raise Exception("test fail")
 
 
-def test_is_valid_password_fail():
+def test_isValidPassword_FAIL():
     failPasswordList = [
         " ",
         "",
@@ -37,6 +40,5 @@ def test_is_valid_password_fail():
     ]
 
     for password in failPasswordList:
-        flag = register_feature.is_valid_password(password)
-        if flag:
+        if register_feature.isValidPassword(password):
             raise Exception("test fail")

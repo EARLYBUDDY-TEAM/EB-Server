@@ -5,14 +5,14 @@ from eb_fast_api.database.sources.crud import getDB
 from eb_fast_api.snippets.sources import pwdcrypt
 
 
-def test_login_for_access_token_ERROR_no_user(testClient):
+def test_login_ERROR_no_user(testClient):
     json = {"email": "abcd@naver.com", "password": "password12"}
     response = testClient.post("/auth/login", json=json)
 
     assert response.status_code == 400
 
 
-def test_login_for_access_token_ERROR_invalid_password(loginMockDB):
+def test_login_ERROR_invalid_password(loginMockDB):
     # given
     email = "email"
     password = "password12"
@@ -37,11 +37,10 @@ def test_login_for_access_token_ERROR_invalid_password(loginMockDB):
 
     # then
     assert response.status_code == 401
-
     del app.dependency_overrides[getDB]
 
 
-def test_login_for_access_token_SUCCESS(loginMockDB):
+def test_login_SUCCESS(loginMockDB):
     # given
     email = "email"
     password = "password12"
@@ -66,5 +65,4 @@ def test_login_for_access_token_SUCCESS(loginMockDB):
 
     # then
     assert response.status_code == 200
-
     del app.dependency_overrides[getDB]
