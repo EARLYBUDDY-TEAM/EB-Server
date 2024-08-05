@@ -1,9 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
-from eb_fast_api.domain.auth.register.sources import register_feature
-from eb_fast_api.database.sources.model import User
 from eb_fast_api.database.sources.crud import getDB
-from eb_fast_api.snippets.sources import pwdcrypt
-from eb_fast_api.domain.schema.user_info import UserInfo
+from eb_fast_api.domain.auth.register.sources import register_feature
+from eb_fast_api.domain.schema.sources.schema import UserInfo
 
 
 router = APIRouter(prefix="/auth/register")

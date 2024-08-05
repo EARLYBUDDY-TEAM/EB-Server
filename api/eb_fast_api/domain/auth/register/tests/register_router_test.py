@@ -1,15 +1,12 @@
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
 from eb_fast_api.database.sources.crud import getDB
-from eb_fast_api.snippets.sources import pwdcrypt
-from eb_fast_api.domain.schema.user_info import UserInfo
+from eb_fast_api.domain.schema.sources.schema import UserInfo
 
 
 def test_register_FAIL_invalid_register_info(testClient):
-    json = {
-        "email": "abc@abc",
-        "password": "password12",
-    }
+    userInfo = UserInfo(email = "abc@abc", password = "password12")
+    json = userInfo.model_dump(mode = "json")
     response = testClient.post("/auth/register", json=json)
 
     assert response.status_code == 400
@@ -30,10 +27,7 @@ def test_register_FAIL_exist_user(registerMockDB):
     testClient = TestClient(app)
 
     # when
-    json = {
-        "email": email,
-        "password": password,
-    }
+    json = userInfo.model_dump(mode = "json")
     response = testClient.post("/auth/register", json=json)
 
     # then
@@ -44,10 +38,8 @@ def test_register_FAIL_exist_user(registerMockDB):
 def test_register_SUCCESS(testClient):
     email = "abc@abc.com"
     password = "password12"
-    json = {
-        "email": email,
-        "password": password,
-    }
+    userInfo = UserInfo(email, password)
+    json = userInfo.model_dump(mode = "json")
     response = testClient.post("/auth/register", json=json)
 
     # then

@@ -1,15 +1,28 @@
 from eb_fast_api.domain.schedule.sources import schedule_feature
-from eb_fast_api.database.sources.model import User, Schedule
-from eb_fast_api.snippets.sources import pwdcrypt
+from eb_fast_api.domain.schema.sources.schema import UserInfo, ScheduleInfo
+from eb_fast_api.database.sources.model import Place, Schedule
 
 
-# def test_createSchedule_SUCCESS(scheduleMockDB):
-#     # given
-#     email = 'email'
-#     password = 'password'
-#     user = User(userEmail=email, hashedPassword=pwdcrypt.hash(password),)
-#     scheduleMockDB.userCreate(user)
-#     schedule = Schedule.mock()
+def test_createSchedule(scheduleMockDB):
+    # given
+    email = "email"
+    password = "password"
+    userInfo = UserInfo(email, password)
+    user = userInfo.toUser()
+    scheduleMockDB.userCreate(user)
+    scheduleInfo = ScheduleInfo.mock()
 
-#     schedule_feature.createSchedule(userEmail=email, s)
-#     return
+    # when
+    schedule_feature.createSchedule(
+        userEmail=email,
+        scheduleInfo=scheduleInfo,
+        db=scheduleMockDB,
+    )
+
+    # then
+    placeCount = scheduleMockDB.session.query(Place).count()
+    assert placeCount == 2
+    scheduleCount = scheduleMockDB.session.query(Schedule).count()
+    assert scheduleCount == 1
+    user = scheduleMockDB.userRead(email)
+    assert len(user.schedules) == 1

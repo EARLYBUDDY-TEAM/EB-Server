@@ -1,4 +1,4 @@
-from eb_fast_api.domain.schema.schedule_info import ScheduleInfo
+from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
 
 
 def createSchedule(
