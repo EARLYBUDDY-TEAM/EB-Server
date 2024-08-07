@@ -1,5 +1,6 @@
 from eb_fast_api.snippets.sources import dictionary
 
+
 def test_safeDict():
     keys = [1, 2, 3]
     myValue = 'myValue'

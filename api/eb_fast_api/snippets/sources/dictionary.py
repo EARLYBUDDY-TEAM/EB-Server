@@ -1,7 +1,9 @@
 from typing import Optional, TypeVar, List
 
+
 K = TypeVar('K')
 V = TypeVar('V')
+
 
 def safeDict(keyList: List[K], fromDict: dict) -> Optional[V]:
     try:
