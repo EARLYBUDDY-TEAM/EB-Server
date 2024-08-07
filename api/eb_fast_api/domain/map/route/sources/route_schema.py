@@ -95,37 +95,6 @@ class Route(BaseModel):
             paths = paths
         )
         return route
-    
-
-def modifyWalkSubPath(subPaths: List[SubPath], startPlace: str, endPlace: str):
-    if not subPaths:
-        return
-    elif len(subPaths) == 1 and subPaths[0].type == 3:
-        subPaths[0].startName = startPlace
-        subPaths[0].endName = endPlace
-        return
-    else:
-        for index, subPath in enumerate(subPaths):
-            if subPath.type != 3:
-                continue
-            if index == 0:
-                subPath.startName = startPlace
-                subPath.endName = subPaths[index + 1].startName
-            elif index == len(subPaths) - 1:
-                subPath.startName = subPaths[index - 1].endName
-                subPath.endName = endPlace
-            else:
-                subPath.startName = subPaths[index - 1].endName
-                subPath.endName = subPaths[index + 1].startName
-
-
-def calTotalWalkTime(path: Path):
-    walkTime = sum([
-        subPath.time
-        for subPath in path.subPaths 
-        if subPath.type == 3
-    ])
-    path.walkTime = walkTime
 
 
 busCodeToType = {
