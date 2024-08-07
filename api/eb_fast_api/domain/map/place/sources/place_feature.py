@@ -1,19 +1,20 @@
-import httpx
 from eb_fast_api.env.env import ENV
+from httpx import AsyncClient
 
 
 async def getPlaceData(query: str, x: str, y: str):
     url = "https://dapi.kakao.com/v2/local/search/keyword.json"
-    header = {"Authorization": f"KakaoAK {ENV.kakaomap_local}"}
+    header = {"Authorization": f"KakaoAK {ENV.kakaomap}"}
     params = {
         "query": query,
         "x": x,
         "y": y,
         "sort": "distance",
     }
-    async with httpx.AsyncClient() as client:
+
+    async with AsyncClient() as client:
         response = await client.get(url=url, headers=header, params=params)
-        return response.json()
+        return response
  
 
 

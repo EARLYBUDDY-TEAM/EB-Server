@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 dotenv = str(Path(__file__).parent.absolute()) + '/.env'
 
 class Settings(BaseSettings):
-    kakaomap_local: str
+    kakaomap: str
     odsay: str
 
     model_config = SettingsConfigDict(

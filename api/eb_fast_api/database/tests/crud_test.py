@@ -1,7 +1,7 @@
 from eb_fast_api.database.sources.model import User, Schedule, Place
 
 
-def test_user_create(mockDB):
+def test_userCreate(mockDB):
     email = "email"
     user = User.mock(email = email)
     userCount1 = mockDB.session.query(User).count()
@@ -14,7 +14,7 @@ def test_user_create(mockDB):
     assert userCount2 - userCount1 == 1
 
 
-def test_user_read(mockDB):
+def test_userRead(mockDB):
     email = "email"
     user = User.mock(email = email)
 
@@ -24,7 +24,7 @@ def test_user_read(mockDB):
     assert user == fetchedUser
 
 
-def test_schedule_create(mockDB):
+def test_scheduleCreate(mockDB):
     email = "email"
     user = User.mock(email = email)
     mockDB.userCreate(user=user)
@@ -48,7 +48,7 @@ def test_schedule_create(mockDB):
     assert schedule in fetchedUser.schedules
 
 
-def test_place_create(mockDB):
+def test_placeCreate(mockDB):
     place = Place.mock()
 
     mockDB.placeCreate(place=place)
@@ -57,7 +57,7 @@ def test_place_create(mockDB):
     assert place == fetchedPlace
 
 
-def test_place_read(mockDB):
+def test_placeRead(mockDB):
     place = Place.mock()
 
     mockDB.placeCreate(place = place)
@@ -66,7 +66,7 @@ def test_place_read(mockDB):
     assert place == fetchedPlace
 
 
-def test_place_create_check_duplicate(mockDB):
+def test_placeCreate_check_duplicate(mockDB):
     place1 = Place.mock()
     place2 = Place.mock()
     place3 = Place.mock()
