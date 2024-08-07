@@ -3,9 +3,6 @@ from eb_fast_api.domain.map.route.sources import route_feature
 from eb_fast_api.domain.map.route.tests import conftest
 
 
-# 수서역 스타벅스 -> 이태원역
-
-
 def test_calTotalWalkTime():
     # given
     mockPath = conftest.mockPath()
@@ -19,8 +16,8 @@ def test_calTotalWalkTime():
 
 def test_modifyWalkSubPath_length_one():
     # given
-    startPlace = '스타벅스'
-    endPlace = '이태원역'
+    startPlace = 'startPlace'
+    endPlace = 'endPlace'
     subPathWalk = conftest.mockWalkSubPath()
 
     # when
@@ -33,8 +30,8 @@ def test_modifyWalkSubPath_length_one():
 
 def test_modifyWalkSubPath_length_more_than_one():
     # given
-    startPlace = '스타벅스'
-    endPlace = '이태원역'
+    startPlace = 'startPlace'
+    endPlace = 'endPlace'
     subPaths = conftest.mockSubPathList()
 
     # when
@@ -50,8 +47,8 @@ def test_modifyWalkSubPath_length_more_than_one():
 def test_refactorRoute():
     # given
     mockRoute = conftest.mockRoute()
-    startPlace = '스타벅스'
-    endPlace = '이태원역'
+    startPlace = 'startPlace'
+    endPlace = 'endPlace'
 
     # when
     newRoute = route_feature.refactorRoute(mockRoute, startPlace, endPlace)
