@@ -5,7 +5,7 @@ from eb_fast_api.database.sources.crud import getDB
 
 
 def test_login_ERROR_no_user(testClient):
-    json = {"email": "abcd@naver.com", "password": "password12"}
+    json = {"email": "email", "password": "password12"}
     response = testClient.post("/auth/login", json=json)
 
     assert response.status_code == 400

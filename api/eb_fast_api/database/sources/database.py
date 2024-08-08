@@ -13,18 +13,17 @@ def createEngine(
     filePath += f"/{fileName}"
     DB_URL = "sqlite:///" + filePath
     engine = create_engine(DB_URL, connect_args={"check_same_thread": False})
-    Base.metadata.create_all(bind=engine)
     return engine
 
 
 engine = createEngine()
 
 
-def createDB(engine: Engine = engine):
+def createTable(engine: Engine = engine):
     Base.metadata.create_all(bind=engine)
     
 
-def dropDB(engine: Engine = engine):
+def dropTable(engine: Engine = engine):
     Base.metadata.drop_all(bind=engine)
 
 

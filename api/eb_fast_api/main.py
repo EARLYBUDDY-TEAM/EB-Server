@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, Response
 import time
 import uvicorn
+from eb_fast_api.database.sources.database import createTable
 
 
 app = FastAPI()
@@ -47,4 +48,5 @@ def read_root():
 
 
 if __name__ == '__main__':
+    createTable()
     uvicorn.run('main:app', host="0.0.0.0", port=8001, reload=True)

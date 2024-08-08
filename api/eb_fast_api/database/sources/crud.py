@@ -4,7 +4,6 @@ from eb_fast_api.database.sources.model import User, Schedule, Place
 from eb_fast_api.database.sources.database import sessionMaker
 
 
-
 class CRUD():
     session: Session
 
@@ -67,8 +66,6 @@ class CRUD():
 def getDB():
     session = sessionMaker()
     crud = CRUD(session = session)
-    try:
-        yield crud
-    finally:
-        session.close()
-        del crud
+    yield crud
+    session.close()
+    del crud
