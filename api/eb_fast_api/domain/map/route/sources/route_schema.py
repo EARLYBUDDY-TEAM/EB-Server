@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
-from eb_fast_api.snippets.sources import dictionary
+from eb_fast_api.snippets.dictionary.sources import dictionary
 
 
 class Station(BaseModel):

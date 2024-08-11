@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from eb_fast_api.database.sources.model import User
-from eb_fast_api.snippets.sources import pwdcrypt
+from eb_fast_api.snippets.pwdcrypt.sources import pwdcrypt
 from typing import Optional
 from datetime import datetime
 from eb_fast_api.database.sources.model import Schedule, Place, User
