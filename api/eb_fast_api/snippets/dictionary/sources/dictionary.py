@@ -5,6 +5,7 @@ K = TypeVar('K')
 V = TypeVar('V')
 
 
+# get method 사용하기
 def safeDict(keyList: List[K], fromDict: dict) -> Optional[V]:
     try:
         if not keyList:

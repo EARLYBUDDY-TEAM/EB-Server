@@ -13,14 +13,13 @@ class JWTEncoder(ABSJWTEncoder):
     def encode(
         self,
         data: dict,
-        expireDelta: int,
+        expireDate: datetime,
         secretKey: str,
         algorithm: str,
     ) -> str:
-        to_encode = data.copy()
-        expire = datetime.now(ZoneInfo("Asia/Seoul")) + timedelta(minutes=expireDelta)
-        to_encode.update({"exp": expire})
-        return jwt.encode(to_encode, secretKey, algorithm=algorithm)
+        toEncode = data.copy()
+        toEncode.update({"exp": expireDate})
+        return jwt.encode(toEncode, secretKey, algorithm=algorithm)
 
 
 class JWTDecoder(ABSJWTDecoder):
@@ -53,36 +52,37 @@ class JWTService:
         self.accessTokenExpireMinute = accessTokenExpireMinute
         self.refreshTokenExpireMinute = refreshTokenExpireMinute
 
-    def __del__(self):
-        print("DEL JWTService Instance")
+    def dateTimeNow(self) -> datetime:
+        return datetime.now(ZoneInfo("Asia/Seoul"))
 
-    def __createToken(self, data: dict, expireDelta: int) -> str:
+    def createToken(self, data: dict, expireMinute: int) -> str:
+        expireDate = self.dateTimeNow() + timedelta(minutes=expireMinute)
         return self.encoder.encode(
             data,
-            expireDelta,
+            expireDate,
             self.secretKey,
             self.algorithm,
         )
 
     def createAccessToken(self, email: str) -> str:
         data = {"sub": email}
-        return self.__createToken(
+        return self.createToken(
             data,
             self.accessTokenExpireMinute,
         )
 
-    def createRefreshToken(self, email: dict) -> str:
+    def createRefreshToken(self, email: str) -> str:
         data = {"sub": email}
-        return self.__createToken(
+        return self.createToken(
             data,
             self.refreshTokenExpireMinute,
         )
 
     def checkTokenExpired(self, token: str) -> Optional[dict]:
-        payload = self.decoder.decode(
+        decoded = self.decoder.decode(
             token,
             self.secretKey,
             self.algorithm,
         )
-        now = datetime.timestamp(datetime.now(ZoneInfo("Asia/Seoul")))
-        return None if payload and payload["exp"] < now else payload
+        now = datetime.timestamp(self.dateTimeNow())
+        return decoded if decoded and now < decoded["exp"] else None
