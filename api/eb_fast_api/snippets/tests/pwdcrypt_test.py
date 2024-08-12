@@ -1,4 +1,4 @@
-from eb_fast_api.snippets.pwdcrypt.sources import pwdcrypt
+from eb_fast_api.snippets.sources import pwdcrypt
 
 
 def test_hashAndCheck():

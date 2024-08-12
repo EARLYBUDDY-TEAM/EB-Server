@@ -10,5 +10,7 @@ class Token(BaseModel):
         accessToken: str,
         refreshToken: str,
     ):
-        self.accessToken = accessToken
-        self.refreshToken = refreshToken
+        super().__init__(
+            accessToken=accessToken,
+            refreshToken=refreshToken,
+        )

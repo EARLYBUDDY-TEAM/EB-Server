@@ -3,7 +3,7 @@ from zoneinfo import ZoneInfo
 from jose import jwt, JWTError
 import secrets
 from typing import Optional
-from eb_fast_api.snippets.jwt_service.interfaces.abs_jwt_serialization import (
+from eb_fast_api.service.jwt.interfaces.abs_jwt_serialization import (
     ABSJWTDecoder,
     ABSJWTEncoder,
 )
@@ -86,3 +86,9 @@ class JWTService:
         )
         now = datetime.timestamp(self.dateTimeNow())
         return decoded if decoded and now < decoded["exp"] else None
+
+
+def getJWTService():
+    jwtService = JWTService()
+    yield jwtService
+    del jwtService

@@ -1,5 +1,5 @@
 import pytest
-from eb_fast_api.snippets.jwt_service.testings.mock_jwt_service import MockJWTService
+from eb_fast_api.service.jwt.testings.mock_jwt_service import MockJWTService
 
 
 @pytest.fixture(scope='function')

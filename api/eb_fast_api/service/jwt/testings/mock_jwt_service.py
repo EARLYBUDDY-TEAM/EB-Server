@@ -1,8 +1,8 @@
-from eb_fast_api.snippets.jwt_service.interfaces.abs_jwt_serialization import (
+from eb_fast_api.service.jwt.interfaces.abs_jwt_serialization import (
     ABSJWTDecoder,
     ABSJWTEncoder,
 )
-from eb_fast_api.snippets.jwt_service.sources.jwt_service import JWTService
+from eb_fast_api.service.jwt.sources.jwt_service import JWTService
 from datetime import datetime, timedelta
 
 

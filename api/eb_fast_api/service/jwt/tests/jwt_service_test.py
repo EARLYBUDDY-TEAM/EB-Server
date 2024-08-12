@@ -1,6 +1,6 @@
 import secrets
-from eb_fast_api.snippets.jwt_service.sources.jwt_service import JWTDecoder, JWTEncoder, JWTService
-from eb_fast_api.snippets.jwt_service.testings.mock_jwt_service import MockJWTService, mockNow, mockEmail
+from eb_fast_api.service.jwt.sources.jwt_service import JWTDecoder, JWTEncoder, JWTService
+from eb_fast_api.service.jwt.testings.mock_jwt_service import MockJWTService, mockNow, mockEmail
 from typing import Optional
 from datetime import datetime, timedelta
 
