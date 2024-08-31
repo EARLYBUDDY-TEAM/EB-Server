@@ -1,13 +1,13 @@
 from pydantic import BaseModel
-from typing import List, Optional, Self
-from eb_fast_api.snippets.sources import snippets
+from typing import List, Optional
+from eb_fast_api.snippets.sources import dictionary
 
 
 class Station(BaseModel):
     name: str
 
     @classmethod
-    def fromJson(cls, j: dict) -> Self:
+    def fromJson(cls, j: dict):
         return Station(name = j['stationName'])
 
 
@@ -17,12 +17,12 @@ class Transport(BaseModel):
     busType: Optional[str] = None
 
     @classmethod
-    def fromJson(cls, j: dict) -> Self:
-        subwayCode = snippets.safeDict(['subwayCode'], j)
-        subwayType = snippets.safeDict([subwayCode], subwayCodeToType)
-        busNumber = snippets.safeDict(['busNo'], j)
-        busCode = snippets.safeDict(['type'], j)
-        busType = snippets.safeDict([busCode], busCodeToType)
+    def fromJson(cls, j: dict):
+        subwayCode = dictionary.safeDict(['subwayCode'], j)
+        subwayType = dictionary.safeDict([subwayCode], subwayCodeToType)
+        busNumber = dictionary.safeDict(['busNo'], j)
+        busCode = dictionary.safeDict(['type'], j)
+        busType = dictionary.safeDict([busCode], busCodeToType)
 
         trans = Transport(
             subwayType = subwayType,
@@ -42,16 +42,16 @@ class SubPath(BaseModel):
     stations: Optional[List[Station]]
 
     @classmethod
-    def fromJson(cls, j: dict) -> Self:
-        tmpTrans = snippets.safeDict(['lane'], j)
+    def fromJson(cls, j: dict):
+        tmpTrans = dictionary.safeDict(['lane'], j)
         transports = list(map(Transport.fromJson, tmpTrans)) if tmpTrans != None else None
-        tmpStations = snippets.safeDict(['passStopList', 'stations'], j)
+        tmpStations = dictionary.safeDict(['passStopList', 'stations'], j)
         stations = list(map(Station.fromJson, tmpStations)) if tmpStations != None else None
         subPath = SubPath(
             type = j['trafficType'],
             time = j['sectionTime'],
-            startName = snippets.safeDict(['startName'], j) or '',
-            endName = snippets.safeDict(['endName'], j) or '',
+            startName = dictionary.safeDict(['startName'], j) or '',
+            endName = dictionary.safeDict(['endName'], j) or '',
             distance = int(j['distance']),
             transports = transports,
             stations = stations,
@@ -69,7 +69,7 @@ class Path(BaseModel):
     subPaths: List[SubPath]
 
     @classmethod
-    def fromJson(cls, j: dict) -> Self:
+    def fromJson(cls, j: dict):
         info = j['info']
         subPaths = list(map(SubPath.fromJson, j['subPath']))
         path = Path(
@@ -88,44 +88,13 @@ class Route(BaseModel):
     paths: List[Path]
 
     @classmethod
-    def fromJson(cls, j: dict) -> Self:
+    def fromJson(cls, j: dict):
         paths = list(map(Path.fromJson, j['path']))
         route = Route(
             type = j['searchType'],
             paths = paths
         )
         return route
-    
-
-def modifyWalkSubPath(subPaths: List[SubPath], startPlace: str, endPlace: str):
-    if not subPaths:
-        return
-    elif len(subPaths) == 1 and subPaths[0].type == 3:
-        subPaths[0].startName = startPlace
-        subPaths[0].endName = endPlace
-        return
-    else:
-        for index, subPath in enumerate(subPaths):
-            if subPath.type != 3:
-                continue
-            if index == 0:
-                subPath.startName = startPlace
-                subPath.endName = subPaths[index + 1].startName
-            elif index == len(subPaths) - 1:
-                subPath.startName = subPaths[index - 1].endName
-                subPath.endName = endPlace
-            else:
-                subPath.startName = subPaths[index - 1].endName
-                subPath.endName = subPaths[index + 1].startName
-
-
-def calTotalWalkTime(path: Path):
-    walkTime = sum([
-        subPath.time
-        for subPath in path.subPaths 
-        if subPath.type == 3
-    ])
-    path.walkTime = walkTime
 
 
 busCodeToType = {

@@ -1,10 +1,16 @@
 from pydantic import BaseModel
 
-class LoginInfo(BaseModel):
-    email: str
-    password: str
 
 class Token(BaseModel):
-    access_token: str
-    token_type: str
-    email: str
+    accessToken: str
+    refreshToken: str
+
+    def __init__(
+        self,
+        accessToken: str,
+        refreshToken: str,
+    ):
+        super().__init__(
+            accessToken=accessToken,
+            refreshToken=refreshToken,
+        )

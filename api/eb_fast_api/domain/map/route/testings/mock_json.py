@@ -1,6 +1,792 @@
 # 수서역 스타벅스 -> 이태원역
 
-mockJsonDict = {
+
+subPathWalk = {
+      "trafficType": 3,
+      "distance": 95,
+      "sectionTime": 1
+    }
+
+subPathSubway = {
+      "trafficType": 1,
+      "distance": 19100,
+      "sectionTime": 33,
+      "stationCount": 16,
+      "lane": [
+        {
+          "name": "수도권 3호선",
+          "subwayCode": 3,
+          "subwayCityCode": 1000
+        }
+      ],
+      "intervalTime": 6,
+      "startName": "수서",
+      "startX": 127.102147,
+      "startY": 37.487473,
+      "endName": "약수",
+      "endX": 127.010997,
+      "endY": 37.554343,
+      "way": "약수",
+      "wayCode": 1,
+      "door": "4-3",
+      "startID": 349,
+      "endID": 333,
+      "startExitNo": "3",
+      "startExitX": 127.10232075621609,
+      "startExitY": 37.48778235566854,
+      "passStopList": {
+        "stations": [
+          {
+            "index": 0,
+            "stationID": 349,
+            "stationName": "수서",
+            "x": "127.102153",
+            "y": "37.487477"
+          },
+          {
+            "index": 1,
+            "stationID": 348,
+            "stationName": "일원",
+            "x": "127.084225",
+            "y": "37.484233"
+          },
+          {
+            "index": 2,
+            "stationID": 347,
+            "stationName": "대청",
+            "x": "127.079541",
+            "y": "37.493608"
+          },
+          {
+            "index": 3,
+            "stationID": 346,
+            "stationName": "학여울",
+            "x": "127.071615",
+            "y": "37.496712"
+          },
+          {
+            "index": 4,
+            "stationID": 345,
+            "stationName": "대치",
+            "x": "127.063442",
+            "y": "37.494587"
+          },
+          {
+            "index": 5,
+            "stationID": 344,
+            "stationName": "도곡",
+            "x": "127.055349",
+            "y": "37.490892"
+          },
+          {
+            "index": 6,
+            "stationID": 343,
+            "stationName": "매봉",
+            "x": "127.046921",
+            "y": "37.487038"
+          },
+          {
+            "index": 7,
+            "stationID": 342,
+            "stationName": "양재",
+            "x": "127.034022",
+            "y": "37.484557"
+          },
+          {
+            "index": 8,
+            "stationID": 341,
+            "stationName": "남부터미널",
+            "x": "127.016288",
+            "y": "37.484917"
+          },
+          {
+            "index": 9,
+            "stationID": 340,
+            "stationName": "교대",
+            "x": "127.01382",
+            "y": "37.493031"
+          },
+          {
+            "index": 10,
+            "stationID": 339,
+            "stationName": "고속터미널",
+            "x": "127.004975",
+            "y": "37.504906"
+          },
+          {
+            "index": 11,
+            "stationID": 338,
+            "stationName": "잠원",
+            "x": "127.011629",
+            "y": "37.512967"
+          },
+          {
+            "index": 12,
+            "stationID": 337,
+            "stationName": "신사",
+            "x": "127.020402",
+            "y": "37.516484"
+          },
+          {
+            "index": 13,
+            "stationID": 336,
+            "stationName": "압구정",
+            "x": "127.028513",
+            "y": "37.52633"
+          },
+          {
+            "index": 14,
+            "stationID": 335,
+            "stationName": "옥수",
+            "x": "127.017374",
+            "y": "37.541609"
+          },
+          {
+            "index": 15,
+            "stationID": 334,
+            "stationName": "금호",
+            "x": "127.015801",
+            "y": "37.548279"
+          },
+          {
+            "index": 16,
+            "stationID": 333,
+            "stationName": "약수",
+            "x": "127.011001",
+            "y": "37.554347"
+          }
+        ]
+      }
+    }
+
+subPathBus = {
+  "trafficType": 2,
+  "distance": 14876,
+  "sectionTime": 48,
+  "stationCount": 27,
+  "lane": [
+    {
+      "busNo": "401",
+      "type": 11,
+      "busID": 1048,
+      "busLocalBlID": "100100062",
+      "busCityCode": 1000,
+      "busProviderCode": 4
+    }
+  ],
+  "intervalTime": 11,
+  "startName": "수서역KT수서지점",
+  "startX": 127.100703,
+  "startY": 37.487219,
+  "endName": "용산구청",
+  "endX": 126.991231,
+  "endY": 37.530344,
+  "startID": 108946,
+  "startStationCityCode": 1000,
+  "startStationProviderCode": 4,
+  "startLocalStationID": "122000297",
+  "startArsID": "23-404",
+  "endID": 105046,
+  "endStationCityCode": 1000,
+  "endStationProviderCode": 4,
+  "endLocalStationID": "102000059",
+  "endArsID": "03-153",
+  "passStopList": {
+    "stations": [
+      {
+        "index": 0,
+        "stationID": 108946,
+        "stationName": "수서역KT수서지점",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000297",
+        "arsID": "23-404",
+        "x": "127.100703",
+        "y": "37.487219",
+        "isNonStop": "N"
+      },
+      {
+        "index": 1,
+        "stationID": 108898,
+        "stationName": "궁마을",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000299",
+        "arsID": "23-406",
+        "x": "127.097376",
+        "y": "37.485518",
+        "isNonStop": "N"
+      },
+      {
+        "index": 2,
+        "stationID": 151814,
+        "stationName": "태화기독교.사회복지관",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000348",
+        "arsID": "23-465",
+        "x": "127.093362",
+        "y": "37.484577",
+        "isNonStop": "N"
+      },
+      {
+        "index": 3,
+        "stationID": 108750,
+        "stationName": "수서삼성아파트앞",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000276",
+        "arsID": "23-380",
+        "x": "127.091068",
+        "y": "37.484469",
+        "isNonStop": "N"
+      },
+      {
+        "index": 4,
+        "stationID": 108577,
+        "stationName": "일원본동주민센터",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000277",
+        "arsID": "23-381",
+        "x": "127.084691",
+        "y": "37.483537",
+        "isNonStop": "N"
+      },
+      {
+        "index": 5,
+        "stationID": 108491,
+        "stationName": "푸른마을아파트앞",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000278",
+        "arsID": "23-382",
+        "x": "127.080662",
+        "y": "37.482947",
+        "isNonStop": "N"
+      },
+      {
+        "index": 6,
+        "stationID": 108261,
+        "stationName": "연금매점",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000258",
+        "arsID": "23-362",
+        "x": "127.074565",
+        "y": "37.488595",
+        "isNonStop": "N"
+      },
+      {
+        "index": 7,
+        "stationID": 108196,
+        "stationName": "대치아파트",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000291",
+        "arsID": "23-395",
+        "x": "127.072482",
+        "y": "37.49248",
+        "isNonStop": "N"
+      },
+      {
+        "index": 8,
+        "stationID": 108077,
+        "stationName": "쌍용아파트",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000137",
+        "arsID": "23-240",
+        "x": "127.069425",
+        "y": "37.498223",
+        "isNonStop": "N"
+      },
+      {
+        "index": 9,
+        "stationID": 152000,
+        "stationName": "새마을운동중앙회",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000388",
+        "arsID": "23-511",
+        "x": "127.067319",
+        "y": "37.502081",
+        "isNonStop": "N"
+      },
+      {
+        "index": 10,
+        "stationID": 107953,
+        "stationName": "총회회관.휘문고입구",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000386",
+        "arsID": "23-509",
+        "x": "127.066012",
+        "y": "37.504422",
+        "isNonStop": "N"
+      },
+      {
+        "index": 11,
+        "stationID": 107875,
+        "stationName": "삼성역",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000139",
+        "arsID": "23-242",
+        "x": "127.064437",
+        "y": "37.507356",
+        "isNonStop": "N"
+      },
+      {
+        "index": 12,
+        "stationID": 107821,
+        "stationName": "삼성역7번출구",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000094",
+        "arsID": "23-197",
+        "x": "127.062736",
+        "y": "37.510478",
+        "isNonStop": "N"
+      },
+      {
+        "index": 13,
+        "stationID": 107706,
+        "stationName": "봉은사역3번출구.삼성1파출소",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000089",
+        "arsID": "23-192",
+        "x": "127.060143",
+        "y": "37.515206",
+        "isNonStop": "N"
+      },
+      {
+        "index": 14,
+        "stationID": 107548,
+        "stationName": "청담역.경기고교",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000070",
+        "arsID": "23-172",
+        "x": "127.0561",
+        "y": "37.520031",
+        "isNonStop": "N"
+      },
+      {
+        "index": 15,
+        "stationID": 107361,
+        "stationName": "진흥아파트",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000071",
+        "arsID": "23-173",
+        "x": "127.052014",
+        "y": "37.519322",
+        "isNonStop": "N"
+      },
+      {
+        "index": 16,
+        "stationID": 107147,
+        "stationName": "강남구청.강남세무서",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000074",
+        "arsID": "23-176",
+        "x": "127.047262",
+        "y": "37.518455",
+        "isNonStop": "N"
+      },
+      {
+        "index": 17,
+        "stationID": 106845,
+        "stationName": "청담동래미안아파트",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000075",
+        "arsID": "23-177",
+        "x": "127.042793",
+        "y": "37.51768",
+        "isNonStop": "N"
+      },
+      {
+        "index": 18,
+        "stationID": 106780,
+        "stationName": "강남구청역",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000028",
+        "arsID": "23-128",
+        "x": "127.040041",
+        "y": "37.517",
+        "isNonStop": "N"
+      },
+      {
+        "index": 19,
+        "stationID": 106581,
+        "stationName": "세관앞",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000029",
+        "arsID": "23-129",
+        "x": "127.036063",
+        "y": "37.515796",
+        "isNonStop": "N"
+      },
+      {
+        "index": 20,
+        "stationID": 106328,
+        "stationName": "논현동사거리.학동역",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000015",
+        "arsID": "23-115",
+        "x": "127.029596",
+        "y": "37.513833",
+        "isNonStop": "N"
+      },
+      {
+        "index": 21,
+        "stationID": 106040,
+        "stationName": "영동시장",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "122000016",
+        "arsID": "23-116",
+        "x": "127.023422",
+        "y": "37.511872",
+        "isNonStop": "N"
+      },
+      {
+        "index": 22,
+        "stationID": 105845,
+        "stationName": "논현사거리.논현역5번출구",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "121000107",
+        "arsID": "22-183",
+        "x": "127.019344",
+        "y": "37.510631",
+        "isNonStop": "N"
+      },
+      {
+        "index": 23,
+        "stationID": 105503,
+        "stationName": "반포역",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "121000017",
+        "arsID": "22-017",
+        "x": "127.012044",
+        "y": "37.508354",
+        "isNonStop": "N"
+      },
+      {
+        "index": 24,
+        "stationID": 105257,
+        "stationName": "고속터미널",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "121000019",
+        "arsID": "22-019",
+        "x": "127.005228",
+        "y": "37.506305",
+        "isNonStop": "N"
+      },
+      {
+        "index": 25,
+        "stationID": 193940,
+        "stationName": "반포대교남단.한강시민공원입구",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "121000303",
+        "arsID": "22-382",
+        "x": "127.000309",
+        "y": "37.507084",
+        "isNonStop": "N"
+      },
+      {
+        "index": 26,
+        "stationID": 105058,
+        "stationName": "한강중학교",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "102000061",
+        "arsID": "03-155",
+        "x": "126.992478",
+        "y": "37.525128",
+        "isNonStop": "N"
+      },
+      {
+        "index": 27,
+        "stationID": 105046,
+        "stationName": "용산구청",
+        "stationCityCode": 1000,
+        "stationProviderCode": 4,
+        "localStationID": "102000059",
+        "arsID": "03-153",
+        "x": "126.991231",
+        "y": "37.530344",
+        "isNonStop": "N"
+      }
+    ]
+  }
+}
+
+
+path = {
+  "pathType": 1,
+  "info": {
+    "trafficDistance": 21800,
+    "totalWalk": 97,
+    "totalTime": 43,
+    "payment": 1600,
+    "busTransitCount": 0,
+    "subwayTransitCount": 2,
+    "mapObj": "3:2:349:333@6:2:633:630",
+    "firstStartStation": "수서",
+    "lastEndStation": "이태원",
+    "totalStationCount": 19,
+    "busStationCount": 0,
+    "subwayStationCount": 19,
+    "totalDistance": 21897,
+    "totalWalkTime": -1,
+    "checkIntervalTime": 100,
+    "checkIntervalTimeOverYn": "N",
+    "totalIntervalTime": 14
+  },
+  "subPath": [
+    {
+      "trafficType": 3,
+      "distance": 95,
+      "sectionTime": 1
+    },
+    {
+      "trafficType": 1,
+      "distance": 19100,
+      "sectionTime": 33,
+      "stationCount": 16,
+      "lane": [
+        {
+          "name": "수도권 3호선",
+          "subwayCode": 3,
+          "subwayCityCode": 1000
+        }
+      ],
+      "intervalTime": 6,
+      "startName": "수서",
+      "startX": 127.102147,
+      "startY": 37.487473,
+      "endName": "약수",
+      "endX": 127.010997,
+      "endY": 37.554343,
+      "way": "약수",
+      "wayCode": 1,
+      "door": "4-3",
+      "startID": 349,
+      "endID": 333,
+      "startExitNo": "3",
+      "startExitX": 127.10232075621609,
+      "startExitY": 37.48778235566854,
+      "passStopList": {
+        "stations": [
+          {
+            "index": 0,
+            "stationID": 349,
+            "stationName": "수서",
+            "x": "127.102153",
+            "y": "37.487477"
+          },
+          {
+            "index": 1,
+            "stationID": 348,
+            "stationName": "일원",
+            "x": "127.084225",
+            "y": "37.484233"
+          },
+          {
+            "index": 2,
+            "stationID": 347,
+            "stationName": "대청",
+            "x": "127.079541",
+            "y": "37.493608"
+          },
+          {
+            "index": 3,
+            "stationID": 346,
+            "stationName": "학여울",
+            "x": "127.071615",
+            "y": "37.496712"
+          },
+          {
+            "index": 4,
+            "stationID": 345,
+            "stationName": "대치",
+            "x": "127.063442",
+            "y": "37.494587"
+          },
+          {
+            "index": 5,
+            "stationID": 344,
+            "stationName": "도곡",
+            "x": "127.055349",
+            "y": "37.490892"
+          },
+          {
+            "index": 6,
+            "stationID": 343,
+            "stationName": "매봉",
+            "x": "127.046921",
+            "y": "37.487038"
+          },
+          {
+            "index": 7,
+            "stationID": 342,
+            "stationName": "양재",
+            "x": "127.034022",
+            "y": "37.484557"
+          },
+          {
+            "index": 8,
+            "stationID": 341,
+            "stationName": "남부터미널",
+            "x": "127.016288",
+            "y": "37.484917"
+          },
+          {
+            "index": 9,
+            "stationID": 340,
+            "stationName": "교대",
+            "x": "127.01382",
+            "y": "37.493031"
+          },
+          {
+            "index": 10,
+            "stationID": 339,
+            "stationName": "고속터미널",
+            "x": "127.004975",
+            "y": "37.504906"
+          },
+          {
+            "index": 11,
+            "stationID": 338,
+            "stationName": "잠원",
+            "x": "127.011629",
+            "y": "37.512967"
+          },
+          {
+            "index": 12,
+            "stationID": 337,
+            "stationName": "신사",
+            "x": "127.020402",
+            "y": "37.516484"
+          },
+          {
+            "index": 13,
+            "stationID": 336,
+            "stationName": "압구정",
+            "x": "127.028513",
+            "y": "37.52633"
+          },
+          {
+            "index": 14,
+            "stationID": 335,
+            "stationName": "옥수",
+            "x": "127.017374",
+            "y": "37.541609"
+          },
+          {
+            "index": 15,
+            "stationID": 334,
+            "stationName": "금호",
+            "x": "127.015801",
+            "y": "37.548279"
+          },
+          {
+            "index": 16,
+            "stationID": 333,
+            "stationName": "약수",
+            "x": "127.011001",
+            "y": "37.554347"
+          }
+        ]
+      }
+    },
+    {
+      "trafficType": 3,
+      "distance": 0,
+      "sectionTime": 0
+    },
+    {
+      "trafficType": 1,
+      "distance": 2700,
+      "sectionTime": 8,
+      "stationCount": 3,
+      "lane": [
+        {
+          "name": "수도권 6호선",
+          "subwayCode": 6,
+          "subwayCityCode": 1000
+        }
+      ],
+      "intervalTime": 8,
+      "startName": "약수",
+      "startX": 127.010298,
+      "startY": 37.554166,
+      "endName": "이태원",
+      "endX": 126.99458,
+      "endY": 37.534535,
+      "way": "이태원",
+      "wayCode": 1,
+      "door": "null",
+      "startID": 633,
+      "endID": 630,
+      "endExitNo": "2",
+      "endExitX": 126.99431246536089,
+      "endExitY": 37.53461171001717,
+      "passStopList": {
+        "stations": [
+          {
+            "index": 0,
+            "stationID": 633,
+            "stationName": "약수",
+            "x": "127.010306",
+            "y": "37.554173"
+          },
+          {
+            "index": 1,
+            "stationID": 632,
+            "stationName": "버티고개",
+            "x": "127.00714",
+            "y": "37.548111"
+          },
+          {
+            "index": 2,
+            "stationID": 631,
+            "stationName": "한강진",
+            "x": "127.001802",
+            "y": "37.539829"
+          },
+          {
+            "index": 3,
+            "stationID": 630,
+            "stationName": "이태원",
+            "x": "126.99459",
+            "y": "37.534542"
+          }
+        ]
+      }
+    },
+    {
+      "trafficType": 3,
+      "distance": 2,
+      "sectionTime": 1
+    }
+  ]
+}
+
+
+route = {
   "result": {
     "searchType": 0,
     "outTrafficCheck": 0,

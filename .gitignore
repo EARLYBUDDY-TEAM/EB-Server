@@ -1,7 +1,10 @@
+.vscode/
+
 __pycache__
 .pytest_cache
 
-api/eb_fast_api/database/earlybuddy.db
 api/eb_fast_api/env/.env
 
 jenkins/
+
+*.db
