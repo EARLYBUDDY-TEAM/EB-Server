@@ -1,0 +1,27 @@
+services:
+  eb_fast_api_main:
+    container_name: eb_fast_api_main
+    build:
+      context: ./api/dockerfiles
+      dockerfile: main.Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - eb_server
+
+  eb_fast_api_develop:
+    container_name: eb_fast_api_develop
+    build:
+      context: ./api/dockerfiles
+      dockerfile: develop.Dockerfile
+    ports:
+      - 8001:8001
+    networks:
+      - eb_server
+  
+  
+
+networks:
+  eb_server:
+    name: eb_server
+    driver: bridge
