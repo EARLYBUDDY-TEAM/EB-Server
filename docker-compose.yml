@@ -1,25 +1,18 @@
 services:
   eb_fast_api_main:
-    container_name: eb_fast_api_main
-    build:
-      context: ./api/dockerfiles
-      dockerfile: main.Dockerfile
-    ports:
-      - 8000:8000
-    networks:
-      - eb_server
+    extends:
+      file: api/main_compose.yaml
+      service: eb_fast_api_main
 
   eb_fast_api_develop:
-    container_name: eb_fast_api_develop
-    build:
-      context: ./api/dockerfiles
-      dockerfile: develop.Dockerfile
-    ports:
-      - 8001:8001
-    networks:
-      - eb_server
-  
-  
+    extends:
+      file: api/develop_compose.yaml
+      service: eb_fast_api_develop
+
+  eb_jenkins:
+    extends:
+      file: ci_cd/jenkins_compose.yaml
+      service: eb_jenkins
 
 networks:
   eb_server:

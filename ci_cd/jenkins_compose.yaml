@@ -1,0 +1,15 @@
+services:
+  eb_jenkins:
+    container_name: eb_jenkins
+    build:
+      context: .
+      dockerfile: jenkins.Dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - eb_server
+
+networks:
+  eb_server:
+    name: eb_server
+    driver: bridge
