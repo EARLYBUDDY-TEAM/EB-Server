@@ -1,18 +1,13 @@
 services:
   eb_fast_api_main:
     extends:
-      file: api/main_compose.yaml
+      file: main_compose.yaml
       service: eb_fast_api_main
 
   eb_fast_api_develop:
     extends:
-      file: api/develop_compose.yaml
+      file: develop_compose.yaml
       service: eb_fast_api_develop
-
-  eb_jenkins:
-    extends:
-      file: ci_cd/jenkins_compose.yaml
-      service: eb_jenkins
 
 networks:
   eb_server:
