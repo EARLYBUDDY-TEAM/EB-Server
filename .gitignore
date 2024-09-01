@@ -3,7 +3,7 @@
 __pycache__
 .pytest_cache
 
-api/eb_fast_api/env/.env
+eb_fast_api/env/.env
 
 jenkins/
 
