@@ -1,14 +1,13 @@
 services:
-  eb_fast_api:
-    container_name: eb_fast_api
+  eb_fast_api_develop:
+    container_name: eb_fast_api_develop
     build:
       context: .
-      dockerfile: eb_fast_api.Dockerfile
+      dockerfile: develop.Dockerfile
     ports:
       - 8001:8001
     networks:
       - eb_server
-    entrypoint: python ./eb_fast_api/main.py
 
 networks:
   eb_server:

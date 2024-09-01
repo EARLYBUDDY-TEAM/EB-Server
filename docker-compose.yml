@@ -1,0 +1,15 @@
+services:
+  eb_fast_api_main:
+    extends:
+      file: main-compose.yml
+      service: eb_fast_api_main
+
+  eb_fast_api_develop:
+    extends:
+      file: develop-compose.yml
+      service: eb_fast_api_develop
+
+networks:
+  eb_server:
+    name: eb_server
+    driver: bridge
