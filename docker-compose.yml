@@ -1,12 +1,12 @@
 services:
   eb_fast_api_main:
     extends:
-      file: main_compose.yaml
+      file: main-compose.yml
       service: eb_fast_api_main
 
   eb_fast_api_develop:
     extends:
-      file: develop_compose.yaml
+      file: develop-compose.yml
       service: eb_fast_api_develop
 
 networks:
