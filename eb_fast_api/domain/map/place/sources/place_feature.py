@@ -1,4 +1,4 @@
-from eb_fast_api.env.env import ENV
+from eb_fast_api.env.sources.env import ENV
 from httpx import AsyncClient
 
 
@@ -15,7 +15,6 @@ async def getPlaceData(query: str, x: str, y: str):
     async with AsyncClient() as client:
         response = await client.get(url=url, headers=header, params=params)
         return response
- 
 
 
 # {

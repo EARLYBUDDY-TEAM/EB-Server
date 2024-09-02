@@ -1,0 +1,5 @@
+kakaomap: check
+odsay: odsay
+port: '10'
+postgres_id: postgres_id
+postgres_pwd: postgres_pwdk

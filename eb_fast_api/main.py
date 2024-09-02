@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request, Response
 import time
 from eb_fast_api.database.sources.database import createTable
 
+from eb_fast_api.env.sources.env import ENV
+
 
 createTable()
 app = FastAPI()
@@ -45,4 +47,4 @@ async def add_process_time_header(request: Request, call_next):
 
 @app.get("/")
 def read_root():
-    return "Hellow World!"
+    return ENV.port
