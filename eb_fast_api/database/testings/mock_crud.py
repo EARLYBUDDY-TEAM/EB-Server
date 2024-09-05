@@ -1,4 +1,3 @@
-from pathlib import Path
 from eb_fast_api.database.sources.crud import CRUD
 from eb_fast_api.database.sources.database import createSessionMaker, createEngine
 
@@ -8,10 +7,7 @@ class MockCRUD(CRUD):
         return
 
 
-mockEngine = createEngine(
-    filePath=str(Path(__file__).parent.absolute()),
-    fileName="mockdatabase.db",
-)
+mockEngine = createEngine(host="0.0.0.0")
 
 
-mockSessionMaker = createSessionMaker(engine = mockEngine)
+mockSessionMaker = createSessionMaker(engine=mockEngine)

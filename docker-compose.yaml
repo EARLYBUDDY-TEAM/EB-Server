@@ -1,13 +1,28 @@
 services:
-  eb_fast_api_main:
-    extends:
-      file: main-compose.yaml
-      service: eb_fast_api_main
+  eb_database:
+    image: mysql:9.0.1
+    container_name: eb_database
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    env_file: 
+      - path: ./eb_fast_api/env/dot_env_files/.mysql
+        required: true
+    networks:
+      - eb_server
 
-  eb_fast_api_develop:
-    extends:
-      file: develop-compose.yaml
-      service: eb_fast_api_develop
+  eb_fast_api:
+    depends_on:
+      - eb_database
+    container_name: eb_fast_api
+    build:
+      context: .
+      dockerfile: eb_fast_api.Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./eb_fast_api:/eb_fast_api
 
 networks:
   eb_server:

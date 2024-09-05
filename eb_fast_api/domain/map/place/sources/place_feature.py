@@ -1,10 +1,10 @@
-from eb_fast_api.env.sources.env import ENV
+from eb_fast_api.env.sources.env import ENV_API
 from httpx import AsyncClient
 
 
 async def getPlaceData(query: str, x: str, y: str):
     url = "https://dapi.kakao.com/v2/local/search/keyword.json"
-    header = {"Authorization": f"KakaoAK {ENV.kakaomap}"}
+    header = {"Authorization": f"KakaoAK {ENV_API.kakaomap}"}
     params = {
         "query": query,
         "x": x,

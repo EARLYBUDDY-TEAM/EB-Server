@@ -3,7 +3,7 @@ from eb_fast_api.database.sources.model import User, Schedule, Place
 
 def test_userCreate(mockDB):
     email = "email"
-    user = User.mock(email = email)
+    user = User.mock(email=email)
     userCount1 = mockDB.session.query(User).count()
 
     mockDB.userCreate(user=user)
