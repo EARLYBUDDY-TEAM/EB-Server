@@ -9,14 +9,17 @@ services:
     env_file: 
       - path: ./eb_fast_api/env/dot_env_files/.mysql
         required: true
-    # environment:
-      # MYSQL_ROOT_HOST: '%'
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD']
+      timeout: 30s
+      retries: 10
     networks:
       - eb_server
 
   eb_fast_api:
     depends_on:
-      - eb_database
+      eb_database:
+        condition: service_healthy
     container_name: eb_fast_api
     build:
       context: .
