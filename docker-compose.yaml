@@ -9,6 +9,8 @@ services:
     env_file: 
       - path: ./eb_fast_api/env/dot_env_files/.mysql
         required: true
+    # environment:
+      # MYSQL_ROOT_HOST: '%'
     networks:
       - eb_server
 
@@ -23,6 +25,8 @@ services:
       - 8000:8000
     volumes:
       - ./eb_fast_api:/eb_fast_api
+    networks:
+      - eb_server
 
 networks:
   eb_server:

@@ -15,6 +15,7 @@ from eb_fast_api.domain.map.place.sources import place_router
 from eb_fast_api.domain.map.route.sources import route_router
 from eb_fast_api.domain.schedule.sources import schedule_router
 
+
 app.include_router(register_routers.router)
 app.include_router(login_router.router)
 app.include_router(place_router.router)
