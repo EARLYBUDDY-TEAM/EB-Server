@@ -1,11 +1,7 @@
-from fastapi import FastAPI, Request, Response
 import time
+from fastapi import FastAPI, Request, Response
 
 
-from eb_fast_api.database.sources.database import createTable
-
-
-createTable()
 app = FastAPI()
 
 
@@ -49,3 +45,13 @@ async def add_process_time_header(request: Request, call_next):
 @app.get("/")
 def read_root():
     return "Hello EarlyBuddy Fast API !!!"
+
+
+if __name__ == "__main__":
+    import uvicorn
+    from eb_fast_api.database.sources.database import checkConnection
+    from eb_fast_api.database.sources.model import createTable
+
+    checkConnection()
+    createTable()
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

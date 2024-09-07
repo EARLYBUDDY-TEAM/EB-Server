@@ -1,8 +1,11 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean
-from eb_fast_api.database.sources.database import Base
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Engine
+from eb_fast_api.database.sources.database import engine
+from sqlalchemy.orm import Mapped, mapped_column, relationship, declarative_base
 from typing import Optional, List, Self
 from datetime import datetime
+
+
+Base = declarative_base()
 
 
 class User(Base):
@@ -123,3 +126,11 @@ class Place(Base):
             coordiX="coordiX",
             coordiY="coordiY",
         )
+
+
+def createTable(engine: Engine = engine):
+    Base.metadata.create_all(bind=engine)
+
+
+def dropTable(engine: Engine = engine):
+    Base.metadata.drop_all(bind=engine)

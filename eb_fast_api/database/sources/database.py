@@ -1,9 +1,6 @@
 from sqlalchemy import create_engine, Engine
-from sqlalchemy.orm import sessionmaker, declarative_base, Session
+from sqlalchemy.orm import sessionmaker, Session
 from eb_fast_api.env.sources.env import ENV_MYSQL
-
-
-Base = declarative_base()
 
 
 def createEngine(
@@ -21,12 +18,12 @@ def createEngine(
 engine = createEngine()
 
 
-def createTable(engine: Engine = engine):
-    Base.metadata.create_all(bind=engine)
-
-
-def dropTable(engine: Engine = engine):
-    Base.metadata.drop_all(bind=engine)
+def checkConnection(engine: Engine = engine):
+    try:
+        engine.connect()
+        print("Success Database Connect")
+    except:
+        raise "Fail Database Connect"
 
 
 def createSessionMaker(engine: Engine = engine) -> sessionmaker[Session]:

@@ -4,11 +4,13 @@ from eb_fast_api.database.testings.mock_crud import (
     MockCRUD,
     mockEngine,
 )
-from eb_fast_api.database.sources.database import createTable
+from eb_fast_api.database.sources.model import createTable
+from eb_fast_api.database.sources.database import checkConnection
 
 
 @pytest.fixture(scope="session")
 def createDB():
+    checkConnection(engine=mockEngine)
     createTable(engine=mockEngine)
     session = mockSessionMaker()
     crud = MockCRUD(session=session)

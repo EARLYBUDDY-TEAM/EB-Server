@@ -5,18 +5,18 @@ from typing import Annotated
 from fastapi import Depends
 
 
-def testAccount(
-    db: CRUD,
-    email="abc@abc.com",
-    password="abcd12",
-):
-    hashedPassword = pwdcrypt.hash(password=password)
-    user = User(
-        email=email,
-        hashedPassword=hashedPassword,
-    )
-    db.userCreate(user)
-    db.commit()
+# def testAccount(
+#     db: CRUD,
+#     email="abc@abc.com",
+#     password="abcd12",
+# ):
+#     hashedPassword = pwdcrypt.hash(password=password)
+#     user = User(
+#         email=email,
+#         hashedPassword=hashedPassword,
+#     )
+#     db.userCreate(user)
+#     db.commit()
 
 
 # def insertMockData(database: Annotated[CRUD, Depends(getDB)]):

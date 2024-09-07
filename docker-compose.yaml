@@ -27,7 +27,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./eb_fast_api:/eb_fast_api
+      - ./eb_fast_api:/api/eb_fast_api
     networks:
       - eb_server
 
