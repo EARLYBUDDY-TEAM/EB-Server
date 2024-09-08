@@ -1,15 +1,18 @@
-from sqlalchemy import Column, ForeignKey, Integer
-from eb_fast_api.database.sources.database import Base
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Engine
+from eb_fast_api.database.sources.database import engine
+from sqlalchemy.orm import Mapped, mapped_column, relationship, declarative_base
 from typing import Optional, List, Self
 from datetime import datetime
+
+
+Base = declarative_base()
 
 
 class User(Base):
     __tablename__ = "user"
 
-    email: Mapped[str] = mapped_column(primary_key=True)
-    hashedPassword: Mapped[str]
+    email: Mapped[str] = mapped_column(String(100), primary_key=True)
+    hashedPassword: Mapped[str] = mapped_column(String(60))
     schedules: Mapped[List["Schedule"]] = relationship()
 
     def __init__(
@@ -24,7 +27,7 @@ class User(Base):
         return self.email == other.email
 
     @classmethod
-    def mock(cls, email: str = 'email') -> Self:
+    def mock(cls, email: str = "email") -> Self:
         return User(
             email=email,
             hashedPassword="hashedPassword",
@@ -35,12 +38,12 @@ class Schedule(Base):
     __tablename__ = "schedule"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    title: Mapped[str]
-    memo: Mapped[Optional[str]]
-    time: Mapped[datetime]
-    isNotify: Mapped[bool]
-    startPlaceID: Mapped[Optional[str]]
-    endPlaceID: Mapped[Optional[str]]
+    title: Mapped[str] = mapped_column(String(100))
+    memo: Mapped[Optional[str]] = mapped_column(String(100))
+    time: Mapped[datetime] = mapped_column(DateTime())
+    isNotify: Mapped[bool] = mapped_column(Boolean())
+    startPlaceID: Mapped[Optional[str]] = mapped_column(String(100))
+    endPlaceID: Mapped[Optional[str]] = mapped_column(String(100))
 
     userEmail: Mapped[str] = mapped_column(ForeignKey("user.email"))
 
@@ -81,13 +84,13 @@ class Schedule(Base):
 class Place(Base):
     __tablename__ = "place"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
-    name: Mapped[str]
-    address: Mapped[str]
-    category: Mapped[str]
-    distance: Mapped[str]
-    coordiX: Mapped[str]
-    coordiY: Mapped[str]
+    id: Mapped[str] = mapped_column(String(100), primary_key=True)
+    name: Mapped[str] = mapped_column(String(100))
+    address: Mapped[str] = mapped_column(String(100))
+    category: Mapped[str] = mapped_column(String(100))
+    distance: Mapped[str] = mapped_column(String(100))
+    coordiX: Mapped[str] = mapped_column(String(100))
+    coordiY: Mapped[str] = mapped_column(String(100))
 
     refCount = Column(Integer, default=0)
 
@@ -113,7 +116,7 @@ class Place(Base):
         self.coordiY = coordiY
 
     @classmethod
-    def mock(cls, id: str = 'id') -> Self:
+    def mock(cls, id: str = "id") -> Self:
         return Place(
             id=id,
             name="name",
@@ -123,3 +126,11 @@ class Place(Base):
             coordiX="coordiX",
             coordiY="coordiY",
         )
+
+
+def createTable(engine: Engine = engine):
+    Base.metadata.create_all(bind=engine)
+
+
+def dropTable(engine: Engine = engine):
+    Base.metadata.drop_all(bind=engine)

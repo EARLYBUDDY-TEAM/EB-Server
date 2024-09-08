@@ -3,8 +3,8 @@
 __pycache__
 .pytest_cache
 
-eb_fast_api/env/.env
-
-jenkins/
-
 *.db
+
+eb_fast_api/env/dot_env_files/.api
+eb_fast_api/env/dot_env_files/.mysql
+mysql/

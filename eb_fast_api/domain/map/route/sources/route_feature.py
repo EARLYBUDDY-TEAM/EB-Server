@@ -1,6 +1,6 @@
 from httpx import AsyncClient, Response
 from typing import List
-from eb_fast_api.env.env import ENV
+from eb_fast_api.env.sources.env import ENV_API
 from eb_fast_api.domain.map.route.sources.route_schema import SubPath, Path, Route
 
 
@@ -54,11 +54,10 @@ async def getRouteData(
     ey: float,
 ) -> Response:
     url = "https://api.odsay.com/v1/api/searchPubTransPathT"
-    params = {"apiKey": ENV.odsay, "SX": sx, "SY": sy, "EX": ex, "EY": ey, "OPT": 0}
+    params = {"apiKey": ENV_API.odsay, "SX": sx, "SY": sy, "EX": ex, "EY": ey, "OPT": 0}
     async with AsyncClient() as client:
         response = await client.get(url=url, params=params)
         return response
-        
 
 
 """

@@ -13,6 +13,8 @@ async def addSchedule(
     scheduleInfo: ScheduleInfo,
     db=Depends(getDB),
 ):
+    print(scheduleInfo)
+    print("checkckckckckckkc")
     try:
         schedule_feature.createSchedule(
             userEmail,

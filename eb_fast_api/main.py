@@ -1,9 +1,7 @@
-from fastapi import FastAPI, Request, Response
 import time
-from eb_fast_api.database.sources.database import createTable
+from fastapi import FastAPI, Request, Response
 
 
-createTable()
 app = FastAPI()
 
 
@@ -12,6 +10,7 @@ from eb_fast_api.domain.auth.login.sources import login_router
 from eb_fast_api.domain.map.place.sources import place_router
 from eb_fast_api.domain.map.route.sources import route_router
 from eb_fast_api.domain.schedule.sources import schedule_router
+
 
 app.include_router(register_routers.router)
 app.include_router(login_router.router)
@@ -45,4 +44,14 @@ async def add_process_time_header(request: Request, call_next):
 
 @app.get("/")
 def read_root():
-    return "Hellow World!"
+    return "Hello EarlyBuddy Fast API !!!"
+
+
+if __name__ == "__main__":
+    import uvicorn
+    from eb_fast_api.database.sources.database import checkConnection
+    from eb_fast_api.database.sources.model import createTable
+
+    checkConnection()
+    createTable()
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

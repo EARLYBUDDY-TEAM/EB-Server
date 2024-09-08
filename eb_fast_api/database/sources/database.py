@@ -1,30 +1,29 @@
-from pathlib import Path
 from sqlalchemy import create_engine, Engine
-from sqlalchemy.orm import sessionmaker, declarative_base, Session
-
-
-Base = declarative_base()
+from sqlalchemy.orm import sessionmaker, Session
+from eb_fast_api.env.sources.env import ENV_MYSQL
 
 
 def createEngine(
-    filePath: str = str(Path(__file__).parent.absolute()),
-    fileName: str = "earlybuddy.db",
+    user: str = ENV_MYSQL.MYSQL_USER,
+    pwd: str = ENV_MYSQL.MYSQL_PASSWORD,
+    host: str = "eb_database",
+    port: int = ENV_MYSQL.MYSQL_PORT,
+    db: str = ENV_MYSQL.MYSQL_DATABASE,
 ) -> Engine:
-    filePath += f"/{fileName}"
-    DB_URL = "sqlite:///" + filePath
-    engine = create_engine(DB_URL, connect_args={"check_same_thread": False})
+    DB_URL = f"mysql+pymysql://{user}:{pwd}@{host}:{port}/{db}"
+    engine = create_engine(DB_URL)
     return engine
 
 
 engine = createEngine()
 
 
-def createTable(engine: Engine = engine):
-    Base.metadata.create_all(bind=engine)
-    
-
-def dropTable(engine: Engine = engine):
-    Base.metadata.drop_all(bind=engine)
+def checkConnection(engine: Engine = engine):
+    try:
+        engine.connect()
+        print("Success Database Connect")
+    except:
+        raise "Fail Database Connect"
 
 
 def createSessionMaker(engine: Engine = engine) -> sessionmaker[Session]:
