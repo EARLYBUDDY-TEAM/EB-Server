@@ -4,16 +4,15 @@ from eb_fast_api.database.sources.model import User, Schedule, Place
 from eb_fast_api.database.sources.database import sessionMaker
 
 
-class CRUD():
+class CRUD:
     session: Session
 
     def __init__(self, session: Session):
         self.session = session
 
-        # db
+    # db
     def rollback(self):
         self.session.rollback()
-
 
     def commit(self):
         self.session.commit()
@@ -23,11 +22,9 @@ class CRUD():
         self.session.add(user)
         self.session.flush()
 
-
     def userRead(self, email: str) -> User:
         user = self.session.query(User).filter(User.email == email).first()
         return user
-
 
     # schedule
     def scheduleCreate(
@@ -40,7 +37,7 @@ class CRUD():
         user = self.session.query(User).filter(User.email == userEmail).first()
         if not user:
             raise Exception("no user")
-        
+
         if startPlace is not None:
             self.placeCreate(startPlace)
         if endPlace is not None:
@@ -49,12 +46,10 @@ class CRUD():
         user.schedules.append(schedule)  # 중복체크?
         self.session.flush()
 
-
     # place
     def placeRead(self, placeID: str) -> Place:
         place = self.session.query(Place).filter(Place.id == placeID).first()
         return place
-
 
     def placeCreate(self, place: Place):
         fetchedPlace = self.placeRead(place.id)
@@ -63,9 +58,11 @@ class CRUD():
             self.session.flush()
 
 
-def getDB():
+async def getDB():
     session = sessionMaker()
-    crud = CRUD(session = session)
-    yield crud
-    session.close()
-    del crud
+    crud = CRUD(session=session)
+    try:
+        yield crud
+    finally:
+        session.close()
+        del crud
