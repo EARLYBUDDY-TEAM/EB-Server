@@ -5,12 +5,13 @@ from typing import Optional
 from datetime import datetime
 from eb_fast_api.database.sources.model import Schedule, Place, User
 
+
 class Coordi(BaseModel):
     x: str
     y: str
 
     def __init__(self, x: str, y: str):
-        super().__init__(x = x, y = y)
+        super().__init__(x=x, y=y)
 
     @classmethod
     def mock(cls):
@@ -30,26 +31,26 @@ class PlaceInfo(BaseModel):
 
     def toPlace(self) -> Place:
         return Place(
-            id = self.id,
-            name = self.name,
-            address = self.address,
-            category = self.category,
-            distance = self.distance,
-            coordiX = self.coordi.x,
-            coordiY = self.coordi.y,
+            id=self.id,
+            name=self.name,
+            address=self.address,
+            category=self.category,
+            distance=self.distance,
+            coordiX=self.coordi.x,
+            coordiY=self.coordi.y,
         )
 
     @classmethod
     def mock(cls):
         return PlaceInfo(
-            id = 'id',
-            name = 'name',
-            address = 'address',
-            category = 'category',
-            distance = 'distance',
+            id="id",
+            name="name",
+            address="address",
+            category="category",
+            distance="distance",
             coordi=Coordi.mock(),
         )
-    
+
 
 class ScheduleInfo(BaseModel):
     title: str
@@ -61,18 +62,18 @@ class ScheduleInfo(BaseModel):
 
     def toSchedule(self) -> Schedule:
         schedule = Schedule(
-            title = self.title,
-            time = self.time,
-            isNotify = self.isNotify,
-            memo = self.memo,
+            title=self.title,
+            time=self.time,
+            isNotify=self.isNotify,
+            memo=self.memo,
         )
 
         if self.startPlace != None:
             schedule.startPlaceID = self.startPlace.id
-        
+
         if self.endPlace != None:
             schedule.endPlaceID = self.endPlace.id
-        
+
         return schedule
 
     @classmethod
@@ -80,25 +81,26 @@ class ScheduleInfo(BaseModel):
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
         startPlace = PlaceInfo.mock()
-        startPlace.id = 'startPlaceID'
+        startPlace.id = "startPlaceID"
         endPlace = PlaceInfo.mock()
-        endPlace.id = 'endPlaceID'
+        endPlace.id = "endPlaceID"
 
         return ScheduleInfo(
-            title = 'title',
-            memo = 'memo',
-            time = time,
-            isNotify = False,
-            startPlace = startPlace,
-            endPlace = endPlace,
+            title="title",
+            memo="memo",
+            time=time,
+            isNotify=False,
+            startPlace=startPlace,
+            endPlace=endPlace,
         )
+
 
 class UserInfo(BaseModel):
     email: str
     password: str
 
     def __init__(self, email: str, password: str):
-        super().__init__(email = email, password = password)
+        super().__init__(email=email, password=password)
 
     def toUser(self) -> User:
         return User(
@@ -106,3 +108,17 @@ class UserInfo(BaseModel):
             hashedPassword=pwdcrypt.hash(self.password),
         )
 
+
+class Token(BaseModel):
+    accessToken: str
+    refreshToken: str
+
+    def __init__(
+        self,
+        accessToken: str,
+        refreshToken: str,
+    ):
+        super().__init__(
+            accessToken=accessToken,
+            refreshToken=refreshToken,
+        )

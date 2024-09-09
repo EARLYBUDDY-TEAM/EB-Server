@@ -1,7 +1,7 @@
+import secrets
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from jose import jwt, JWTError
-import secrets
 from typing import Optional
 from eb_fast_api.service.jwt.interfaces.abs_jwt_serialization import (
     ABSJWTDecoder,
@@ -42,15 +42,15 @@ class JWTService:
         decoder: ABSJWTDecoder = JWTDecoder(),
         algorithm: str = "HS256",
         secretKey: str = secrets.token_hex(32),
-        accessTokenExpireMinute: int = 20,
-        refreshTokenExpireMinute: int = 10,
+        accessTokenExpireMinute: int = 60,
+        refreshTokenExpireDay: int = 14,
     ):
         self.encoder = encoder
         self.decoder = decoder
         self.algorithm = algorithm
         self.secretKey = secretKey
         self.accessTokenExpireMinute = accessTokenExpireMinute
-        self.refreshTokenExpireMinute = refreshTokenExpireMinute
+        self.refreshTokenExpireDay = refreshTokenExpireDay
 
     def dateTimeNow(self) -> datetime:
         return datetime.now(ZoneInfo("Asia/Seoul"))
@@ -66,29 +66,35 @@ class JWTService:
 
     def createAccessToken(self, email: str) -> str:
         data = {"sub": email}
-        return self.createToken(
+        expireDate = self.dateTimeNow() + timedelta(
+            minutes=self.accessTokenExpireMinute
+        )
+        return self.encoder.encode(
             data,
-            self.accessTokenExpireMinute,
+            expireDate,
+            self.secretKey,
+            self.algorithm,
         )
 
     def createRefreshToken(self, email: str) -> str:
         data = {"sub": email}
-        return self.createToken(
+        expireDate = self.dateTimeNow() + timedelta(days=self.refreshTokenExpireDay)
+        return self.encoder.encode(
             data,
-            self.refreshTokenExpireMinute,
+            expireDate,
+            self.secretKey,
+            self.algorithm,
         )
 
-    def checkTokenExpired(self, token: str) -> Optional[dict]:
+    def checkTokenExpired(self, token: str) -> str:
+        # decoded => {'sub': 'test@test.com', 'exp': 1722143072.299}
         decoded = self.decoder.decode(
             token,
             self.secretKey,
             self.algorithm,
         )
         now = datetime.timestamp(self.dateTimeNow())
-        return decoded if decoded and now < decoded["exp"] else None
+        return decoded["sub"] if decoded and now < decoded["exp"] else None
 
 
-def getJWTService():
-    jwtService = JWTService()
-    yield jwtService
-    del jwtService
+jwtService = JWTService()

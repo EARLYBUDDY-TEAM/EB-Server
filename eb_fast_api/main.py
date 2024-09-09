@@ -1,5 +1,7 @@
 import time
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, Depends
+from typing import Annotated
+from eb_fast_api.service.jwt.sources.token_service import verifyToken
 
 
 app = FastAPI()
@@ -45,6 +47,11 @@ async def add_process_time_header(request: Request, call_next):
 @app.get("/")
 def read_root():
     return "Hello EarlyBuddy Fast API !!!"
+
+
+@app.get("/test_token")
+def test_token(userEmail: Annotated[str, Depends(verifyToken)]):
+    return {"userEmail": userEmail}
 
 
 if __name__ == "__main__":
