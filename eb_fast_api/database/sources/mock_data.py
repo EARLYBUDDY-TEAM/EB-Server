@@ -1,5 +1,5 @@
 from eb_fast_api.database.sources import crud
-from eb_fast_api.database.sources import model
+from eb_fast_api.database.sources.model import models
 from eb_fast_api.database.sources import database
 from eb_fast_api.snippets.sources import pwdcrypt
 
@@ -10,7 +10,7 @@ def testAccount(
     password="abcd12",
 ):
     hashedPassword = pwdcrypt.hash(password=password)
-    user = model.User(
+    user = models.User(
         email=email,
         hashedPassword=hashedPassword,
     )

@@ -32,3 +32,7 @@ def createSessionMaker(engine: Engine = engine) -> sessionmaker[Session]:
 
 
 sessionMaker = createSessionMaker()
+
+
+def createTable(model):
+    model.__table__.create(engine)

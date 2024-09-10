@@ -4,7 +4,7 @@ from eb_fast_api.database.testings.mock_crud import (
     MockCRUD,
     mockEngine,
 )
-from eb_fast_api.database.sources.model import createTable
+from eb_fast_api.database.sources.model.models import createTable
 from eb_fast_api.database.sources.database import checkConnection
 
 

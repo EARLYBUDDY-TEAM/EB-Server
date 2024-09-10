@@ -1,6 +1,6 @@
 from eb_fast_api.domain.schedule.sources import schedule_feature
 from eb_fast_api.domain.schema.sources.schema import UserInfo, ScheduleInfo
-from eb_fast_api.database.sources.model import Place, Schedule
+from eb_fast_api.database.sources.model.models import Place, Schedule
 
 
 def test_createSchedule(scheduleMockDB):

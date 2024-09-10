@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import Optional
-from eb_fast_api.database.sources.model import User, Schedule, Place
+from eb_fast_api.database.sources.model.models import User, Schedule, Place
 from eb_fast_api.database.sources.database import sessionMaker
 
 

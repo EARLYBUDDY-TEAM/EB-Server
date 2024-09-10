@@ -1,4 +1,4 @@
-from eb_fast_api.database.sources.model import User, Schedule, Place
+from eb_fast_api.database.sources.model.models import User, Schedule, Place
 
 
 def test_userCreate(mockDB):
@@ -16,7 +16,7 @@ def test_userCreate(mockDB):
 
 def test_userRead(mockDB):
     email = "email"
-    user = User.mock(email = email)
+    user = User.mock(email=email)
 
     mockDB.userCreate(user=user)
     fetchedUser = mockDB.userRead(email=email)
@@ -26,19 +26,19 @@ def test_userRead(mockDB):
 
 def test_scheduleCreate(mockDB):
     email = "email"
-    user = User.mock(email = email)
+    user = User.mock(email=email)
     mockDB.userCreate(user=user)
     schedule = Schedule.mock()
-    startPlace = Place.mock(id = 'mockStartPlace')
-    endPlace = Place.mock(id = 'mockEndPlace')
+    startPlace = Place.mock(id="mockStartPlace")
+    endPlace = Place.mock(id="mockEndPlace")
     schedule.startPlaceID = startPlace.id
     schedule.endPlaceID = endPlace.id
 
     mockDB.scheduleCreate(
         userEmail=email,
         schedule=schedule,
-        startPlace = startPlace,
-        endPlace = endPlace,
+        startPlace=startPlace,
+        endPlace=endPlace,
     )
 
     placeCount = mockDB.session.query(Place).count()
@@ -60,9 +60,9 @@ def test_placeCreate(mockDB):
 def test_placeRead(mockDB):
     place = Place.mock()
 
-    mockDB.placeCreate(place = place)
+    mockDB.placeCreate(place=place)
 
-    fetchedPlace = mockDB.placeRead(placeID = place.id)
+    fetchedPlace = mockDB.placeRead(placeID=place.id)
     assert place == fetchedPlace
 
 
@@ -71,9 +71,9 @@ def test_placeCreate_check_duplicate(mockDB):
     place2 = Place.mock()
     place3 = Place.mock()
 
-    mockDB.placeCreate(place = place1)
-    mockDB.placeCreate(place = place2)
-    mockDB.placeCreate(place = place3)
+    mockDB.placeCreate(place=place1)
+    mockDB.placeCreate(place=place2)
+    mockDB.placeCreate(place=place3)
 
     placeCount = mockDB.session.query(Place).count()
     assert placeCount == 1
