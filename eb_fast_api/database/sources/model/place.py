@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 from typing import Self
-from eb_fast_api.database.sources.model.base import Base
+from eb_fast_api.database.sources.model.base_model import Base
 
 
 # 참조카운트 0되면 삭제되게 만들기

@@ -56,9 +56,9 @@ def test_token(userEmail: Annotated[str, Depends(verifyToken)]):
 
 if __name__ == "__main__":
     import uvicorn
-    from eb_fast_api.database.sources.database import checkConnection, createTable
-    from eb_fast_api.database.sources.model.models import Place
+    from eb_fast_api.database.sources.connection import checkConnection
+    from eb_fast_api.database.sources.database import EBDatabase
 
     checkConnection()
-    createTable(Place)
+    EBDatabase.place.createTable()
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

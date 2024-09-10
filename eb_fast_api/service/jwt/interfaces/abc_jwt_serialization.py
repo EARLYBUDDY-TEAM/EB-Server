@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 
-class ABSJWTEncoder(ABC):
+class ABC_JWTEncoder(ABC):
     """
     JWT 인코더 추상클래스
     encode 메소드를 구현
@@ -25,7 +25,7 @@ class ABSJWTEncoder(ABC):
         pass
 
 
-class ABSJWTDecoder(ABC):
+class ABC_JWTDecoder(ABC):
     """
     JWT 디코더 추상클래스
     decode 메소드를 구현

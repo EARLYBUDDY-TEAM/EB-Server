@@ -1,38 +1,43 @@
-from sqlalchemy import create_engine, Engine
-from sqlalchemy.orm import sessionmaker, Session
-from eb_fast_api.env.sources.env import ENV_MYSQL
+from enum import Enum
+from sqlalchemy import inspect, Engine
+from sqlalchemy.orm import Session
+from typing import Any
+from eb_fast_api.database.sources.connection import engine, sessionMaker
+from eb_fast_api.database.sources.model.models import User, Schedule, Place
+from eb_fast_api.database.sources.crud.cruds import PlaceCRUD, ScheduleCRUD, UserCRUD
 
 
-def createEngine(
-    user: str = ENV_MYSQL.MYSQL_USER,
-    pwd: str = ENV_MYSQL.MYSQL_PASSWORD,
-    host: str = "eb_database",
-    port: int = ENV_MYSQL.MYSQL_PORT,
-    db: str = ENV_MYSQL.MYSQL_DATABASE,
-) -> Engine:
-    DB_URL = f"mysql+pymysql://{user}:{pwd}@{host}:{port}/{db}"
-    engine = create_engine(DB_URL)
-    return engine
+class EBDatabase(Enum):
+    user = "User"
+    schedule = "Schedule"
+    place = "Place"
 
+    def getCRUD(self, session: Session = sessionMaker()):
+        EB_CRUD: Any
+        if self == EBDatabase.user:
+            EB_CRUD = UserCRUD
+        elif self == EBDatabase.schedule:
+            EB_CRUD = ScheduleCRUD
+        elif self == EBDatabase.place:
+            EB_CRUD = PlaceCRUD
+        crud = EB_CRUD(session=session)
+        try:
+            yield crud
+        finally:
+            session.close()
+            del crud
 
-engine = createEngine()
+    def createTable(self, engine: Engine = engine):
+        if inspect(engine).has_table(self.value):
+            print("Exist Table ...")
+            return
 
+        EB_Table: Any
+        if self == EBDatabase.user:
+            EB_Table = User
+        elif self == EBDatabase.schedule:
+            EB_Table = Schedule
+        elif self == EBDatabase.place:
+            EB_Table = Place
 
-def checkConnection(engine: Engine = engine):
-    try:
-        engine.connect()
-        print("Success Database Connect")
-    except:
-        raise "Fail Database Connect"
-
-
-def createSessionMaker(engine: Engine = engine) -> sessionmaker[Session]:
-    sessionMaker = sessionmaker(autoflush=False, bind=engine)
-    return sessionMaker
-
-
-sessionMaker = createSessionMaker()
-
-
-def createTable(model):
-    model.__table__.create(engine)
+        EB_Table.__table__.create(bind=engine, checkfirst=True)

@@ -2,7 +2,7 @@ from sqlalchemy import ForeignKey, String, DateTime, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 from typing import Optional, Self
 from datetime import datetime
-from eb_fast_api.database.sources.model.base import Base
+from eb_fast_api.database.sources.model.base_model import Base
 
 
 class Schedule(Base):

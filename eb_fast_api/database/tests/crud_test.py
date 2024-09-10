@@ -1,79 +1,79 @@
 from eb_fast_api.database.sources.model.models import User, Schedule, Place
 
 
-def test_userCreate(mockDB):
+def test_userCreate(mockUserCRUD):
     email = "email"
     user = User.mock(email=email)
-    userCount1 = mockDB.session.query(User).count()
+    userCount1 = mockUserCRUD.session.query(User).count()
 
-    mockDB.userCreate(user=user)
+    mockUserCRUD.create(user=user)
 
-    fetchedUser = mockDB.userRead(email=email)
+    fetchedUser = mockUserCRUD.read(email=email)
     assert user == fetchedUser
-    userCount2 = mockDB.session.query(User).count()
+    userCount2 = mockUserCRUD.session.query(User).count()
     assert userCount2 - userCount1 == 1
 
 
-def test_userRead(mockDB):
+def test_userRead(mockUserCRUD):
     email = "email"
     user = User.mock(email=email)
 
-    mockDB.userCreate(user=user)
-    fetchedUser = mockDB.userRead(email=email)
+    mockUserCRUD.create(user=user)
+    fetchedUser = mockUserCRUD.read(email=email)
 
     assert user == fetchedUser
 
 
-def test_scheduleCreate(mockDB):
+def test_scheduleCreate(mockUserCRUD, mockScheduleCRUD):
     email = "email"
     user = User.mock(email=email)
-    mockDB.userCreate(user=user)
+    mockUserCRUD.create(user=user)
     schedule = Schedule.mock()
     startPlace = Place.mock(id="mockStartPlace")
     endPlace = Place.mock(id="mockEndPlace")
     schedule.startPlaceID = startPlace.id
     schedule.endPlaceID = endPlace.id
 
-    mockDB.scheduleCreate(
+    mockScheduleCRUD.create(
         userEmail=email,
         schedule=schedule,
         startPlace=startPlace,
         endPlace=endPlace,
     )
 
-    placeCount = mockDB.session.query(Place).count()
+    placeCount = mockScheduleCRUD.session.query(Place).count()
     assert placeCount == 2
-    fetchedUser = mockDB.userRead(email=email)
+    fetchedUser = mockUserCRUD.read(email=email)
     assert len(fetchedUser.schedules) == 1
     assert schedule in fetchedUser.schedules
 
 
-def test_placeCreate(mockDB):
+def test_placeCreate(mockPlaceCRUD):
     place = Place.mock()
 
-    mockDB.placeCreate(place=place)
+    mockPlaceCRUD.create(place=place)
 
-    fetchedPlace = mockDB.placeRead(placeID=place.id)
+    fetchedPlace = mockPlaceCRUD.read(placeID=place.id)
     assert place == fetchedPlace
 
 
-def test_placeRead(mockDB):
+def test_placeRead(mockPlaceCRUD):
     place = Place.mock()
 
-    mockDB.placeCreate(place=place)
+    mockPlaceCRUD.create(place=place)
 
-    fetchedPlace = mockDB.placeRead(placeID=place.id)
+    fetchedPlace = mockPlaceCRUD.read(placeID=place.id)
     assert place == fetchedPlace
 
 
-def test_placeCreate_check_duplicate(mockDB):
+def test_placeCreate_check_duplicate(mockPlaceCRUD):
     place1 = Place.mock()
     place2 = Place.mock()
     place3 = Place.mock()
 
-    mockDB.placeCreate(place=place1)
-    mockDB.placeCreate(place=place2)
-    mockDB.placeCreate(place=place3)
+    mockPlaceCRUD.create(place=place1)
+    mockPlaceCRUD.create(place=place2)
+    mockPlaceCRUD.create(place=place3)
 
-    placeCount = mockDB.session.query(Place).count()
+    placeCount = mockPlaceCRUD.session.query(Place).count()
     assert placeCount == 1

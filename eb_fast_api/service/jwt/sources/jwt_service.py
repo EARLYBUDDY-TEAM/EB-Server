@@ -3,13 +3,13 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from jose import jwt, JWTError
 from typing import Optional
-from eb_fast_api.service.jwt.interfaces.abs_jwt_serialization import (
-    ABSJWTDecoder,
-    ABSJWTEncoder,
+from eb_fast_api.service.jwt.interfaces.abc_jwt_serialization import (
+    ABC_JWTDecoder,
+    ABC_JWTEncoder,
 )
 
 
-class JWTEncoder(ABSJWTEncoder):
+class JWTEncoder(ABC_JWTEncoder):
     def encode(
         self,
         data: dict,
@@ -22,7 +22,7 @@ class JWTEncoder(ABSJWTEncoder):
         return jwt.encode(toEncode, secretKey, algorithm=algorithm)
 
 
-class JWTDecoder(ABSJWTDecoder):
+class JWTDecoder(ABC_JWTDecoder):
     def decode(
         self,
         token: str,
@@ -38,8 +38,8 @@ class JWTDecoder(ABSJWTDecoder):
 class JWTService:
     def __init__(
         self,
-        encoder: ABSJWTEncoder = JWTEncoder(),
-        decoder: ABSJWTDecoder = JWTDecoder(),
+        encoder: ABC_JWTEncoder = JWTEncoder(),
+        decoder: ABC_JWTDecoder = JWTDecoder(),
         algorithm: str = "HS256",
         secretKey: str = secrets.token_hex(32),
         accessTokenExpireMinute: int = 60,

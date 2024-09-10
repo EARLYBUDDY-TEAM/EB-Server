@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String
 from typing import List, Self
-from eb_fast_api.database.sources.model.base import Base
+from eb_fast_api.database.sources.model.base_model import Base
 
 
 class User(Base):

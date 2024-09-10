@@ -1,10 +1,16 @@
-from eb_fast_api.database.sources.crud import CRUD
-from eb_fast_api.database.sources.database import createSessionMaker, createEngine
+from eb_fast_api.database.sources.connection import createSessionMaker, createEngine
+from unittest.mock import patch
 
 
-class MockCRUD(CRUD):
-    def commit(self):
+def mockCommitInBaseCRUD():
+    def mockCommit(self):
+        print("This is mock commit")
         return
+
+    patcher = patch(
+        "eb_fast_api.database.sources.crud.base_crud.BaseCRUD.commit", new=mockCommit
+    )
+    patcher.start()
 
 
 mockEngine = createEngine(host="0.0.0.0")

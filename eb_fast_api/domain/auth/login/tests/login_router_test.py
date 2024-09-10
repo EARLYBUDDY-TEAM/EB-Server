@@ -15,7 +15,7 @@ def test_login_ERROR_invalid_password(loginMockDB):
     # given
     email = "email"
     password = "password12"
-    userInfo = UserInfo(email = email, password = password)
+    userInfo = UserInfo(email=email, password=password)
     user = userInfo.toUser()
     loginMockDB.userCreate(user)
 
@@ -26,8 +26,8 @@ def test_login_ERROR_invalid_password(loginMockDB):
     testClient = TestClient(app)
 
     # when
-    userInfo.password += 'errorString'
-    json = userInfo.model_dump(mode='json')
+    userInfo.password += "errorString"
+    json = userInfo.model_dump(mode="json")
     response = testClient.post("/auth/login", json=json)
 
     # then
@@ -50,7 +50,7 @@ def test_login_SUCCESS(loginMockDB):
     testClient = TestClient(app)
 
     # when
-    json = userInfo.model_dump(mode='json')
+    json = userInfo.model_dump(mode="json")
     response = testClient.post("/auth/login", json=json)
 
     # then

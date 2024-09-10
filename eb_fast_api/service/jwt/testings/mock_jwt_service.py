@@ -1,6 +1,6 @@
-from eb_fast_api.service.jwt.interfaces.abs_jwt_serialization import (
-    ABSJWTDecoder,
-    ABSJWTEncoder,
+from eb_fast_api.service.jwt.interfaces.abc_jwt_serialization import (
+    ABC_JWTDecoder,
+    ABC_JWTEncoder,
 )
 from eb_fast_api.service.jwt.sources.jwt_service import JWTService
 from datetime import datetime, timedelta
@@ -12,14 +12,14 @@ mockExpireDate = datetime.timestamp(mockNow)
 mockEmail = "test@test.com"
 
 
-class MockJWTEncoder(ABSJWTEncoder):
+class MockJWTEncoder(ABC_JWTEncoder):
     def encode(
         self, data: dict, expireDate: datetime, secretKey: str, algorithm: str
     ) -> str:
         return data["sub"] + str(expireDate)
 
 
-class MockJWTDecoder(ABSJWTDecoder):
+class MockJWTDecoder(ABC_JWTDecoder):
     def decode(self, token: str, secretKey: str, algorithm: str) -> dict | None:
         return {
             "sub": mockEmail,
@@ -33,8 +33,8 @@ class MockJWTService(JWTService):
     def __init__(
         self,
         now: datetime = mockNow,
-        encoder: ABSJWTEncoder = MockJWTEncoder(),
-        decoder: ABSJWTDecoder = MockJWTDecoder(),
+        encoder: ABC_JWTEncoder = MockJWTEncoder(),
+        decoder: ABC_JWTDecoder = MockJWTDecoder(),
     ):
         self.now = now
         super().__init__(

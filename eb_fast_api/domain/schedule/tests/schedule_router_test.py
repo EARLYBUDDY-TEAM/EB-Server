@@ -20,9 +20,9 @@ def test_addSchedule_SUCCESS(scheduleMockDB):
     testClient = TestClient(app)
 
     # when
-    params = {'userEmail' : email}
-    json = scheduleInfo.model_dump(mode = 'json')
-    response = testClient.post('/schedule/add', params = params, json = json)
+    params = {"userEmail": email}
+    json = scheduleInfo.model_dump(mode="json")
+    response = testClient.post("/schedule/add", params=params, json=json)
 
     # then
     assert response.status_code == 200
@@ -32,9 +32,9 @@ def test_addSchedule_FAIL(testClient):
     # given, when
     email = "email"
     scheduleInfo = ScheduleInfo.mock()
-    params = {'userEmail' : email}
-    json = scheduleInfo.model_dump(mode = 'json')
-    response = testClient.post('/schedule/add', params = params, json = json)
+    params = {"userEmail": email}
+    json = scheduleInfo.model_dump(mode="json")
+    response = testClient.post("/schedule/add", params=params, json=json)
 
     # then
     assert response.status_code == 400
