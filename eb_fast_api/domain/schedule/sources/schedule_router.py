@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from typing import Annotated
 from eb_fast_api.domain.schedule.sources import schedule_feature
 from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
 from eb_fast_api.database.sources.database import EBDataBase
@@ -11,7 +12,7 @@ router = APIRouter(prefix="/schedule")
 async def addSchedule(
     userEmail: str,
     scheduleInfo: ScheduleInfo,
-    scheduleCRUD=EBDataBase.schedule.depends(),
+    scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
 ):
     try:
         schedule_feature.createSchedule(

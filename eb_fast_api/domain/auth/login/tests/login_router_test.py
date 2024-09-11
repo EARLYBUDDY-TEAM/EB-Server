@@ -22,7 +22,7 @@ def test_login_ERROR_invalid_password(loginMockUserCRUD):
     def getMockUserCRUD():
         yield loginMockUserCRUD
 
-    app.dependency_overrides[EBDataBase.user.depends()] = getMockUserCRUD
+    app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
     testClient = TestClient(app)
 
     # when
@@ -32,7 +32,7 @@ def test_login_ERROR_invalid_password(loginMockUserCRUD):
 
     # then
     assert response.status_code == 401
-    del app.dependency_overrides[EBDataBase.user.depends()]
+    del app.dependency_overrides[EBDataBase.user.getCRUD]
 
 
 def test_login_SUCCESS(loginMockUserCRUD):
@@ -46,7 +46,7 @@ def test_login_SUCCESS(loginMockUserCRUD):
     def getMockUserCRUD():
         yield loginMockUserCRUD
 
-    app.dependency_overrides[EBDataBase.user.depends()] = getMockUserCRUD
+    app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
     testClient = TestClient(app)
 
     # when
@@ -55,4 +55,4 @@ def test_login_SUCCESS(loginMockUserCRUD):
 
     # then
     assert response.status_code == 200
-    del app.dependency_overrides[EBDataBase.user.depends()]
+    del app.dependency_overrides[EBDataBase.user.getCRUD]

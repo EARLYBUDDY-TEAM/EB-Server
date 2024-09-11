@@ -1,11 +1,14 @@
 from enum import Enum
 from sqlalchemy import inspect, Engine
 from sqlalchemy.orm import Session
-from typing import Any, Annotated
-from fastapi import Depends
+from typing import Any
 from eb_fast_api.database.sources.connection import engine, sessionMaker
 from eb_fast_api.database.sources.model.models import User, Schedule, Place
-from eb_fast_api.database.sources.crud.cruds import PlaceCRUD, ScheduleCRUD, UserCRUD
+from eb_fast_api.database.sources.crud.cruds import (
+    PlaceCRUD,
+    ScheduleCRUD,
+    UserCRUD,
+)
 
 
 class EBDataBase(Enum):
@@ -13,15 +16,17 @@ class EBDataBase(Enum):
     schedule = "Schedule"
     place = "Place"
 
-    def getCRUD(self, session: Session = sessionMaker()):
-        EB_CRUD: Any
-        if self == EBDataBase.user:
-            EB_CRUD = UserCRUD
-        elif self == EBDataBase.schedule:
-            EB_CRUD = ScheduleCRUD
-        elif self == EBDataBase.place:
-            EB_CRUD = PlaceCRUD
-        crud = EB_CRUD(session=session)
+    # sessionMaker 타입지정했는데 왜 오류????
+    def getCRUD(self, sessionMaker=sessionMaker):
+        session: Session = sessionMaker()
+        crud: Any
+        match self:
+            case EBDataBase.user:
+                crud = UserCRUD(session)
+            case EBDataBase.schedule:
+                crud = ScheduleCRUD(session)
+            case EBDataBase.place:
+                crud = PlaceCRUD(session)
         try:
             yield crud
         finally:
@@ -34,19 +39,12 @@ class EBDataBase(Enum):
             return
 
         EB_Table: Any
-        if self == EBDataBase.user:
-            EB_Table = User
-        elif self == EBDataBase.schedule:
-            EB_Table = Schedule
-        elif self == EBDataBase.place:
-            EB_Table = Place
+        match self:
+            case EBDataBase.user:
+                EB_Table = User
+            case EBDataBase.schedule:
+                EB_Table = Schedule
+            case EBDataBase.place:
+                EB_Table = Place
 
         EB_Table.__table__.create(bind=engine, checkfirst=True)
-
-    def depends(self):
-        if self == EBDataBase.user:
-            return Annotated[UserCRUD, Depends(EBDataBase.user.getCRUD)]
-        elif self == EBDataBase.schedule:
-            return Annotated[ScheduleCRUD, Depends(EBDataBase.schedule.getCRUD)]
-        elif self == EBDataBase.place:
-            return Annotated[PlaceCRUD, Depends(EBDataBase.place.getCRUD)]

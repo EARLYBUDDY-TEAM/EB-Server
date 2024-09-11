@@ -15,9 +15,9 @@ def testClient(registerMockUserCRUD):
     def getMockUserCRUD():
         yield registerMockUserCRUD
 
-    app.dependency_overrides[EBDataBase.user.depends()] = getMockUserCRUD
+    app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
     testClient = TestClient(app)
 
     yield testClient
 
-    del app.dependency_overrides[EBDataBase.user.depends()]
+    del app.dependency_overrides[EBDataBase.user.getCRUD]

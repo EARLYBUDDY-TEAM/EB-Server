@@ -4,19 +4,22 @@ from eb_fast_api.domain.schema.sources.schema import ScheduleInfo, UserInfo
 from eb_fast_api.database.sources.database import EBDataBase
 
 
-def test_addSchedule_SUCCESS(scheduleMockUserCRUD, scheduleMockScheduleCRUD):
+def test_addSchedule_SUCCESS(
+    schedule_MockUserCRUD,
+    schedule_MockScheduleCRUD,
+):
     # given
     email = "email"
     password = "password"
     userInfo = UserInfo(email, password)
     user = userInfo.toUser()
-    scheduleMockUserCRUD.create(user)
+    schedule_MockUserCRUD.create(user)
     scheduleInfo = ScheduleInfo.mock()
 
     def getMockScheduleDB():
-        yield scheduleMockScheduleCRUD
+        yield schedule_MockScheduleCRUD
 
-    app.dependency_overrides[EBDataBase.schedule.depends()] = getMockScheduleDB
+    app.dependency_overrides[EBDataBase.schedule.getCRUD] = getMockScheduleDB
     testClient = TestClient(app)
 
     # when
@@ -26,6 +29,7 @@ def test_addSchedule_SUCCESS(scheduleMockUserCRUD, scheduleMockScheduleCRUD):
 
     # then
     assert response.status_code == 200
+    del app.dependency_overrides[EBDataBase.schedule.getCRUD]
 
 
 def test_addSchedule_FAIL(testClient):

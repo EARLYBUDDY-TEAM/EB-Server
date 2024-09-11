@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 
-class BaseCRUD(object):
+class BaseCRUD:
     session: Session
 
     def __init__(self, session: Session):

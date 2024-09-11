@@ -10,23 +10,25 @@ from eb_fast_api.database.tests.conftest import (
 
 
 @pytest.fixture(scope="function")
-def scheduleMockScheduleCRUD(mockScheduleCRUD):
+def schedule_MockScheduleCRUD(mockScheduleCRUD):
     yield mockScheduleCRUD
 
 
 @pytest.fixture(scope="function")
-def scheduleMockUserCRUD(mockUserCRUD):
+def schedule_MockUserCRUD(mockUserCRUD):
     yield mockUserCRUD
 
 
 @pytest.fixture(scope="function")
-def testClient(scheduleMockDB):
-    def getMockDB():
-        yield scheduleMockDB
+def testClient(schedule_MockScheduleCRUD):
+    def get_schedule_MockScheduleCRUD():
+        yield schedule_MockScheduleCRUD
 
-    app.dependency_overrides[EBDataBase.schedule.depends()] = scheduleMockScheduleCRUD
+    app.dependency_overrides[EBDataBase.schedule.getCRUD] = (
+        get_schedule_MockScheduleCRUD
+    )
     testClient = TestClient(app)
 
     yield testClient
 
-    del app.dependency_overrides[EBDataBase.schedule.depends()]
+    del app.dependency_overrides[EBDataBase.schedule.getCRUD]
