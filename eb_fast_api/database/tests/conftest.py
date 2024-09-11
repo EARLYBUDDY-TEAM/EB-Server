@@ -1,20 +1,11 @@
 import pytest
-from eb_fast_api.database.testings.mock_crud import (
+from eb_fast_api.database.testings.mock_database import (
     mockCommitInBaseCRUD,
-    mockSessionMaker,
-    mockEngine,
+    getMockCRUD,
 )
+from eb_fast_api.database.testings.mock_connection import mockEngine, mockSessionMaker
 from eb_fast_api.database.sources.connection import checkConnection
-from eb_fast_api.database.sources.database import EBDatabase
-from eb_fast_api.database.sources.crud.cruds import PlaceCRUD, UserCRUD, ScheduleCRUD
-
-
-@pytest.fixture(scope="session")
-def mockCommit():
-    mockCommitInBaseCRUD()
-    print("start test session")
-    yield
-    print("finish test session")
+from eb_fast_api.database.sources.database import EBDataBase
 
 
 @pytest.fixture(scope="session")
@@ -35,47 +26,26 @@ def mockSession():
 
 @pytest.fixture(scope="function")
 def mockPlaceCRUD(mockSession):
-    EBDatabase.place.createTable(engine=mockEngine)
-
-    crudPlace = PlaceCRUD(session=mockSession)
-    print("Create PlaceCRUD !!!")
-
-    yield crudPlace
-
-    crudPlace.rollback()
-    print("Rollback PlaceCRUD !!!")
-
-    del crudPlace
-    print("Del PlaceCRUD")
+    yield from getMockCRUD(
+        mockSession=mockSession,
+        mockEngine=mockEngine,
+        db=EBDataBase.place,
+    )
 
 
 @pytest.fixture(scope="function")
 def mockUserCRUD(mockSession):
-    EBDatabase.user.createTable(engine=mockEngine)
-
-    userCRUD = UserCRUD(session=mockSession)
-    print("Create UserCRUD !!!")
-
-    yield userCRUD
-
-    userCRUD.rollback()
-    print("Rollback UserCRUD !!!")
-
-    del userCRUD
-    print("Del UserCRUD")
+    yield from getMockCRUD(
+        mockSession=mockSession,
+        mockEngine=mockEngine,
+        db=EBDataBase.user,
+    )
 
 
 @pytest.fixture(scope="function")
 def mockScheduleCRUD(mockSession):
-    EBDatabase.schedule.createTable(engine=mockEngine)
-
-    scheduleCRUD = ScheduleCRUD(session=mockSession)
-    print("Create ScheduleCRUD !!!")
-
-    yield scheduleCRUD
-
-    scheduleCRUD.rollback()
-    print("Rollback ScheduleCRUD !!!")
-
-    del scheduleCRUD
-    print("Del ScheduleCRUD")
+    yield from getMockCRUD(
+        mockSession=mockSession,
+        mockEngine=mockEngine,
+        db=EBDataBase.schedule,
+    )

@@ -1,23 +1,25 @@
 import pytest
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.database.sources.crud import getDB
-from eb_fast_api.database.tests.conftest import createDB, mockDB
+from eb_fast_api.database.sources.database import EBDataBase
+from eb_fast_api.database.tests.conftest import mockSession, mockUserCRUD
+from typing import Annotated
 
 
 @pytest.fixture(scope="function")
-def loginMockDB(mockDB):
-    yield mockDB
+def loginMockUserCRUD(mockUserCRUD):
+    yield mockUserCRUD
 
 
 @pytest.fixture(scope="function")
-def testClient(loginMockDB):
-    def getMockDB():
-        yield loginMockDB
+def testClient(loginMockUserCRUD):
+    def getMockUserCRUD():
+        yield loginMockUserCRUD
 
-    app.dependency_overrides[getDB] = getMockDB
+    # app.dependency_overrides[EBDatabase.user.depends()] = getMockUserCRUD
+    app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
     testClient = TestClient(app)
 
     yield testClient
 
-    del app.dependency_overrides[getDB]
+    del app.dependency_overrides[EBDataBase.user.depends()]

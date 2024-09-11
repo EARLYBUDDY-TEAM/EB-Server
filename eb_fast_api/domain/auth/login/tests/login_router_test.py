@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
 from eb_fast_api.domain.schema.sources.schema import UserInfo
-from eb_fast_api.database.sources.crud import getDB
+from eb_fast_api.database.sources.database import EBDataBase
 
 
 def test_login_ERROR_no_user(testClient):
@@ -11,18 +11,18 @@ def test_login_ERROR_no_user(testClient):
     assert response.status_code == 400
 
 
-def test_login_ERROR_invalid_password(loginMockDB):
+def test_login_ERROR_invalid_password(loginMockUserCRUD):
     # given
     email = "email"
     password = "password12"
     userInfo = UserInfo(email=email, password=password)
     user = userInfo.toUser()
-    loginMockDB.userCreate(user)
+    loginMockUserCRUD.create(user)
 
-    def getMockDB():
-        yield loginMockDB
+    def getMockUserCRUD():
+        yield loginMockUserCRUD
 
-    app.dependency_overrides[getDB] = getMockDB
+    app.dependency_overrides[EBDataBase.user.depends()] = getMockUserCRUD
     testClient = TestClient(app)
 
     # when
@@ -32,21 +32,21 @@ def test_login_ERROR_invalid_password(loginMockDB):
 
     # then
     assert response.status_code == 401
-    del app.dependency_overrides[getDB]
+    del app.dependency_overrides[EBDataBase.user.depends()]
 
 
-def test_login_SUCCESS(loginMockDB):
+def test_login_SUCCESS(loginMockUserCRUD):
     # given
     email = "email"
     password = "password12"
     userInfo = UserInfo(email, password)
     user = userInfo.toUser()
-    loginMockDB.userCreate(user)
+    loginMockUserCRUD.create(user)
 
-    def getMockDB():
-        yield loginMockDB
+    def getMockUserCRUD():
+        yield loginMockUserCRUD
 
-    app.dependency_overrides[getDB] = getMockDB
+    app.dependency_overrides[EBDataBase.user.depends()] = getMockUserCRUD
     testClient = TestClient(app)
 
     # when
@@ -55,4 +55,4 @@ def test_login_SUCCESS(loginMockDB):
 
     # then
     assert response.status_code == 200
-    del app.dependency_overrides[getDB]
+    del app.dependency_overrides[EBDataBase.user.depends()]

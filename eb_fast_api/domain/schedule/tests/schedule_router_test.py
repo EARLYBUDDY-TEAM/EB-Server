@@ -1,22 +1,22 @@
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.database.sources.crud import getDB
 from eb_fast_api.domain.schema.sources.schema import ScheduleInfo, UserInfo
+from eb_fast_api.database.sources.database import EBDataBase
 
 
-def test_addSchedule_SUCCESS(scheduleMockDB):
+def test_addSchedule_SUCCESS(scheduleMockUserCRUD, scheduleMockScheduleCRUD):
     # given
     email = "email"
     password = "password"
     userInfo = UserInfo(email, password)
     user = userInfo.toUser()
-    scheduleMockDB.userCreate(user)
+    scheduleMockUserCRUD.create(user)
     scheduleInfo = ScheduleInfo.mock()
 
-    def getMockDB():
-        yield scheduleMockDB
+    def getMockScheduleDB():
+        yield scheduleMockScheduleCRUD
 
-    app.dependency_overrides[getDB] = getMockDB
+    app.dependency_overrides[EBDataBase.schedule.depends()] = getMockScheduleDB
     testClient = TestClient(app)
 
     # when

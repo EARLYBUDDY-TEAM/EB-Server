@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.database.sources.crud import getDB
 from eb_fast_api.domain.schema.sources.schema import UserInfo
+from eb_fast_api.database.sources.database import EBDataBase
 
 
 def test_register_FAIL_invalid_register_info(testClient):
@@ -12,18 +12,18 @@ def test_register_FAIL_invalid_register_info(testClient):
     assert response.status_code == 400
 
 
-def test_register_FAIL_exist_user(registerMockDB):
+def test_register_FAIL_exist_user(registerMockUserCRUD):
     # given
     email = "abc@abc.com"
     password = "password12"
     userInfo = UserInfo(email, password)
     user = userInfo.toUser()
-    registerMockDB.userCreate(user)
+    registerMockUserCRUD.create(user)
 
-    def getMockDB():
-        yield registerMockDB
+    def getMockRegisterCRUD():
+        yield registerMockUserCRUD
 
-    app.dependency_overrides[getDB] = getMockDB
+    app.dependency_overrides[EBDataBase.user.depends()] = getMockRegisterCRUD
     testClient = TestClient(app)
 
     # when
@@ -32,7 +32,7 @@ def test_register_FAIL_exist_user(registerMockDB):
 
     # then
     assert response.status_code == 401
-    del app.dependency_overrides[getDB]
+    del app.dependency_overrides[EBDataBase.user.depends()]
 
 
 def test_register_SUCCESS(testClient):
