@@ -1,12 +1,18 @@
 from enum import Enum
-from sqlalchemy import inspect, Engine
-from eb_fast_api.database.sources.connection import engine, sessionMaker
-from eb_fast_api.database.sources.model.models import Base
+from sqlalchemy import Engine
+from eb_fast_api.database.sources.connection import (
+    engine,
+    sessionMaker,
+    checkConnection,
+)
+from eb_fast_api.database.sources.model.models import Base, User
 from eb_fast_api.database.sources.crud.cruds import (
     PlaceCRUD,
     ScheduleCRUD,
     UserCRUD,
 )
+from eb_fast_api.env.sources.env import ENV_TEST_USER
+from eb_fast_api.snippets.sources import pwdcrypt
 
 
 class EBDataBase(Enum):
@@ -38,8 +44,26 @@ class EBDataBase(Enum):
         self,
         engine: Engine = engine,
     ):
+        checkConnection(engine=engine)
+        print("Success Connect to DB")
+
         Base.metadata.create_all(bind=engine)
-        # mixinSchedule = Schedule.mixinClass(email=ENV_TEST_USER.email)
-        # Base.metadata.create_all(bind=engine)
-        # userCRUD = EBDataBase.user.getCRUD(session=session)
-        # userCRUD.create(user=)
+        print("Success Create Table")
+
+        session = sessionMaker()
+        userCRUD = EBDataBase.user.getCRUD(session=session)
+        email = ENV_TEST_USER.email
+
+        fetchedUser = userCRUD.read(email=email)
+        if fetchedUser != None:
+            session.close()
+            return
+
+        hashedPassword = pwdcrypt.hash(password=ENV_TEST_USER.password)
+        testUser = User(
+            email=email,
+            hashedPassword=hashedPassword,
+        )
+        userCRUD.create(user=testUser)
+        userCRUD.commit()
+        session.close()

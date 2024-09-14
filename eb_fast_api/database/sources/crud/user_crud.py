@@ -1,5 +1,6 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.model.models import User, Schedule, Base
+from typing import Optional
 
 
 class UserCRUD(BaseCRUD):
@@ -9,6 +10,6 @@ class UserCRUD(BaseCRUD):
         self.session.add(user)
         self.session.flush()
 
-    def read(self, email: str) -> User:
+    def read(self, email: str) -> Optional[User]:
         user = self.session.query(User).filter(User.email == email).first()
         return user
