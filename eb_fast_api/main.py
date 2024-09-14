@@ -58,7 +58,11 @@ if __name__ == "__main__":
     import uvicorn
     from eb_fast_api.database.sources.connection import checkConnection
     from eb_fast_api.database.sources.database import EBDataBase
+    from eb_fast_api.database.sources.model.base_model import Base
+    from eb_fast_api.database.sources.connection import engine
 
     checkConnection()
-    EBDataBase.place.createTable()
+
+    # 테스트 계정 env로 입력받기
+
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

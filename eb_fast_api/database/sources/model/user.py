@@ -1,7 +1,8 @@
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import String
-from typing import List, Self
+from typing import Self
 from eb_fast_api.database.sources.model.base_model import Base
+from eb_fast_api.database.sources.model.schedule import Schedule
 
 
 class User(Base):
@@ -9,7 +10,7 @@ class User(Base):
 
     email: Mapped[str] = mapped_column(String(100), primary_key=True)
     hashedPassword: Mapped[str] = mapped_column(String(60))
-    schedules: Mapped[List["Schedule"]] = relationship()
+    scheduleTable: Mapped[str] = mapped_column(String(100))
 
     def __init__(
         self,
@@ -18,6 +19,7 @@ class User(Base):
     ):
         self.email = email
         self.hashedPassword = hashedPassword
+        self.scheduleTable = Schedule.getTableName(email)
 
     def __eq__(self, other):
         return self.email == other.email

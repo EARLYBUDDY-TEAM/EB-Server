@@ -6,15 +6,22 @@ from eb_fast_api.database.testings.mock_database import (
 from eb_fast_api.database.testings.mock_connection import mockEngine, mockSessionMaker
 from eb_fast_api.database.sources.connection import checkConnection
 from eb_fast_api.database.sources.database import EBDataBase
+from eb_fast_api.database.sources.model.models import Base
 
 
 @pytest.fixture(scope="session")
-def mockSession():
+def prepareTestDataBase():
     checkConnection(engine=mockEngine)
     print("Success Connect to DB")
 
+    Base.metadata.create_all(bind=mockEngine)
+    print("Success Create Table")
+
     mockCommitInBaseCRUD()
 
+
+@pytest.fixture(scope="function")
+def mockSession(prepareTestDataBase):
     session = mockSessionMaker()
     print("Create Session !!!")
 
@@ -26,26 +33,26 @@ def mockSession():
 
 @pytest.fixture(scope="function")
 def mockPlaceCRUD(mockSession):
+    db = EBDataBase.place
     yield from getMockCRUD(
         mockSession=mockSession,
-        mockEngine=mockEngine,
-        db=EBDataBase.place,
+        db=db,
     )
 
 
 @pytest.fixture(scope="function")
 def mockUserCRUD(mockSession):
+    db = EBDataBase.user
     yield from getMockCRUD(
         mockSession=mockSession,
-        mockEngine=mockEngine,
-        db=EBDataBase.user,
+        db=db,
     )
 
 
 @pytest.fixture(scope="function")
 def mockScheduleCRUD(mockSession):
+    db = EBDataBase.schedule
     yield from getMockCRUD(
         mockSession=mockSession,
-        mockEngine=mockEngine,
-        db=EBDataBase.schedule,
+        db=db,
     )

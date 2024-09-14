@@ -1,8 +1,5 @@
 from unittest.mock import patch
 from sqlalchemy.orm import Session
-from sqlalchemy import Engine
-from typing import Any
-from eb_fast_api.database.sources.crud.cruds import PlaceCRUD, UserCRUD, ScheduleCRUD
 from eb_fast_api.database.sources.database import EBDataBase
 
 
@@ -19,25 +16,15 @@ def mockCommitInBaseCRUD():
 
 def getMockCRUD(
     mockSession: Session,
-    mockEngine: Engine,
     db: EBDataBase,
 ):
-    db.createTable(engine=mockEngine)
-
-    mockCRUD: Any
-    match db:
-        case EBDataBase.user:
-            mockCRUD = UserCRUD(mockSession)
-        case EBDataBase.schedule:
-            mockCRUD = ScheduleCRUD(mockSession)
-        case EBDataBase.place:
-            mockCRUD = PlaceCRUD(mockSession)
-    print("Create MockCRUD !!!")
+    mockCRUD = db.getCRUD(session=mockSession)
+    print(f"Create {db.value.capitalize()}CRUD !!!")
 
     yield mockCRUD
 
     mockCRUD.rollback()
-    print("Rollback MockCRUD !!!")
+    print(f"Rollback {db.value.capitalize()}CRUD !!!")
 
     del mockCRUD
-    print("Del MockCRUD")
+    print(f"Del {db.value.capitalize()}CRUD")

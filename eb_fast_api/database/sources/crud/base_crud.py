@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import Engine
 
 
 class BaseCRUD:
@@ -7,7 +8,9 @@ class BaseCRUD:
     def __init__(self, session: Session):
         self.session = session
 
-    # db
+    def engine(self) -> Engine:
+        return self.session.get_bind()
+
     def rollback(self):
         self.session.rollback()
 
