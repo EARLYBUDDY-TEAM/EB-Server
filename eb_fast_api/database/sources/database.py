@@ -63,6 +63,7 @@ class EBDataBase(Enum):
         testUser = User(
             email=email,
             hashedPassword=hashedPassword,
+            refreshToken="refreshToken",
         )
         userCRUD.create(user=testUser)
         userCRUD.commit()

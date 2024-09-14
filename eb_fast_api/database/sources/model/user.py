@@ -11,15 +11,18 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(100), primary_key=True)
     hashedPassword: Mapped[str] = mapped_column(String(60))
     scheduleTable: Mapped[str] = mapped_column(String(100))
+    refreshToken: Mapped[str] = mapped_column(String(250))
 
     def __init__(
         self,
         email: str,
         hashedPassword: str,
+        refreshToken: str,
     ):
         self.email = email
         self.hashedPassword = hashedPassword
         self.scheduleTable = Schedule.getTableName(email)
+        self.refreshToken = refreshToken
 
     def __eq__(self, other):
         return self.email == other.email
@@ -29,4 +32,5 @@ class User(Base):
         return User(
             email=email,
             hashedPassword="hashedPassword",
+            refreshToken="refreshToken",
         )

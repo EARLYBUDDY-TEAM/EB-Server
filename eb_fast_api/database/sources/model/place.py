@@ -8,13 +8,13 @@ from eb_fast_api.database.sources.model.base_model import Base
 class Place(Base):
     __tablename__ = "place"
 
-    id: Mapped[str] = mapped_column(String(100), primary_key=True)
-    name: Mapped[str] = mapped_column(String(100))
-    address: Mapped[str] = mapped_column(String(100))
-    category: Mapped[str] = mapped_column(String(100))
-    distance: Mapped[str] = mapped_column(String(100))
-    coordiX: Mapped[str] = mapped_column(String(100))
-    coordiY: Mapped[str] = mapped_column(String(100))
+    id: Mapped[str] = mapped_column(String(200), primary_key=True)
+    name: Mapped[str] = mapped_column(String(200))
+    address: Mapped[str] = mapped_column(String(200))
+    category: Mapped[str] = mapped_column(String(200))
+    distance: Mapped[str] = mapped_column(String(200))
+    coordiX: Mapped[str] = mapped_column(String(200))
+    coordiY: Mapped[str] = mapped_column(String(200))
 
     refCount = Column(Integer, default=0)
 

@@ -8,12 +8,12 @@ from eb_fast_api.database.sources.model.base_model import Base
 
 class Schedule:
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    title: Mapped[str] = mapped_column(String(100))
-    memo: Mapped[Optional[str]] = mapped_column(String(100))
+    title: Mapped[str] = mapped_column(String(200))
+    memo: Mapped[Optional[str]] = mapped_column(String(200))
     time: Mapped[datetime] = mapped_column(DateTime())
     isNotify: Mapped[bool] = mapped_column(Boolean())
-    startPlaceID: Mapped[Optional[str]] = mapped_column(String(100))
-    endPlaceID: Mapped[Optional[str]] = mapped_column(String(100))
+    startPlaceID: Mapped[Optional[str]] = mapped_column(String(200))
+    endPlaceID: Mapped[Optional[str]] = mapped_column(String(200))
 
     def __init__(
         self,
