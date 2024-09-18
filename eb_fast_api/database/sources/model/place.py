@@ -18,9 +18,6 @@ class Place(Base):
 
     refCount = Column(Integer, default=0)
 
-    def __eq__(self, other):
-        return self.id == other.id
-
     def __init__(
         self,
         id: str,

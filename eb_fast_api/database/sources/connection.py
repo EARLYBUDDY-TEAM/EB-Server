@@ -11,7 +11,10 @@ def createEngine(
     db: str = ENV_MYSQL.MYSQL_DATABASE,
 ) -> Engine:
     DB_URL = f"mysql+pymysql://{user}:{pwd}@{host}:{port}/{db}"
-    engine = create_engine(DB_URL)
+    engine = create_engine(
+        DB_URL,
+        # echo=True,
+    )
     return engine
 
 

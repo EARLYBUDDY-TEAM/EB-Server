@@ -28,5 +28,5 @@ def test_scheduleCreate(mockSession, mockUserCRUD, mockScheduleCRUD):
     scheduleCount = mockSession.query(scheduleTable).count()
     assert scheduleCount == 1
 
-    # teardown
+    # delete schedule table
     mockScheduleCRUD.dropAll(userEmail=user.email)

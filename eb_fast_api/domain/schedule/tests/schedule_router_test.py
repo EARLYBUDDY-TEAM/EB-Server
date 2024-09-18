@@ -19,7 +19,7 @@ def test_addSchedule_SUCCESS(
     def getMockScheduleDB():
         yield schedule_MockScheduleCRUD
 
-    app.dependency_overrides[EBDataBase.schedule.getCRUD] = getMockScheduleDB
+    app.dependency_overrides[EBDataBase.schedule.createCRUD] = getMockScheduleDB
     testClient = TestClient(app)
 
     # when
@@ -29,7 +29,7 @@ def test_addSchedule_SUCCESS(
 
     # then
     assert response.status_code == 200
-    del app.dependency_overrides[EBDataBase.schedule.getCRUD]
+    del app.dependency_overrides[EBDataBase.schedule.createCRUD]
 
 
 def test_addSchedule_FAIL(testClient):

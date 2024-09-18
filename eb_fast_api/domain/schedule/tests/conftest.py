@@ -24,11 +24,11 @@ def testClient(schedule_MockScheduleCRUD):
     def get_schedule_MockScheduleCRUD():
         yield schedule_MockScheduleCRUD
 
-    app.dependency_overrides[EBDataBase.schedule.getCRUD] = (
+    app.dependency_overrides[EBDataBase.schedule.createCRUD] = (
         get_schedule_MockScheduleCRUD
     )
     testClient = TestClient(app)
 
     yield testClient
 
-    del app.dependency_overrides[EBDataBase.schedule.getCRUD]
+    del app.dependency_overrides[EBDataBase.schedule.createCRUD]

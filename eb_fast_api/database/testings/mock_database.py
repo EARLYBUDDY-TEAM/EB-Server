@@ -18,7 +18,7 @@ def getMockCRUD(
     mockSession: Session,
     db: EBDataBase,
 ):
-    mockCRUD = db.getCRUD(session=mockSession)
+    mockCRUD = db.createCRUD(session=mockSession)
     print(f"Create {db.value.capitalize()}CRUD !!!")
 
     yield mockCRUD

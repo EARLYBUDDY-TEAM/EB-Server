@@ -10,7 +10,7 @@ router = APIRouter(prefix="/auth/register")
 @router.post("")
 def register(
     registerInfo: UserInfo,
-    userCRUD=Depends(EBDataBase.user.getCRUD),
+    userCRUD=Depends(EBDataBase.user.createCRUD),
 ):
     if not register_feature.isValidEmail(
         registerInfo.email

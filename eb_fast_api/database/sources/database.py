@@ -22,7 +22,7 @@ class EBDataBase(Enum):
     place = "place"
 
     # session 파라미터 타입지정했는데 왜 오류????
-    def getCRUD(self, session):
+    def createCRUD(self, session):
         match self:
             case EBDataBase.user:
                 return UserCRUD(session)
@@ -31,8 +31,8 @@ class EBDataBase(Enum):
             case EBDataBase.place:
                 return PlaceCRUD(session)
 
-    def getUserCRUD(self, session=sessionMaker()):
-        crud = self.getCRUD(session)
+    def getCRUD(self, session=sessionMaker()):
+        crud = self.createCRUD(session)
         try:
             yield crud
         finally:
@@ -51,7 +51,7 @@ class EBDataBase(Enum):
         print("Success Create Table")
 
         session = sessionMaker()
-        userCRUD = EBDataBase.user.getCRUD(session=session)
+        userCRUD = EBDataBase.user.createCRUD(session=session)
         email = ENV_TEST_USER.email
 
         fetchedUser = userCRUD.read(email=email)

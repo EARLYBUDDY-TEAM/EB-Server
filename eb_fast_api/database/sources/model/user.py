@@ -24,9 +24,6 @@ class User(Base):
         self.scheduleTable = Schedule.getTableName(email)
         self.refreshToken = refreshToken
 
-    def __eq__(self, other):
-        return self.email == other.email
-
     @classmethod
     def mock(cls, email: str = "email") -> Self:
         return User(

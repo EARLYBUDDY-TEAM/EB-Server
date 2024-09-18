@@ -98,3 +98,7 @@ class JWTService:
 
 
 jwtService = JWTService()
+
+
+def getJWTService():
+    return jwtService

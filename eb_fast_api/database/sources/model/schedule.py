@@ -31,9 +31,6 @@ class Schedule:
         self.startPlaceID = startPlaceID
         self.endPlaceID = endPlaceID
 
-    def __eq__(self, other):
-        return self.id == other.id
-
     @classmethod
     def mock(cls) -> Self:
         timeString = "2024-07-28T05:04:32.299Z"

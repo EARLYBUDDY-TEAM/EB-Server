@@ -23,7 +23,7 @@ def test_register_FAIL_exist_user(registerMockUserCRUD):
     def getMockRegisterCRUD():
         yield registerMockUserCRUD
 
-    app.dependency_overrides[EBDataBase.user.getCRUD] = getMockRegisterCRUD
+    app.dependency_overrides[EBDataBase.user.createCRUD] = getMockRegisterCRUD
     testClient = TestClient(app)
 
     # when
@@ -32,7 +32,7 @@ def test_register_FAIL_exist_user(registerMockUserCRUD):
 
     # then
     assert response.status_code == 401
-    del app.dependency_overrides[EBDataBase.user.getCRUD]
+    del app.dependency_overrides[EBDataBase.user.createCRUD]
 
 
 def test_register_SUCCESS(testClient):
