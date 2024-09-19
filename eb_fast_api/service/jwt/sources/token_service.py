@@ -1,12 +1,13 @@
 from fastapi import Security, HTTPException
 from fastapi.security import APIKeyHeader
-from eb_fast_api.service.jwt.sources.jwt_service import jwtService
+from eb_fast_api.service.jwt.sources.jwt_service import JWTService
 
 
 def verifyToken(
     token=Security(
         APIKeyHeader(name="token"),
     ),
+    jwtService=JWTService(),
 ) -> str:
     email = jwtService.checkTokenExpired(token)
     if email == None:

@@ -6,6 +6,7 @@ from eb_fast_api.database.tests.conftest import (
     mockSession,
     mockScheduleCRUD,
     mockUserCRUD,
+    prepareTestDataBase,
 )
 
 
@@ -24,11 +25,11 @@ def testClient(schedule_MockScheduleCRUD):
     def get_schedule_MockScheduleCRUD():
         yield schedule_MockScheduleCRUD
 
-    app.dependency_overrides[EBDataBase.schedule.createCRUD] = (
+    app.dependency_overrides[EBDataBase.schedule.getCRUD] = (
         get_schedule_MockScheduleCRUD
     )
     testClient = TestClient(app)
 
     yield testClient
 
-    del app.dependency_overrides[EBDataBase.schedule.createCRUD]
+    del app.dependency_overrides[EBDataBase.schedule.getCRUD]

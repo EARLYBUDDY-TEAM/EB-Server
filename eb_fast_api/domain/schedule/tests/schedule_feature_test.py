@@ -3,12 +3,16 @@ from eb_fast_api.domain.schema.sources.schema import UserInfo, ScheduleInfo
 from eb_fast_api.database.sources.model.models import Place, Schedule
 
 
-def test_createSchedule(schedule_MockUserCRUD, schedule_MockScheduleCRUD,):
+def test_createSchedule(
+    schedule_MockUserCRUD,
+    schedule_MockScheduleCRUD,
+):
     # given
     email = "email"
     password = "password"
+    refreshToken = "refreshToken"
     userInfo = UserInfo(email, password)
-    user = userInfo.toUser()
+    user = userInfo.toUser(refreshToken=refreshToken)
     schedule_MockUserCRUD.create(user)
     scheduleInfo = ScheduleInfo.mock()
 
@@ -22,7 +26,10 @@ def test_createSchedule(schedule_MockUserCRUD, schedule_MockScheduleCRUD,):
     # then
     placeCount = schedule_MockScheduleCRUD.session.query(Place).count()
     assert placeCount == 2
-    scheduleCount = schedule_MockScheduleCRUD.session.query(Schedule).count()
+    scheduleTable = Schedule.getTable(email=email)
+    scheduleCount = schedule_MockScheduleCRUD.session.query(scheduleTable).count()
     assert scheduleCount == 1
     user = schedule_MockUserCRUD.read(email)
-    assert len(user.schedules) == 1
+
+    # delete schedule table
+    schedule_MockScheduleCRUD.dropAll(userEmail=email)

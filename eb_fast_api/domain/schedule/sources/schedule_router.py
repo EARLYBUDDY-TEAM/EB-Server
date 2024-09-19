@@ -12,7 +12,7 @@ router = APIRouter(prefix="/schedule")
 async def addSchedule(
     userEmail: str,
     scheduleInfo: ScheduleInfo,
-    scheduleCRUD=Depends(EBDataBase.schedule.createCRUD),
+    scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
 ):
     try:
         schedule_feature.createSchedule(

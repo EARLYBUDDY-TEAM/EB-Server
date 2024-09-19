@@ -11,15 +11,16 @@ def test_addSchedule_SUCCESS(
     # given
     email = "email"
     password = "password"
+    refreshToken = "refreshToken"
     userInfo = UserInfo(email, password)
-    user = userInfo.toUser()
+    user = userInfo.toUser(refreshToken=refreshToken)
     schedule_MockUserCRUD.create(user)
     scheduleInfo = ScheduleInfo.mock()
 
     def getMockScheduleDB():
         yield schedule_MockScheduleCRUD
 
-    app.dependency_overrides[EBDataBase.schedule.createCRUD] = getMockScheduleDB
+    app.dependency_overrides[EBDataBase.schedule.getCRUD] = getMockScheduleDB
     testClient = TestClient(app)
 
     # when
@@ -29,7 +30,10 @@ def test_addSchedule_SUCCESS(
 
     # then
     assert response.status_code == 200
-    del app.dependency_overrides[EBDataBase.schedule.createCRUD]
+    del app.dependency_overrides[EBDataBase.schedule.getCRUD]
+
+    # delete schedule table
+    schedule_MockScheduleCRUD.dropAll(userEmail=email)
 
 
 def test_addSchedule_FAIL(testClient):
