@@ -31,7 +31,8 @@ class EBDataBase(Enum):
             case EBDataBase.place:
                 return PlaceCRUD(session)
 
-    def getCRUD(self, session=sessionMaker()):
+    def getCRUD(self):
+        session = sessionMaker()
         crud = self.createCRUD(session)
         try:
             yield crud
@@ -63,7 +64,7 @@ class EBDataBase(Enum):
         testUser = User(
             email=email,
             hashedPassword=hashedPassword,
-            refreshToken="refreshToken",
+            refreshToken="",
         )
         userCRUD.create(user=testUser)
         userCRUD.commit()
