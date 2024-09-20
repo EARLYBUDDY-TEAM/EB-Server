@@ -1,7 +1,5 @@
 import time
-from fastapi import FastAPI, Request, Response, Depends
-from typing import Annotated
-from eb_fast_api.service.jwt.sources.token_service import verifyToken
+from fastapi import FastAPI, Request, Response
 
 
 app = FastAPI()
@@ -12,7 +10,7 @@ from eb_fast_api.domain.auth.login.sources import login_router
 from eb_fast_api.domain.map.place.sources import place_router
 from eb_fast_api.domain.map.route.sources import route_router
 from eb_fast_api.domain.schedule.sources import schedule_router
-from eb_fast_api.service.jwt.sources import token_service
+from eb_fast_api.domain.token.sources import token_router
 
 
 app.include_router(register_routers.router)
@@ -20,7 +18,7 @@ app.include_router(login_router.router)
 app.include_router(place_router.router)
 app.include_router(route_router.router)
 app.include_router(schedule_router.router)
-app.include_router(token_service.router)
+app.include_router(token_router.router)
 
 
 @app.middleware("http")

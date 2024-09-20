@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.domain.schedule.sources import schedule_feature
 from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
 from eb_fast_api.database.sources.database import EBDataBase
-from eb_fast_api.service.jwt.sources.token_service import verifyToken
 
 
 router = APIRouter(prefix="/schedule")
@@ -10,8 +9,8 @@ router = APIRouter(prefix="/schedule")
 
 @router.post("/add")
 async def addSchedule(
-    userEmail: str,
     scheduleInfo: ScheduleInfo,
+    userEmail: str,
     scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
 ):
     try:

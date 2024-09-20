@@ -1,4 +1,4 @@
-from fastapi import Security, HTTPException, APIRouter, Depends
+from fastapi import Security, HTTPException
 from fastapi.security import APIKeyHeader
 from eb_fast_api.service.jwt.sources.jwt_service import jwtService
 
@@ -16,11 +16,3 @@ def verifyToken(
         )
     else:
         return email
-
-
-router = APIRouter(prefix="/test_token_service")
-
-
-@router.get("/test_token")
-def test_token(userEmail=Depends(verifyToken)):
-    return {"userEmail": userEmail}
