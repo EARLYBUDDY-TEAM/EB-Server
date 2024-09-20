@@ -12,7 +12,10 @@ def test_login_ERROR_no_user(testClient):
     assert response.status_code == 400
 
 
-def test_login_ERROR_invalid_password(loginMockUserCRUD, loginMockScheduleCRUD):
+def test_login_ERROR_invalid_password(
+    loginMockUserCRUD,
+    loginMockScheduleCRUD,
+):
     # given
     email = "email"
     password = "password12"
@@ -76,8 +79,8 @@ def test_login_SUCCESS(
         accessToken=expectAccessToken,
         refreshToken=expectRefreshToken,
     ).model_dump(mode="json")
-    resultToken = response.json()
-    assert expectToken == resultToken
+    responseToken = response.json()
+    assert expectToken == responseToken
 
     expectUser = loginMockUserCRUD.read(email=email)
     assert expectUser.refreshToken == expectRefreshToken

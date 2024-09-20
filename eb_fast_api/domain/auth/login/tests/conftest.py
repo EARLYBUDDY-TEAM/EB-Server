@@ -44,3 +44,4 @@ def testClient(loginMockUserCRUD, loginMockJWTService):
 
     del app.dependency_overrides[EBDataBase.user.getCRUD]
     del app.dependency_overrides[getJWTService]
+    del testClient

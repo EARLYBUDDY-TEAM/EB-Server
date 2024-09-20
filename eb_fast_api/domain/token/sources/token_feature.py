@@ -3,11 +3,7 @@ from fastapi.security import APIKeyHeader
 from eb_fast_api.service.jwt.sources.jwt_service import jwtService
 
 
-def verifyToken(
-    token=Security(
-        APIKeyHeader(name="access-token"),
-    )
-) -> str:
+def verifyToken(token: str) -> str:
     email = jwtService.checkTokenExpired(token)
     if email == None:
         raise HTTPException(
@@ -16,3 +12,11 @@ def verifyToken(
         )
     else:
         return email
+
+
+def getUserEmail(
+    token=Security(
+        APIKeyHeader(name="access_token"),
+    )
+) -> str:
+    return verifyToken(token)

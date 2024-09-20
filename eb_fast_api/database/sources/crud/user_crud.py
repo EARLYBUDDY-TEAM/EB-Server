@@ -21,10 +21,6 @@ class UserCRUD(BaseCRUD):
         refreshToken: Optional[str] = None,
     ):
         user = self.read(email=key_email)
-        if user == None:
-            print("Not Exist User, Cannot Update ...")
-            return
-
         user.hashedPassword = hashedPassword or user.hashedPassword
         user.refreshToken = refreshToken or user.refreshToken
         self.session.flush()
