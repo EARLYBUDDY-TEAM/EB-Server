@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
-from typing import Annotated
 from eb_fast_api.domain.schedule.sources import schedule_feature
 from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
 from eb_fast_api.database.sources.database import EBDataBase
+from eb_fast_api.service.jwt.sources.token_service import verifyToken
 
 
 router = APIRouter(prefix="/schedule")

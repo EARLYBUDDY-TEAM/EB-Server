@@ -12,6 +12,7 @@ from eb_fast_api.domain.auth.login.sources import login_router
 from eb_fast_api.domain.map.place.sources import place_router
 from eb_fast_api.domain.map.route.sources import route_router
 from eb_fast_api.domain.schedule.sources import schedule_router
+from eb_fast_api.service.jwt.sources import token_service
 
 
 app.include_router(register_routers.router)
@@ -19,6 +20,7 @@ app.include_router(login_router.router)
 app.include_router(place_router.router)
 app.include_router(route_router.router)
 app.include_router(schedule_router.router)
+app.include_router(token_service.router)
 
 
 @app.middleware("http")
@@ -47,11 +49,6 @@ async def add_process_time_header(request: Request, call_next):
 @app.get("/")
 def read_root():
     return "Hello EarlyBuddy Fast API !!!"
-
-
-@app.get("/test_token")
-def test_token(userEmail: Annotated[str, Depends(verifyToken)]):
-    return {"userEmail": userEmail}
 
 
 if __name__ == "__main__":

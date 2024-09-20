@@ -97,9 +97,12 @@ class JWTService:
         return decoded["sub"] if decoded and now < decoded["exp"] else None
 
 
+jwtService = JWTService()
+
+
 def getJWTService():
-    jwtService = JWTService()
+    tmpJWT = JWTService()
     try:
-        yield jwtService
+        yield tmpJWT
     finally:
-        del jwtService
+        del tmpJWT
