@@ -1,9 +1,10 @@
-from sqlalchemy import String, DateTime, Boolean
+from sqlalchemy import String, DateTime, Boolean, Engine
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.schema import Table
+from sqlalchemy.schema import Table, MetaData
 from typing import Optional, Self
 from datetime import datetime
 from eb_fast_api.database.sources.model.base_model import Base
+from eb_fast_api.database.sources.connection import engine
 
 
 class Schedule:
@@ -49,15 +50,24 @@ class Schedule:
         return email + "_" + "schedule"
 
     @classmethod
-    def getTable(cls, email: str) -> Table:
+    def getTable(
+        cls,
+        email: str,
+        engine: Engine = engine,
+    ) -> Table:
         scheduleTableName = Schedule.getTableName(email)
-        scheduleTable = Base.metadata.tables.get(scheduleTableName)
+        scheduleMetaData = MetaData()
+        scheduleMetaData.reflect(
+            bind=engine,
+            only=[scheduleTableName],
+        )
+        scheduleTable = scheduleMetaData.tables.get(scheduleTableName)
         if scheduleTable == None:
-            raise Exception(f"Not Exist Table : {scheduleTableName}")
+            raise Exception(f"No Exist Table : {scheduleTableName}")
         return scheduleTable
 
     @classmethod
-    def addToMetaData(cls, email: str):
+    def createMixinSchedule(cls, email: str):
         tableName = Schedule.getTableName(email)
 
         class MixinSchedule(Schedule, Base):

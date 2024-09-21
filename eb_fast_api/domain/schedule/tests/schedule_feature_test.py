@@ -26,10 +26,14 @@ def test_createSchedule(
     # then
     placeCount = schedule_MockScheduleCRUD.session.query(Place).count()
     assert placeCount == 2
-    scheduleTable = Schedule.getTable(email=email)
+    mockEngine = schedule_MockScheduleCRUD.engine()
+    scheduleTable = Schedule.getTable(
+        email=email,
+        engine=mockEngine,
+    )
     scheduleCount = schedule_MockScheduleCRUD.session.query(scheduleTable).count()
     assert scheduleCount == 1
     user = schedule_MockUserCRUD.read(email)
 
     # delete schedule table
-    schedule_MockScheduleCRUD.dropAll(userEmail=email)
+    schedule_MockScheduleCRUD.dropTable(userEmail=email)

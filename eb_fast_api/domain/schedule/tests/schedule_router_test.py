@@ -47,7 +47,7 @@ def test_addSchedule_SUCCESS(
     del app.dependency_overrides[getUserEmail]
 
     # delete schedule table
-    schedule_MockScheduleCRUD.dropAll(userEmail=email)
+    schedule_MockScheduleCRUD.dropTable(userEmail=email)
 
 
 def test_addSchedule_FAIL(testClient):

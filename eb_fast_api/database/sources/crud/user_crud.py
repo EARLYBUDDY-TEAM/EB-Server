@@ -5,7 +5,7 @@ from typing import Optional
 
 class UserCRUD(BaseCRUD):
     def create(self, user: User):
-        mixinSchedule = Schedule.addToMetaData(email=user.email)
+        mixinSchedule = Schedule.createMixinSchedule(email=user.email)
         mixinSchedule.__table__.create(bind=self.engine())
         self.session.add(user)
         self.session.flush()

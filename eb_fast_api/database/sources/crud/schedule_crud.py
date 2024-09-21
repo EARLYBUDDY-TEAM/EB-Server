@@ -12,7 +12,10 @@ class ScheduleCRUD(BaseCRUD):
         startPlace: Optional[Place],
         endPlace: Optional[Place],
     ):
-        scheduleTable = Schedule.getTable(email=userEmail)
+        scheduleTable = Schedule.getTable(
+            email=userEmail,
+            engine=self.engine(),
+        )
 
         if startPlace is not None or endPlace is not None:
             placeCRUD = PlaceCRUD(session=self.session)
@@ -32,16 +35,12 @@ class ScheduleCRUD(BaseCRUD):
         self.session.execute(stmt)
         self.session.flush()
 
-    def dropAll(self, userEmail: str):
-        self.dropTable(userEmail)
-        self.removeMetaData(userEmail)
-
     ### Caution !!! Session Close ###
     def dropTable(self, userEmail: str):
         self.session.close()
-        scheduleTable = Schedule.getTable(email=userEmail)
-        scheduleTable.drop(bind=self.engine())
-
-    def removeMetaData(self, userEmail: str):
-        scheduleTable = Schedule.getTable(email=userEmail)
+        scheduleTable = Schedule.getTable(
+            email=userEmail,
+            engine=self.engine(),
+        )
         Base.metadata.remove(scheduleTable)
+        scheduleTable.drop(bind=self.engine())

@@ -24,9 +24,12 @@ def test_scheduleCreate(mockSession, mockUserCRUD, mockScheduleCRUD):
     placeCount = mockSession.query(Place).count()
     assert placeCount == 2
 
-    scheduleTable = Schedule.getTable(email=user.email)
+    scheduleTable = Schedule.getTable(
+        email=user.email,
+        engine=mockSession.get_bind(),
+    )
     scheduleCount = mockSession.query(scheduleTable).count()
     assert scheduleCount == 1
 
     # delete schedule table
-    mockScheduleCRUD.dropAll(userEmail=user.email)
+    mockScheduleCRUD.dropTable(userEmail=user.email)

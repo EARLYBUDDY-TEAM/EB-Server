@@ -101,7 +101,7 @@ def test_recreateToken_Success(
     del app.dependency_overrides[getJWTService]
 
     # delete schedule table
-    tokenMockScheduleCRUD.dropAll(userEmail=user.email)
+    tokenMockScheduleCRUD.dropTable(userEmail=user.email)
 
 
 def test_recreateToken_FAIL(

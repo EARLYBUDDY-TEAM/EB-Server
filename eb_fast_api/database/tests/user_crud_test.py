@@ -23,7 +23,7 @@ def test_create(mockUserCRUD, mockScheduleCRUD, mockSession):
     assert True == inspect(mockEngine).has_table(table_name=scheduleTableName)
 
     # delete schedule table
-    mockScheduleCRUD.dropAll(userEmail=user.email)
+    mockScheduleCRUD.dropTable(userEmail=user.email)
 
 
 def test_read(mockUserCRUD, mockScheduleCRUD):
@@ -39,7 +39,7 @@ def test_read(mockUserCRUD, mockScheduleCRUD):
     assert user == fetchedUser
 
     # delete schedule table
-    mockScheduleCRUD.dropAll(userEmail=user.email)
+    mockScheduleCRUD.dropTable(userEmail=user.email)
 
 
 def test_update(mockUserCRUD, mockScheduleCRUD):
@@ -63,4 +63,4 @@ def test_update(mockUserCRUD, mockScheduleCRUD):
     assert fetchedUser.refreshToken == newRefreshToken
 
     # delete schedule table
-    mockScheduleCRUD.dropAll(userEmail=user.email)
+    mockScheduleCRUD.dropTable(userEmail=user.email)

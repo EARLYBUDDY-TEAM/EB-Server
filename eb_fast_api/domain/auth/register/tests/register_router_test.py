@@ -41,7 +41,7 @@ def test_register_FAIL_exist_user(
     del app.dependency_overrides[EBDataBase.user.getCRUD]
 
     # delete schedule table
-    registerMockScheduleCRUD.dropAll(userEmail=email)
+    registerMockScheduleCRUD.dropTable(userEmail=email)
 
 
 def test_register_SUCCESS(
@@ -61,4 +61,4 @@ def test_register_SUCCESS(
     assert response.status_code == 200
 
     # delete schedule table
-    registerMockScheduleCRUD.dropAll(userEmail=email)
+    registerMockScheduleCRUD.dropTable(userEmail=email)

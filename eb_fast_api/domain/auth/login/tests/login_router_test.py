@@ -40,7 +40,7 @@ def test_login_ERROR_invalid_password(
     del app.dependency_overrides[EBDataBase.user.getCRUD]
 
     # delete schedule table
-    loginMockScheduleCRUD.dropAll(userEmail=user.email)
+    loginMockScheduleCRUD.dropTable(userEmail=user.email)
 
 
 def test_login_SUCCESS(
@@ -90,4 +90,4 @@ def test_login_SUCCESS(
     del app.dependency_overrides[getJWTService]
 
     # delete schedule table
-    loginMockScheduleCRUD.dropAll(userEmail=user.email)
+    loginMockScheduleCRUD.dropTable(userEmail=user.email)
