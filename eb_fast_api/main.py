@@ -10,6 +10,7 @@ from eb_fast_api.domain.auth.login.sources import login_router
 from eb_fast_api.domain.map.place.sources import place_router
 from eb_fast_api.domain.map.route.sources import route_router
 from eb_fast_api.domain.schedule.sources import schedule_router
+from eb_fast_api.domain.token.sources import token_router
 
 
 app.include_router(register_routers.router)
@@ -17,6 +18,7 @@ app.include_router(login_router.router)
 app.include_router(place_router.router)
 app.include_router(route_router.router)
 app.include_router(schedule_router.router)
+app.include_router(token_router.router)
 
 
 @app.middleware("http")
@@ -49,9 +51,7 @@ def read_root():
 
 if __name__ == "__main__":
     import uvicorn
-    from eb_fast_api.database.sources.database import checkConnection
-    from eb_fast_api.database.sources.model import createTable
+    from eb_fast_api.database.sources.database import EBDataBase
 
-    checkConnection()
-    createTable()
+    EBDataBase.initialize()
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

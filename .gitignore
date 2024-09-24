@@ -7,4 +7,5 @@ __pycache__
 
 eb_fast_api/env/dot_env_files/.api
 eb_fast_api/env/dot_env_files/.mysql
+eb_fast_api/env/dot_env_files/.test_user
 mysql/

@@ -1,4 +1,9 @@
-from eb_fast_api.env.sources.env import API_VALUE, MYSQL_VALUE, dot_env_dir
+from eb_fast_api.env.sources.env import (
+    API_VALUE,
+    MYSQL_VALUE,
+    TEST_USER_VALUE,
+    dot_env_dir,
+)
 
 
 def test_get_value_API():
@@ -17,3 +22,11 @@ def test_get_value_MYSQL():
     assert env_mysql.MYSQL_DATABASE == "earlybuddy_db"
     assert env_mysql.MYSQL_USER == "earlybuddy"
     assert env_mysql.MYSQL_PASSWORD == "1234"
+
+
+def test_get_value_TEST_USER():
+    env_file = dot_env_dir.joinpath(".test_user_example")
+    env_test_user = TEST_USER_VALUE(env_file=env_file)
+
+    assert env_test_user.email == "email@email.com"
+    assert env_test_user.password == "password12"

@@ -1,34 +1,71 @@
-from sqlalchemy import create_engine, Engine
-from sqlalchemy.orm import sessionmaker, Session
-from eb_fast_api.env.sources.env import ENV_MYSQL
+from enum import Enum
+from sqlalchemy import Engine
+from eb_fast_api.database.sources.connection import (
+    engine,
+    sessionMaker,
+    checkConnection,
+)
+from eb_fast_api.database.sources.model.models import Base, User
+from eb_fast_api.database.sources.crud.cruds import (
+    PlaceCRUD,
+    ScheduleCRUD,
+    UserCRUD,
+)
+from eb_fast_api.env.sources.env import ENV_TEST_USER
+from eb_fast_api.snippets.sources import pwdcrypt
 
 
-def createEngine(
-    user: str = ENV_MYSQL.MYSQL_USER,
-    pwd: str = ENV_MYSQL.MYSQL_PASSWORD,
-    host: str = "eb_database",
-    port: int = ENV_MYSQL.MYSQL_PORT,
-    db: str = ENV_MYSQL.MYSQL_DATABASE,
-) -> Engine:
-    DB_URL = f"mysql+pymysql://{user}:{pwd}@{host}:{port}/{db}"
-    engine = create_engine(DB_URL)
-    return engine
+class EBDataBase(Enum):
+    base = "base"
+    user = "user"
+    schedule = "schedule"
+    place = "place"
 
+    # session 파라미터 타입지정했는데 왜 오류????
+    def createCRUD(self, session):
+        match self:
+            case EBDataBase.user:
+                return UserCRUD(session)
+            case EBDataBase.schedule:
+                return ScheduleCRUD(session)
+            case EBDataBase.place:
+                return PlaceCRUD(session)
 
-engine = createEngine()
+    def getCRUD(self):
+        session = sessionMaker()
+        crud = self.createCRUD(session)
+        try:
+            yield crud
+        finally:
+            session.close()
+            del crud
 
+    @classmethod
+    def initialize(
+        self,
+        engine: Engine = engine,
+    ):
+        checkConnection(engine=engine)
+        print("Success Connect to DB")
 
-def checkConnection(engine: Engine = engine):
-    try:
-        engine.connect()
-        print("Success Database Connect")
-    except:
-        raise "Fail Database Connect"
+        Base.metadata.create_all(bind=engine)
+        print("Success Create Table")
 
+        session = sessionMaker()
+        userCRUD = EBDataBase.user.createCRUD(session=session)
+        email = ENV_TEST_USER.email
 
-def createSessionMaker(engine: Engine = engine) -> sessionmaker[Session]:
-    sessionMaker = sessionmaker(autoflush=False, bind=engine)
-    return sessionMaker
+        fetchedUser = userCRUD.read(email=email)
+        if fetchedUser != None:
+            session.close()
+            return
 
-
-sessionMaker = createSessionMaker()
+        hashedPassword = pwdcrypt.hash(password=ENV_TEST_USER.password)
+        testUser = User(
+            email=email,
+            hashedPassword=hashedPassword,
+            refreshToken="",
+        )
+        userCRUD.create(user=testUser)
+        userCRUD.commit()
+        session.close()

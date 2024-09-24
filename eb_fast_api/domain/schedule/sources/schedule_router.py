@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.domain.schedule.sources import schedule_feature
-from eb_fast_api.database.sources.crud import getDB
 from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
+from eb_fast_api.domain.token.sources.token_feature import getUserEmail
+from eb_fast_api.database.sources.database import EBDataBase
 
 
 router = APIRouter(prefix="/schedule")
@@ -9,24 +10,23 @@ router = APIRouter(prefix="/schedule")
 
 @router.post("/add")
 async def addSchedule(
-    userEmail: str,
     scheduleInfo: ScheduleInfo,
-    db=Depends(getDB),
+    userEmail=Depends(getUserEmail),
+    scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
 ):
-    print(scheduleInfo)
-    print("checkckckckckckkc")
     try:
         schedule_feature.createSchedule(
             userEmail,
             scheduleInfo,
-            db,
+            scheduleCRUD,
         )
-    except:
+    except Exception as e:
+        print(e)
         # 다른 에러 상황은?
         raise HTTPException(
             status_code=400,
             detail="서버 스케줄 생성 에러",
         )
 
-    db.commit()
+    scheduleCRUD.commit()
     return

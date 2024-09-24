@@ -1,21 +1,20 @@
 from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.snippets.sources import pwdcrypt
-from eb_fast_api.database.sources.crud import getDB
-from eb_fast_api.domain.auth.login.sources.login_schema import Token
-from eb_fast_api.domain.schema.sources.schema import UserInfo
+from eb_fast_api.database.sources.database import EBDataBase
+from eb_fast_api.domain.schema.sources.schema import Token, UserInfo
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
 
 
 router = APIRouter(prefix="/auth/login")
 
 
-@router.post("", response_model=Token)
+@router.post("")
 def login(
     loginInfo: UserInfo,
-    db=Depends(getDB),
+    userCRUD=Depends(EBDataBase.user.getCRUD),
     jwtService=Depends(getJWTService),
-):
-    user = db.userRead(loginInfo.email)
+) -> Token:
+    user = userCRUD.read(email=loginInfo.email)
 
     if not user:
         raise HTTPException(
@@ -24,7 +23,8 @@ def login(
         )
 
     if not pwdcrypt.check(
-        password=loginInfo.password, hashedPassword=user.hashedPassword
+        password=loginInfo.password,
+        hashedPassword=user.hashedPassword,
     ):
         raise HTTPException(
             status_code=401,
@@ -33,5 +33,11 @@ def login(
 
     accessToken = jwtService.createAccessToken(user.email)
     refreshToken = jwtService.createRefreshToken(user.email)
+
+    userCRUD.update(
+        key_email=loginInfo.email,
+        refreshToken=refreshToken,
+    )
+    userCRUD.commit()
 
     return Token(accessToken, refreshToken)
