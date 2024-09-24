@@ -10,7 +10,7 @@ router = APIRouter(prefix="/token")
 
 
 @router.get("/recreate")
-def recreateToken(
+def recreate_token(
     refreshToken=Security(
         APIKeyHeader(name="refresh_token"),
     ),
@@ -35,5 +35,7 @@ def recreateToken(
 
 
 @router.get("/test_get_user_email_in_router")
-def testGetUserEmailInRouter(userEmail=Depends(getUserEmail)):
+def test_get_user_email_in_router(
+    userEmail=Depends(getUserEmail),
+):
     return {"userEmail": userEmail}
