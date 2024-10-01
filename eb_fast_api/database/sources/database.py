@@ -61,7 +61,9 @@ class EBDataBase(Enum):
             return
 
         hashedPassword = pwdcrypt.hash(password=ENV_TEST_USER.password)
+        name = ENV_TEST_USER.name
         testUser = User(
+            name=name,
             email=email,
             hashedPassword=hashedPassword,
             refreshToken="",

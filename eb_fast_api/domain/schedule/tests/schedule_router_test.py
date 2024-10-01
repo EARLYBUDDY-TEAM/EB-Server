@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.domain.schema.sources.schema import ScheduleInfo, UserInfo
+from eb_fast_api.domain.schema.sources.schema import ScheduleInfo, RegisterInfo
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.domain.token.testings.mock_token_feature import (
@@ -17,8 +17,13 @@ def test_addSchedule_SUCCESS(
     email = mockEmail
     password = "password"
     refreshToken = "refreshToken"
-    userInfo = UserInfo(email, password)
-    user = userInfo.toUser(refreshToken=refreshToken)
+    name = "name"
+    registerInfo = RegisterInfo(
+        name=name,
+        email=email,
+        password=password,
+    )
+    user = registerInfo.toUser(refreshToken=refreshToken)
     schedule_MockUserCRUD.create(user)
     scheduleInfo = ScheduleInfo.mock()
 

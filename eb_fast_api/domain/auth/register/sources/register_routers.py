@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.domain.auth.register.sources import register_feature
-from eb_fast_api.domain.schema.sources.schema import UserInfo
 from eb_fast_api.database.sources.database import EBDataBase
+from eb_fast_api.domain.schema.sources.schema import RegisterInfo
 
 
 router = APIRouter(prefix="/auth/register")
@@ -9,7 +9,7 @@ router = APIRouter(prefix="/auth/register")
 
 @router.post("")
 def register(
-    registerInfo: UserInfo,
+    registerInfo: RegisterInfo,
     userCRUD=Depends(EBDataBase.user.getCRUD),
 ):
     if not register_feature.isValidEmail(

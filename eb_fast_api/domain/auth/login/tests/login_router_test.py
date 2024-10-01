@@ -1,8 +1,10 @@
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.domain.schema.sources.schema import UserInfo, Token
+from eb_fast_api.domain.schema.sources.schema import Token, LoginInfo
 from eb_fast_api.database.sources.database import EBDataBase
+from eb_fast_api.database.sources.model.user import User
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
+from eb_fast_api.snippets.sources import pwdcrypt
 
 
 def test_login_ERROR_no_user(testClient):
@@ -20,8 +22,13 @@ def test_login_ERROR_invalid_password(
     email = "email"
     password = "password12"
     refreshToken = "refreshToken"
-    userInfo = UserInfo(email=email, password=password)
-    user = userInfo.toUser(refreshToken=refreshToken)
+    loginInfo = LoginInfo(email=email, password=password)
+    hashedPassword = pwdcrypt.hash(password)
+    user = User.mock(
+        email=email,
+        refreshToken=refreshToken,
+        hashedPassword=hashedPassword,
+    )
     loginMockUserCRUD.create(user)
 
     def getMockUserCRUD():
@@ -31,8 +38,8 @@ def test_login_ERROR_invalid_password(
     testClient = TestClient(app)
 
     # when
-    userInfo.password += "errorString"
-    json = userInfo.model_dump(mode="json")
+    loginInfo.password += "errorString"
+    json = loginInfo.model_dump(mode="json")
     response = testClient.post("/auth/login", json=json)
 
     # then
@@ -52,8 +59,13 @@ def test_login_SUCCESS(
     email = "email"
     password = "password12"
     refreshToken = "refreshToken"
-    userInfo = UserInfo(email, password)
-    user = userInfo.toUser(refreshToken=refreshToken)
+    loginInfo = LoginInfo(email, password)
+    hashedPassword = pwdcrypt.hash(password)
+    user = User.mock(
+        email=email,
+        refreshToken=refreshToken,
+        hashedPassword=hashedPassword,
+    )
     loginMockUserCRUD.create(user)
 
     def getMockUserCRUD():
@@ -67,7 +79,7 @@ def test_login_SUCCESS(
     testClient = TestClient(app)
 
     # when
-    json = userInfo.model_dump(mode="json")
+    json = loginInfo.model_dump(mode="json")
     response = testClient.post("/auth/login", json=json)
 
     # then

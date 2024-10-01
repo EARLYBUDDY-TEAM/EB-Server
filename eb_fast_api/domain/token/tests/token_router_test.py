@@ -1,4 +1,4 @@
-from eb_fast_api.domain.schema.sources.schema import Token, UserInfo
+from eb_fast_api.domain.schema.sources.schema import Token, RegisterInfo
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
 from fastapi.testclient import TestClient
@@ -59,8 +59,13 @@ def test_recreateToken_Success(
     email = "email"
     password = "password12"
     refreshToken = "refreshToken"
-    userInfo = UserInfo(email, password)
-    user = userInfo.toUser(refreshToken=refreshToken)
+    name = "name"
+    registerInfo = RegisterInfo(
+        name=name,
+        email=email,
+        password=password,
+    )
+    user = registerInfo.toUser(refreshToken=refreshToken)
     tokenMockUserCRUD.create(user)
     refreshToken = realJWTService.createRefreshToken(email=email)
     headers = {"refresh_token": refreshToken}
