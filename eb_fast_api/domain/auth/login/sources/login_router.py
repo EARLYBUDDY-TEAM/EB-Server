@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.snippets.sources import pwdcrypt
 from eb_fast_api.database.sources.database import EBDataBase
-from eb_fast_api.domain.schema.sources.schema import Token, UserInfo
+from eb_fast_api.domain.schema.sources.schema import Token, LoginInfo
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
 
 
@@ -10,7 +10,7 @@ router = APIRouter(prefix="/auth/login")
 
 @router.post("")
 def login(
-    loginInfo: UserInfo,
+    loginInfo: LoginInfo,
     userCRUD=Depends(EBDataBase.user.getCRUD),
     jwtService=Depends(getJWTService),
 ) -> Token:

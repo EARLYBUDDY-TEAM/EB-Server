@@ -1,8 +1,8 @@
 from pydantic import BaseModel
-from eb_fast_api.snippets.sources import pwdcrypt
 from typing import Optional
 from datetime import datetime
 from eb_fast_api.database.sources.model.models import User, Schedule, Place
+from eb_fast_api.snippets.sources import pwdcrypt
 
 
 class Coordi(BaseModel):
@@ -51,6 +51,40 @@ class PlaceInfo(BaseModel):
         )
 
 
+class LoginInfo(BaseModel):
+    email: str
+    password: str
+
+    def __init__(self, email: str, password: str):
+        super().__init__(email=email, password=password)
+
+
+class RegisterInfo(BaseModel):
+    name: str
+    email: str
+    password: str
+
+    def __init__(
+        self,
+        name: str,
+        email: str,
+        password: str,
+    ):
+        super().__init__(
+            email=email,
+            password=password,
+            name=name,
+        )
+
+    def toUser(self, refreshToken: str) -> User:
+        return User(
+            email=self.email,
+            name=self.name,
+            hashedPassword=pwdcrypt.hash(self.password),
+            refreshToken=refreshToken,
+        )
+
+
 class ScheduleInfo(BaseModel):
     title: str
     time: datetime
@@ -91,21 +125,6 @@ class ScheduleInfo(BaseModel):
             isNotify=False,
             startPlace=startPlace,
             endPlace=endPlace,
-        )
-
-
-class UserInfo(BaseModel):
-    email: str
-    password: str
-
-    def __init__(self, email: str, password: str):
-        super().__init__(email=email, password=password)
-
-    def toUser(self, refreshToken: str) -> User:
-        return User(
-            email=self.email,
-            hashedPassword=pwdcrypt.hash(self.password),
-            refreshToken=refreshToken,
         )
 
 
