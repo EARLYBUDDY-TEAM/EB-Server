@@ -39,6 +39,7 @@ def MYSQL_VALUE(env_file: Path):
 
 def TEST_USER_VALUE(env_file: Path):
     class TEST_USER_BaseSettings(BaseSettings):
+        name: str
         email: str
         password: str
 
