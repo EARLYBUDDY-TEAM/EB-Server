@@ -1,7 +1,7 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.crud.place_crud import PlaceCRUD
 from eb_fast_api.database.sources.model.models import Schedule, Place, Base
-from typing import Optional
+from typing import Optional, List
 
 
 class ScheduleCRUD(BaseCRUD):
@@ -34,6 +34,17 @@ class ScheduleCRUD(BaseCRUD):
         )
         self.session.execute(stmt)
         self.session.flush()
+
+    def read_all(
+        self,
+        userEmail: str,
+    ) -> List[Schedule]:
+        scheduleTable = Schedule.getTable(
+            email=userEmail,
+            engine=self.engine(),
+        )
+        scheduleList = self.session.query(scheduleTable).all()
+        return scheduleList
 
     ### Caution !!! Session Close ###
     def dropTable(self, userEmail: str):

@@ -33,11 +33,14 @@ class Schedule:
         self.endPlaceID = endPlaceID
 
     @classmethod
-    def mock(cls) -> Self:
+    def mock(
+        cls,
+        title: str = "title",
+    ) -> Self:
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
         return Schedule(
-            title="title",
+            title=title,
             memo="memo",
             time=time,
             isNotify=False,
