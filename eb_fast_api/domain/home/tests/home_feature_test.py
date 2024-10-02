@@ -1,5 +1,5 @@
 from eb_fast_api.domain.schema.sources.schema import RegisterInfo
-from eb_fast_api.database.sources.model.models import Schedule
+from eb_fast_api.database.sources.model.models import Schedule, Place
 from eb_fast_api.domain.home.sources import home_feature
 
 
@@ -53,3 +53,25 @@ def test_read_all_schedule(
 
     # delete schedule table
     home_MockScheduleCRUD.dropTable(userEmail=email)
+
+
+def test_schedule_to_schedulecard(
+    home_MockPlaceCRUD,
+):
+    # given
+    mockPlace = Place.mock()
+    home_MockPlaceCRUD.create(place=mockPlace)
+    mockSchedule = Schedule.mock()
+    mockSchedule.endPlaceID = mockPlace.id
+
+    # when
+    scheduleCard = home_feature.schedule_to_schedulecard(
+        schedule=mockSchedule,
+        placeCRUD=home_MockPlaceCRUD,
+    )
+
+    # then
+    assert scheduleCard.scheduleID == mockSchedule.id
+    assert scheduleCard.title == mockSchedule.title
+    assert scheduleCard.time == mockSchedule.time
+    assert scheduleCard.endPlaceName == mockPlace.name

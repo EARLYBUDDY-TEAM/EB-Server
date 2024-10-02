@@ -35,11 +35,12 @@ class Schedule:
     @classmethod
     def mock(
         cls,
+        id: int = 10,
         title: str = "title",
     ) -> Self:
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
-        return Schedule(
+        mockSchedule = Schedule(
             title=title,
             memo="memo",
             time=time,
@@ -47,6 +48,8 @@ class Schedule:
             startPlaceID="startPlaceID",
             endPlaceID="endPlaceID",
         )
+        mockSchedule.id = id
+        return mockSchedule
 
     @classmethod
     def getTableName(cls, email: str) -> str:
