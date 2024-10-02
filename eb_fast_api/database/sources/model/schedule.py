@@ -35,7 +35,6 @@ class Schedule:
     @classmethod
     def mock(
         cls,
-        id: int = 10,
         title: str = "title",
     ) -> Self:
         timeString = "2024-07-28T05:04:32.299Z"
@@ -48,7 +47,6 @@ class Schedule:
             startPlaceID="startPlaceID",
             endPlaceID="endPlaceID",
         )
-        mockSchedule.id = id
         return mockSchedule
 
     @classmethod

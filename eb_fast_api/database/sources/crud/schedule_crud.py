@@ -47,7 +47,10 @@ class ScheduleCRUD(BaseCRUD):
         return scheduleList
 
     ### Caution !!! Session Close ###
-    def dropTable(self, userEmail: str):
+    def dropTable(
+        self,
+        userEmail: str,
+    ):
         self.session.close()
         scheduleTable = Schedule.getTable(
             email=userEmail,

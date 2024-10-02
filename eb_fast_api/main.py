@@ -11,6 +11,7 @@ from eb_fast_api.domain.map.place.sources import place_router
 from eb_fast_api.domain.map.route.sources import route_router
 from eb_fast_api.domain.schedule.sources import schedule_router
 from eb_fast_api.domain.token.sources import token_router
+from eb_fast_api.domain.home.sources import home_router
 
 
 app.include_router(register_routers.router)
@@ -19,6 +20,7 @@ app.include_router(place_router.router)
 app.include_router(route_router.router)
 app.include_router(schedule_router.router)
 app.include_router(token_router.router)
+app.include_router(home_router.router)
 
 
 @app.middleware("http")

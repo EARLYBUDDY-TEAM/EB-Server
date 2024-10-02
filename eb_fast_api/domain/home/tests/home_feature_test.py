@@ -62,6 +62,7 @@ def test_schedule_to_schedulecard(
     mockPlace = Place.mock()
     home_MockPlaceCRUD.create(place=mockPlace)
     mockSchedule = Schedule.mock()
+    mockSchedule.id = 10
     mockSchedule.endPlaceID = mockPlace.id
 
     # when

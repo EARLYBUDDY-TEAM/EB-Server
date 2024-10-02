@@ -2,7 +2,6 @@ from typing import List
 from eb_fast_api.database.sources.model.models import Schedule
 from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PlaceCRUD
 from eb_fast_api.domain.home.sources.home_schema import ScheduleCard
-from datetime import datetime
 
 
 def read_all_schedule(
