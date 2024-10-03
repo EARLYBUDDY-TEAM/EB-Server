@@ -5,7 +5,7 @@ from eb_fast_api.database.sources.connection import (
     sessionMaker,
     checkConnection,
 )
-from eb_fast_api.database.sources.model.models import Base, User
+from eb_fast_api.database.sources.model.models import Base, User, Schedule
 from eb_fast_api.database.sources.crud.cruds import (
     PlaceCRUD,
     ScheduleCRUD,
@@ -13,6 +13,7 @@ from eb_fast_api.database.sources.crud.cruds import (
 )
 from eb_fast_api.env.sources.env import ENV_TEST_USER
 from eb_fast_api.snippets.sources import pwdcrypt
+from datetime import datetime
 
 
 class EBDataBase(Enum):
@@ -69,5 +70,21 @@ class EBDataBase(Enum):
             refreshToken="",
         )
         userCRUD.create(user=testUser)
-        userCRUD.commit()
+
+        scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
+        mockSchedule = Schedule(
+            title=f"{name}'s mock schedule",
+            time=datetime.now(),
+            isNotify=False,
+        )
+        scheduleCRUD.create(
+            userEmail=email,
+            schedule=mockSchedule,
+            startPlace=None,
+            endPlace=None,
+        )
+
+        session.commit()
         session.close()
+        del userCRUD
+        del scheduleCRUD
