@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from eb_fast_api.database.sources.model.models import Schedule
 from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PlaceCRUD
 from eb_fast_api.domain.home.sources.home_schema import ScheduleCard
@@ -21,11 +21,15 @@ def schedule_to_schedulecard(
     time = schedule.time
 
     endPlaceID = schedule.endPlaceID
-    endPlace = placeCRUD.read(placeID=endPlaceID)
+    endPlaceName: Optional[str] = None
+    if endPlaceID != None:
+        endPlace = placeCRUD.read(placeID=endPlaceID)
+        if endPlace != None:
+            endPlaceName = endPlace.name
 
     return ScheduleCard(
         scheduleID=scheduleID,
         title=title,
         time=time,
-        endPlaceName=endPlace.name,
+        endPlaceName=endPlaceName,
     )

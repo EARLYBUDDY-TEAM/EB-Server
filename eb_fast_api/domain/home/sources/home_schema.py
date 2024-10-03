@@ -1,13 +1,13 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import List, Self
+from typing import List, Self, Optional
 
 
 class ScheduleCard(BaseModel):
     scheduleID: int
     title: str
     time: datetime
-    endPlaceName: str
+    endPlaceName: Optional[str]
 
     @classmethod
     def mock(cls) -> Self:
