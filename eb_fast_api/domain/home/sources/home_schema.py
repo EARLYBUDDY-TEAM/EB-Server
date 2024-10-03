@@ -11,10 +11,12 @@ class ScheduleCard(BaseModel):
 
     @classmethod
     def mock(cls) -> Self:
+        timeString = "2024-07-28T05:04:32.299Z"
+        time = datetime.fromisoformat(timeString)
         return ScheduleCard(
             scheduleID=10,
             title="title",
-            time=datetime.now(),
+            time=time,
             endPlaceName="endPlaceName",
         )
 

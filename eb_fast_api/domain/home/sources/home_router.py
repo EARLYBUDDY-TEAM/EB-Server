@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
+from typing import List
 from eb_fast_api.domain.home.sources import home_feature
-from eb_fast_api.domain.home.sources.home_schema import ScheduleCardList
+from eb_fast_api.domain.home.sources.home_schema import ScheduleCardList, ScheduleCard
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.database.sources.database import EBDataBase
 
@@ -19,7 +20,7 @@ def get_all_schedule_cards(
         scheduleCRUD=scheduleCRUD,
     )
 
-    cards = [
+    cards: List[ScheduleCard] = [
         home_feature.schedule_to_schedulecard(
             schedule=schedule,
             placeCRUD=placeCRUD,

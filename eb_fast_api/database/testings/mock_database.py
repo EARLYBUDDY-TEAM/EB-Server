@@ -9,7 +9,8 @@ def mockCommitInBaseCRUD():
         return
 
     patcher = patch(
-        "eb_fast_api.database.sources.crud.base_crud.BaseCRUD.commit", new=mockCommit
+        "eb_fast_api.database.sources.crud.base_crud.BaseCRUD.commit",
+        new=mockCommit,
     )
     patcher.start()
 

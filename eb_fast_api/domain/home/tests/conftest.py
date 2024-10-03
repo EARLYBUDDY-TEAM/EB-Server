@@ -1,16 +1,18 @@
 import pytest
-from fastapi.testclient import TestClient
-from eb_fast_api.main import app
-from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.database.tests.conftest import (
-    mockSession,
     mockScheduleCRUD,
     mockUserCRUD,
     mockPlaceCRUD,
-    prepareTestDataBase,
 )
-from eb_fast_api.domain.token.sources.token_feature import getUserEmail
-from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
+from eb_fast_api.domain.home.testings.mock_home_feature import mocking_home_feature
+
+
+@pytest.fixture(scope="session")
+def mock_home_feature():
+    print("mock_home_feature, session start")
+    mocking_home_feature()
+    yield
+    print("mock_home_feature, session finish")
 
 
 @pytest.fixture(scope="function")
