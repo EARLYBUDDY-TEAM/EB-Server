@@ -2,6 +2,7 @@ from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.crud.place_crud import PlaceCRUD
 from eb_fast_api.database.sources.model.models import Schedule, Place, Base
 from typing import Optional, List
+from sqlalchemy.engine.row import Row
 
 
 class ScheduleCRUD(BaseCRUD):
@@ -38,13 +39,26 @@ class ScheduleCRUD(BaseCRUD):
     def read_all(
         self,
         userEmail: str,
-    ) -> List[Schedule]:
+    ) -> List[Row]:
         scheduleTable = Schedule.getTable(
             email=userEmail,
             engine=self.engine(),
         )
-        scheduleList = self.session.query(scheduleTable).all()
-        return scheduleList
+        scheduleRowList = self.session.query(scheduleTable).all()
+        return scheduleRowList
+
+    def delete(
+        self,
+        userEmail: str,
+        scheduleID: int,
+    ):
+        scheduleTable = Schedule.getTable(
+            email=userEmail,
+            engine=self.engine(),
+        )
+        stmt = scheduleTable.delete().where(scheduleTable.c.id == scheduleID)
+        self.session.execute(stmt)
+        self.session.flush()
 
     ### Caution !!! Session Close ###
     def dropTable(
