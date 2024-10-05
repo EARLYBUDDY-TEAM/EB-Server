@@ -23,7 +23,7 @@ class EBDataBase(Enum):
     place = "place"
 
     # session 파라미터 타입지정했는데 왜 오류????
-    def createCRUD(self, session):
+    def createCRUD(self, session = sessionMaker()):
         match self:
             case EBDataBase.user:
                 return UserCRUD(session)

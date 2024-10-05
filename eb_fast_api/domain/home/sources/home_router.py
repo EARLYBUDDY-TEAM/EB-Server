@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from eb_fast_api.domain.home.sources import home_feature
 from eb_fast_api.domain.home.sources.home_schema import ScheduleCardList, ScheduleCard
@@ -30,3 +30,21 @@ def get_all_schedule_cards(
 
     scheduleCardList = ScheduleCardList(scheduleCardList=cards)
     return scheduleCardList
+
+
+@router.delete("/delete_schedule_card")
+def delete_schedule_card(
+    scheduleID: int,
+    userEmail=Depends(getUserEmail),
+    scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
+):
+    try:
+        scheduleCRUD.delete(
+            userEmail=userEmail,
+            scheduleID=scheduleID,
+        )
+    except:
+        raise HTTPException(
+            status_code=400,
+            detail="스케줄 삭제 에러",
+        )
