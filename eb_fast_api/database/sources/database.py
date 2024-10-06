@@ -23,7 +23,7 @@ class EBDataBase(Enum):
     place = "place"
 
     # session 파라미터 타입지정했는데 왜 오류????
-    def createCRUD(self, session = sessionMaker()):
+    def createCRUD(self, session=sessionMaker()):
         match self:
             case EBDataBase.user:
                 return UserCRUD(session)
@@ -55,21 +55,18 @@ class EBDataBase(Enum):
         session = sessionMaker()
         userCRUD = EBDataBase.user.createCRUD(session=session)
         email = ENV_TEST_USER.email
+        name = ENV_TEST_USER.name
 
         fetchedUser = userCRUD.read(email=email)
-        if fetchedUser != None:
-            session.close()
-            return
-
-        hashedPassword = pwdcrypt.hash(password=ENV_TEST_USER.password)
-        name = ENV_TEST_USER.name
-        testUser = User(
-            name=name,
-            email=email,
-            hashedPassword=hashedPassword,
-            refreshToken="",
-        )
-        userCRUD.create(user=testUser)
+        if fetchedUser == None:
+            hashedPassword = pwdcrypt.hash(password=ENV_TEST_USER.password)
+            testUser = User(
+                name=name,
+                email=email,
+                hashedPassword=hashedPassword,
+                refreshToken="",
+            )
+            userCRUD.create(user=testUser)
 
         scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
         for i in range(10):
@@ -89,3 +86,7 @@ class EBDataBase(Enum):
         session.close()
         del userCRUD
         del scheduleCRUD
+
+
+if __name__ == "__main__":
+    EBDataBase.initialize()

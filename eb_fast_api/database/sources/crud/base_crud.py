@@ -15,5 +15,4 @@ class BaseCRUD:
         self.session.rollback()
 
     def commit(self):
-        print("origin commit")
         self.session.commit()

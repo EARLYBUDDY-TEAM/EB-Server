@@ -43,6 +43,7 @@ def delete_schedule_card(
             userEmail=userEmail,
             scheduleID=scheduleID,
         )
+        scheduleCRUD.commit()
     except:
         raise HTTPException(
             status_code=400,
