@@ -5,6 +5,7 @@ from typing import Optional, Self
 from datetime import datetime
 from eb_fast_api.database.sources.model.base_model import Base
 from eb_fast_api.database.sources.connection import engine
+from sqlalchemy.engine.row import Row
 
 
 class Schedule:
@@ -33,17 +34,21 @@ class Schedule:
         self.endPlaceID = endPlaceID
 
     @classmethod
-    def mock(cls) -> Self:
+    def mock(
+        cls,
+        title: str = "title",
+    ) -> Self:
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
-        return Schedule(
-            title="title",
+        mockSchedule = Schedule(
+            title=title,
             memo="memo",
             time=time,
             isNotify=False,
             startPlaceID="startPlaceID",
             endPlaceID="endPlaceID",
         )
+        return mockSchedule
 
     @classmethod
     def getTableName(cls, email: str) -> str:
@@ -73,8 +78,36 @@ class Schedule:
         class MixinSchedule(Schedule, Base):
             __tablename__ = tableName
 
+
             @classmethod
             def getTableName(cls) -> str:
                 return cls.__table__.name
 
         return MixinSchedule
+
+    
+    def toRowDict(self, id: int) -> dict:
+        return {
+            "id": id,
+            "title": self.title,
+            "memo": self.memo,
+            "time": self.time.replace(microsecond=0, tzinfo=None),
+            "isNotify": int(self.isNotify),
+            "startPlaceID": self.startPlaceID,
+            "endPlaceID": self.endPlaceID,
+        }
+
+
+
+
+    # @classmethod
+    # def getMixinSchedule(cls, email: str):
+    #     tableName = Schedule.getTableName(email)
+
+    #     class TmpMixinSchedule(Base):
+    #         __tablename__ = tableName
+
+    #     return TmpMixinSchedule()
+
+    # @classmethod
+    # def toScheduleBaseModel(cls, email: str):

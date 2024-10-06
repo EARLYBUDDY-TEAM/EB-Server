@@ -16,9 +16,9 @@ async def addSchedule(
 ):
     try:
         schedule_feature.createSchedule(
-            userEmail,
-            scheduleInfo,
-            scheduleCRUD,
+            userEmail=userEmail,
+            scheduleInfo=scheduleInfo,
+            scheduleCRUD=scheduleCRUD,
         )
     except Exception as e:
         print(e)

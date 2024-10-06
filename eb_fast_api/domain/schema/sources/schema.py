@@ -92,6 +92,10 @@ class ScheduleInfo(BaseModel):
     memo: Optional[str] = None
     startPlace: Optional[PlaceInfo] = None
     endPlace: Optional[PlaceInfo] = None
+    # startPlace => id
+    # endPlace => id
+    # scheduleInfo - schedule 모델 프로퍼티 맞추기 위해서
+    # 아예 place를 class로 빼서 schedule, startplace, endplace 세개로 받아도 괜찮을듯
 
     def toSchedule(self) -> Schedule:
         schedule = Schedule(
