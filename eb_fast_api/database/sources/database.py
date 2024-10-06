@@ -71,7 +71,7 @@ class EBDataBase(Enum):
         scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
         for i in range(10):
             mockSchedule = Schedule(
-                title=f"{name}'s mock schedule, {i}",
+                title=f"index : {i}, {name}'s mock schedule",
                 time=datetime.now(),
                 isNotify=False,
             )
@@ -81,6 +81,7 @@ class EBDataBase(Enum):
                 startPlace=None,
                 endPlace=None,
             )
+            print(f"Create Mock Schedule, index : {i}")
 
         session.commit()
         session.close()
