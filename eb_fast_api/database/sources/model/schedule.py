@@ -5,7 +5,6 @@ from typing import Optional, Self
 from datetime import datetime
 from eb_fast_api.database.sources.model.base_model import Base
 from eb_fast_api.database.sources.connection import engine
-from sqlalchemy.engine.row import Row
 
 
 class Schedule:
@@ -78,14 +77,12 @@ class Schedule:
         class MixinSchedule(Schedule, Base):
             __tablename__ = tableName
 
-
             @classmethod
             def getTableName(cls) -> str:
                 return cls.__table__.name
 
         return MixinSchedule
 
-    
     def toRowDict(self, id: int) -> dict:
         return {
             "id": id,
@@ -96,18 +93,3 @@ class Schedule:
             "startPlaceID": self.startPlaceID,
             "endPlaceID": self.endPlaceID,
         }
-
-
-
-
-    # @classmethod
-    # def getMixinSchedule(cls, email: str):
-    #     tableName = Schedule.getTableName(email)
-
-    #     class TmpMixinSchedule(Base):
-    #         __tablename__ = tableName
-
-    #     return TmpMixinSchedule()
-
-    # @classmethod
-    # def toScheduleBaseModel(cls, email: str):

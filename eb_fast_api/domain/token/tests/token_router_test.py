@@ -59,9 +59,9 @@ def test_recreateToken_Success(
     email = "email"
     password = "password12"
     refreshToken = "refreshToken"
-    name = "name"
+    nickName = "nickName"
     registerInfo = RegisterInfo(
-        name=name,
+        nickName=nickName,
         email=email,
         password=password,
     )

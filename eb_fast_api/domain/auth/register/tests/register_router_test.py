@@ -7,9 +7,9 @@ from eb_fast_api.database.sources.database import EBDataBase
 def test_register_FAIL_invalid_register_info(testClient):
     invalidEmail = "abc@abc"
     password = "password12"
-    name = "name"
+    nickName = "nickName"
     registerInfo = RegisterInfo(
-        name=name,
+        nickName=nickName,
         email=invalidEmail,
         password=password,
     )
@@ -27,9 +27,9 @@ def test_register_FAIL_exist_user(
     email = "test@test.com"
     password = "password12"
     refreshToken = "refreshToken"
-    name = "name"
+    nickName = "nickName"
     registerInfo = RegisterInfo(
-        name=name,
+        nickName=nickName,
         email=email,
         password=password,
     )
@@ -61,9 +61,9 @@ def test_register_SUCCESS(
     # given
     email = "test@test.com"
     password = "password12"
-    name = "name"
+    nickName = "nickName"
     registerInfo = RegisterInfo(
-        name=name,
+        nickName=nickName,
         email=email,
         password=password,
     )

@@ -17,9 +17,9 @@ def test_addSchedule_SUCCESS(
     email = mockEmail
     password = "password"
     refreshToken = "refreshToken"
-    name = "name"
+    nickName = "nickName"
     registerInfo = RegisterInfo(
-        name=name,
+        nickName=nickName,
         email=email,
         password=password,
     )

@@ -60,26 +60,26 @@ class LoginInfo(BaseModel):
 
 
 class RegisterInfo(BaseModel):
-    name: str
+    nickName: str
     email: str
     password: str
 
     def __init__(
         self,
-        name: str,
+        nickName: str,
         email: str,
         password: str,
     ):
         super().__init__(
             email=email,
             password=password,
-            name=name,
+            nickName=nickName,
         )
 
     def toUser(self, refreshToken: str) -> User:
         return User(
             email=self.email,
-            name=self.name,
+            nickName=self.nickName,
             hashedPassword=pwdcrypt.hash(self.password),
             refreshToken=refreshToken,
         )
