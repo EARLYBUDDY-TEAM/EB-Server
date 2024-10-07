@@ -40,4 +40,7 @@ def login(
     )
     userCRUD.commit()
 
-    return Token(accessToken, refreshToken)
+    return Token(
+        accessToken=accessToken,
+        refreshToken=refreshToken,
+    )
