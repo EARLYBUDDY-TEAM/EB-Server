@@ -11,9 +11,9 @@ def test_createSchedule(
     email = "email"
     password = "password"
     refreshToken = "refreshToken"
-    name = "name"
+    nickName = "nickName"
     registerInfo = RegisterInfo(
-        name=name,
+        nickName=nickName,
         email=email,
         password=password,
     )

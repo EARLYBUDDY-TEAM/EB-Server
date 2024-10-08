@@ -3,6 +3,8 @@ from eb_fast_api.database.tests.conftest import (
     mockScheduleCRUD,
     mockUserCRUD,
     mockPlaceCRUD,
+    mockSession,
+    prepareTestDataBase,
 )
 from eb_fast_api.domain.home.testings.mock_home_feature import mocking_home_feature
 

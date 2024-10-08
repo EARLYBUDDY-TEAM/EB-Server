@@ -9,9 +9,6 @@ class Coordi(BaseModel):
     x: str
     y: str
 
-    def __init__(self, x: str, y: str):
-        super().__init__(x=x, y=y)
-
     @classmethod
     def mock(cls):
         return Coordi(
@@ -55,31 +52,16 @@ class LoginInfo(BaseModel):
     email: str
     password: str
 
-    def __init__(self, email: str, password: str):
-        super().__init__(email=email, password=password)
-
 
 class RegisterInfo(BaseModel):
-    name: str
+    nickName: str
     email: str
     password: str
-
-    def __init__(
-        self,
-        name: str,
-        email: str,
-        password: str,
-    ):
-        super().__init__(
-            email=email,
-            password=password,
-            name=name,
-        )
 
     def toUser(self, refreshToken: str) -> User:
         return User(
             email=self.email,
-            name=self.name,
+            nickName=self.nickName,
             hashedPassword=pwdcrypt.hash(self.password),
             refreshToken=refreshToken,
         )
@@ -135,13 +117,3 @@ class ScheduleInfo(BaseModel):
 class Token(BaseModel):
     accessToken: str
     refreshToken: str
-
-    def __init__(
-        self,
-        accessToken: str,
-        refreshToken: str,
-    ):
-        super().__init__(
-            accessToken=accessToken,
-            refreshToken=refreshToken,
-        )

@@ -17,12 +17,12 @@ class UserCRUD(BaseCRUD):
     def update(
         self,
         key_email: str,
-        name: Optional[str] = None,
+        nickName: Optional[str] = None,
         hashedPassword: Optional[str] = None,
         refreshToken: Optional[str] = None,
     ):
         user = self.read(email=key_email)
-        user.name = name or user.name
+        user.nickName = nickName or user.nickName
         user.hashedPassword = hashedPassword or user.hashedPassword
         user.refreshToken = refreshToken or user.refreshToken
         self.session.flush()

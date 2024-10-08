@@ -55,13 +55,13 @@ class EBDataBase(Enum):
         session = sessionMaker()
         userCRUD = EBDataBase.user.createCRUD(session=session)
         email = ENV_TEST_USER.email
-        name = ENV_TEST_USER.name
+        nickName = ENV_TEST_USER.nick_name
 
         fetchedUser = userCRUD.read(email=email)
         if fetchedUser == None:
             hashedPassword = pwdcrypt.hash(password=ENV_TEST_USER.password)
             testUser = User(
-                name=name,
+                nickName=nickName,
                 email=email,
                 hashedPassword=hashedPassword,
                 refreshToken="",
@@ -71,7 +71,7 @@ class EBDataBase(Enum):
         scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
         for i in range(10):
             mockSchedule = Schedule(
-                title=f"index : {i}, {name}'s mock schedule",
+                title=f"index : {i}, {nickName}'s mock schedule",
                 time=datetime.now(),
                 isNotify=False,
             )
