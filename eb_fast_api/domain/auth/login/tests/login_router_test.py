@@ -59,7 +59,10 @@ def test_login_SUCCESS(
     email = "email"
     password = "password12"
     refreshToken = "refreshToken"
-    loginInfo = LoginInfo(email, password)
+    loginInfo = LoginInfo(
+        email=email,
+        password=password,
+    )
     hashedPassword = pwdcrypt.hash(password)
     user = User.mock(
         email=email,
