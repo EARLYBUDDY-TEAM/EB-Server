@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.domain.schedule.sources import schedule_feature
-from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.database.sources.database import EBDataBase
+from eb_fast_api.domain.schedule.sources.schedule_schema import AddScheduleInfo
 
 
 router = APIRouter(prefix="/schedule")
@@ -10,14 +10,14 @@ router = APIRouter(prefix="/schedule")
 
 @router.post("/add")
 async def addSchedule(
-    scheduleInfo: ScheduleInfo,
+    addScheduleInfo: AddScheduleInfo,
     userEmail=Depends(getUserEmail),
     scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
 ):
     try:
         schedule_feature.createSchedule(
             userEmail=userEmail,
-            scheduleInfo=scheduleInfo,
+            addScheduleInfo=addScheduleInfo,
             scheduleCRUD=scheduleCRUD,
         )
     except Exception as e:

@@ -69,48 +69,34 @@ class RegisterInfo(BaseModel):
 
 class ScheduleInfo(BaseModel):
     title: str
+    memo: Optional[str] = None
     time: datetime
     isNotify: bool
-    memo: Optional[str] = None
-    startPlace: Optional[PlaceInfo] = None
-    endPlace: Optional[PlaceInfo] = None
-    # startPlace => id
-    # endPlace => id
-    # scheduleInfo - schedule 모델 프로퍼티 맞추기 위해서
-    # 아예 place를 class로 빼서 schedule, startplace, endplace 세개로 받아도 괜찮을듯
+    startPlaceID: Optional[str] = None
+    endPlaceID: Optional[str] = None
 
     def toSchedule(self) -> Schedule:
-        schedule = Schedule(
+        return Schedule(
             title=self.title,
+            memo=self.memo,
             time=self.time,
             isNotify=self.isNotify,
-            memo=self.memo,
+            startPlaceID=self.startPlaceID,
+            endPlaceID=self.endPlaceID,
         )
-
-        if self.startPlace != None:
-            schedule.startPlaceID = self.startPlace.id
-
-        if self.endPlace != None:
-            schedule.endPlaceID = self.endPlace.id
-
-        return schedule
 
     @classmethod
     def mock(cls):
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
-        startPlace = PlaceInfo.mock()
-        startPlace.id = "startPlaceID"
-        endPlace = PlaceInfo.mock()
-        endPlace.id = "endPlaceID"
 
         return ScheduleInfo(
             title="title",
             memo="memo",
             time=time,
             isNotify=False,
-            startPlace=startPlace,
-            endPlace=endPlace,
+            startPlaceID="startPlace",
+            endPlaceID="endPlace",
         )
 
 

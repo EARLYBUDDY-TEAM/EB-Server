@@ -7,52 +7,54 @@ def test_read_all_schedule(
     home_MockUserCRUD,
     home_MockScheduleCRUD,
 ):
-    # given
-    email = "email"
-    password = "password"
-    refreshToken = "refreshToken"
-    nickName = "nickName"
-    registerInfo = RegisterInfo(
-        nickName=nickName,
-        email=email,
-        password=password,
-    )
-    user = registerInfo.toUser(refreshToken=refreshToken)
-    home_MockUserCRUD.create(user)
+    try:
+        # given
+        email = "email"
+        password = "password"
+        refreshToken = "refreshToken"
+        nickName = "nickName"
+        registerInfo = RegisterInfo(
+            nickName=nickName,
+            email=email,
+            password=password,
+        )
+        user = registerInfo.toUser(refreshToken=refreshToken)
+        home_MockUserCRUD.create(user)
 
-    schedule1 = Schedule.mock(title="mock1")
-    schedule2 = Schedule.mock(title="mock2")
-    schedule3 = Schedule.mock(title="mock3")
-    home_MockScheduleCRUD.create(
-        userEmail=user.email,
-        schedule=schedule1,
-        startPlace=None,
-        endPlace=None,
-    )
-    home_MockScheduleCRUD.create(
-        userEmail=user.email,
-        schedule=schedule2,
-        startPlace=None,
-        endPlace=None,
-    )
-    home_MockScheduleCRUD.create(
-        userEmail=user.email,
-        schedule=schedule3,
-        startPlace=None,
-        endPlace=None,
-    )
+        schedule1 = Schedule.mock(title="mock1")
+        schedule2 = Schedule.mock(title="mock2")
+        schedule3 = Schedule.mock(title="mock3")
+        home_MockScheduleCRUD.create(
+            userEmail=user.email,
+            schedule=schedule1,
+            startPlace=None,
+            endPlace=None,
+        )
+        home_MockScheduleCRUD.create(
+            userEmail=user.email,
+            schedule=schedule2,
+            startPlace=None,
+            endPlace=None,
+        )
+        home_MockScheduleCRUD.create(
+            userEmail=user.email,
+            schedule=schedule3,
+            startPlace=None,
+            endPlace=None,
+        )
 
-    # when
-    scheduleList = home_feature.read_all_schedule(
-        userEmail=user.email,
-        scheduleCRUD=home_MockScheduleCRUD,
-    )
+        # when
+        scheduleList = home_feature.read_all_schedule(
+            userEmail=user.email,
+            scheduleCRUD=home_MockScheduleCRUD,
+        )
 
-    # then
-    assert len(scheduleList) == 3
+        # then
+        assert len(scheduleList) == 3
 
     # delete schedule table
-    home_MockScheduleCRUD.dropTable(userEmail=email)
+    finally:
+        home_MockScheduleCRUD.dropTable(userEmail=email)
 
 
 def test_schedule_to_schedulecard(

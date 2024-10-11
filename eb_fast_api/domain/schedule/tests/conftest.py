@@ -1,7 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.database.tests.conftest import (
     mockSession,
     mockScheduleCRUD,
@@ -22,19 +21,11 @@ def schedule_MockUserCRUD(mockUserCRUD):
     yield mockUserCRUD
 
 
-@pytest.fixture(scope="function")
-def testClient(schedule_MockScheduleCRUD):
-    def get_schedule_MockScheduleCRUD():
-        yield schedule_MockScheduleCRUD
-
-    app.dependency_overrides[EBDataBase.schedule.getCRUD] = (
-        get_schedule_MockScheduleCRUD
-    )
+@pytest.fixture(scope="session")
+def testClient():
     app.dependency_overrides[getUserEmail] = mockGetUserEmail
-
     testClient = TestClient(app)
 
     yield testClient
 
-    del app.dependency_overrides[EBDataBase.schedule.getCRUD]
     del app.dependency_overrides[getUserEmail]

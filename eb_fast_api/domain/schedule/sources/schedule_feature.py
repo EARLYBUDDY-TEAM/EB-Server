@@ -1,18 +1,20 @@
-from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
+from eb_fast_api.domain.schedule.sources.schedule_schema import AddScheduleInfo
 from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD
 
 
 def createSchedule(
     userEmail: str,
-    scheduleInfo: ScheduleInfo,
+    addScheduleInfo: AddScheduleInfo,
     scheduleCRUD: ScheduleCRUD,
 ):
-    schedule = scheduleInfo.toSchedule()
+    schedule = addScheduleInfo.scheduleInfo.toSchedule()
     startPlace = (
-        scheduleInfo.startPlace.toPlace() if scheduleInfo.startPlace != None else None
+        addScheduleInfo.startPlace.toPlace()
+        if addScheduleInfo.startPlace != None
+        else None
     )
     endPlace = (
-        scheduleInfo.endPlace.toPlace() if scheduleInfo.endPlace != None else None
+        addScheduleInfo.endPlace.toPlace() if addScheduleInfo.endPlace != None else None
     )
 
     scheduleCRUD.create(
