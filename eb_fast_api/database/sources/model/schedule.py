@@ -33,6 +33,25 @@ class Schedule:
         self.endPlaceID = endPlaceID
 
     @classmethod
+    def mockWithID(
+        cls,
+        id: int = 10,
+        title: str = "title",
+    ) -> Self:
+        timeString = "2024-07-28T05:04:32.299Z"
+        time = datetime.fromisoformat(timeString)
+        mockSchedule = Schedule(
+            title=title,
+            memo="memo",
+            time=time,
+            isNotify=False,
+            startPlaceID="startPlaceID",
+            endPlaceID="endPlaceID",
+        )
+        mockSchedule.id = id
+        return mockSchedule
+
+    @classmethod
     def mock(
         cls,
         title: str = "title",
