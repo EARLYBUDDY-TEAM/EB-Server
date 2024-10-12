@@ -16,17 +16,22 @@ router = APIRouter(prefix="/home")
 def get_all_schedules(
     userEmail=Depends(getUserEmail),
     scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
+    placeCRUD=Depends(EBDataBase.place.getCRUD),
 ) -> ScheduleSchemaList:
     scheduleList = home_feature.read_all_schedule(
         userEmail=userEmail,
         scheduleCRUD=scheduleCRUD,
     )
 
-    datas: List[ScheduleSchema] = [
-        ScheduleSchema(schedule=schedule) for schedule in scheduleList
+    dataList: List[ScheduleSchema] = [
+        home_feature.schedule_to_schedule_schema(
+            schedule=schedule,
+            placeCRUD=placeCRUD,
+        )
+        for schedule in scheduleList
     ]
 
-    scheduleSchemaList = ScheduleSchemaList(datas=datas)
+    scheduleSchemaList = ScheduleSchemaList(dataList=dataList)
     return scheduleSchemaList
 
 

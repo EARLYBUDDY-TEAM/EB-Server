@@ -10,13 +10,16 @@ from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
 from eb_fast_api.domain.home.testings.mock_home_feature import (
     mock_read_all_schedule,
+    mock_schedule_to_schedule_schema,
     mockScheduleList,
+    mockScheduleSchema,
 )
 
 
 def test_get_all_schedule_cards():
     # given
     mock_read_all_schedule()
+    mock_schedule_to_schedule_schema()
     app.dependency_overrides[getUserEmail] = mockGetUserEmail
     testClient = TestClient(app)
     headers = {"access_token": "access_token"}
@@ -28,11 +31,11 @@ def test_get_all_schedule_cards():
     )
 
     # then
-    expectDatas: List[ScheduleSchema] = [
-        ScheduleSchema(schedule=schedule) for schedule in mockScheduleList
+    dataList: List[ScheduleSchema] = [
+        mockScheduleSchema for _ in range(len(mockScheduleList))
     ]
-    expectScheduleSchemaList = ScheduleSchemaList(datas=expectDatas)
-    expectModel = expectScheduleSchemaList.model_dump(mode="json")
+    scheduleSchemaList = ScheduleSchemaList(dataList=dataList)
+    expectModel = scheduleSchemaList.model_dump(mode="json")
     responseModel = response.json()
     assert responseModel == expectModel
 

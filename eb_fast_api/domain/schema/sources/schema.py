@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Self
 from datetime import datetime
 from eb_fast_api.database.sources.model.models import User, Schedule, Place
 from eb_fast_api.snippets.sources import pwdcrypt
@@ -24,6 +24,22 @@ class PlaceInfo(BaseModel):
     category: str
     distance: str
     coordi: Coordi
+
+    @classmethod
+    def fromPlace(cls, place: Place) -> Self:
+        placeDict = place.__dict__
+
+        return PlaceInfo(
+            id=placeDict["id"],
+            name=placeDict["name"],
+            address=placeDict["address"],
+            category=placeDict["category"],
+            distance=placeDict["distance"],
+            coordi=Coordi(
+                x=placeDict["coordiX"],
+                y=placeDict["coordiY"],
+            ),
+        )
 
     def toPlace(self) -> Place:
         return Place(
@@ -69,34 +85,41 @@ class RegisterInfo(BaseModel):
 
 class ScheduleInfo(BaseModel):
     title: str
-    memo: Optional[str] = None
+    memo: Optional[str]
     time: datetime
     isNotify: bool
-    startPlaceID: Optional[str] = None
-    endPlaceID: Optional[str] = None
+    startPlaceInfo: Optional[PlaceInfo]
+    endPlaceInfo: Optional[PlaceInfo]
 
     def toSchedule(self) -> Schedule:
+        startPlaceID = self.startPlaceInfo.id if self.startPlaceInfo != None else None
+        endPlaceID = self.endPlaceInfo.id if self.endPlaceInfo != None else None
+
         return Schedule(
             title=self.title,
             memo=self.memo,
             time=self.time,
             isNotify=self.isNotify,
-            startPlaceID=self.startPlaceID,
-            endPlaceID=self.endPlaceID,
+            startPlaceID=startPlaceID,
+            endPlaceID=endPlaceID,
         )
 
     @classmethod
     def mock(cls):
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
+        startPlaceInfo = PlaceInfo.mock()
+        startPlaceInfo.id = "startPlaceID"
+        endPlaceInfo = PlaceInfo.mock()
+        endPlaceInfo.id = "endPlaceID"
 
         return ScheduleInfo(
             title="title",
             memo="memo",
             time=time,
             isNotify=False,
-            startPlaceID="startPlace",
-            endPlaceID="endPlace",
+            startPlaceInfo=startPlaceInfo,
+            endPlaceInfo=endPlaceInfo,
         )
 
 

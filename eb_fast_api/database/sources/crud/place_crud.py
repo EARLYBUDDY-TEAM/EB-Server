@@ -1,9 +1,10 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.model.models import Place
+from typing import Optional
 
 
 class PlaceCRUD(BaseCRUD):
-    def read(self, placeID: str) -> Place:
+    def read(self, placeID: str) -> Optional[Place]:
         place = self.session.query(Place).filter(Place.id == placeID).first()
         return place
 

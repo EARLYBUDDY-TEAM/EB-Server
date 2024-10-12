@@ -1,6 +1,5 @@
 from eb_fast_api.domain.schedule.sources import schedule_feature
-from eb_fast_api.domain.schema.sources.schema import RegisterInfo
-from eb_fast_api.domain.schedule.sources.schedule_schema import AddScheduleInfo
+from eb_fast_api.domain.schema.sources.schema import RegisterInfo, ScheduleInfo
 from eb_fast_api.database.sources.model.models import Place, Schedule
 
 
@@ -21,12 +20,12 @@ def test_createSchedule(
         )
         user = registerInfo.toUser(refreshToken=refreshToken)
         schedule_MockUserCRUD.create(user)
-        addScheduleInfo = AddScheduleInfo.mock()
+        scheduleInfo = ScheduleInfo.mock()
 
         # when
         schedule_feature.createSchedule(
             userEmail=email,
-            addScheduleInfo=addScheduleInfo,
+            scheduleInfo=scheduleInfo,
             scheduleCRUD=schedule_MockScheduleCRUD,
         )
 

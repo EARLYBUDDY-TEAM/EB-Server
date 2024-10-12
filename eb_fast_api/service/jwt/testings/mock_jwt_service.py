@@ -36,11 +36,11 @@ class MockJWTService(JWTService):
         encoder: ABC_JWTEncoder = MockJWTEncoder(),
         decoder: ABC_JWTDecoder = MockJWTDecoder(),
     ):
-        self.now = now
         super().__init__(
             encoder=encoder,
             decoder=decoder,
         )
+        self.now = now
 
     def dateTimeNow(self) -> datetime:
         return self.now
