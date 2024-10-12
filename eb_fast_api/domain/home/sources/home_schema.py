@@ -4,7 +4,7 @@ from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
 
 
 class ScheduleSchemaList(BaseModel):
-    dataList: List[ScheduleInfo]
+    scheduleSchemaList: List[ScheduleInfo]
 
 
 class ScheduleSchema(ScheduleInfo):

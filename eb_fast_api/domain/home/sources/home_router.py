@@ -23,7 +23,7 @@ def get_all_schedules(
         scheduleCRUD=scheduleCRUD,
     )
 
-    dataList: List[ScheduleSchema] = [
+    scheduleSchemaList: List[ScheduleSchema] = [
         home_feature.schedule_to_schedule_schema(
             schedule=schedule,
             placeCRUD=placeCRUD,
@@ -31,7 +31,7 @@ def get_all_schedules(
         for schedule in scheduleList
     ]
 
-    scheduleSchemaList = ScheduleSchemaList(dataList=dataList)
+    scheduleSchemaList = ScheduleSchemaList(scheduleSchemaList=scheduleSchemaList)
     return scheduleSchemaList
 
 
