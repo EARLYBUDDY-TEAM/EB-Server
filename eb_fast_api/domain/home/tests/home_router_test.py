@@ -31,10 +31,10 @@ def test_get_all_schedule_cards():
     )
 
     # then
-    scheduleSchemaList: List[ScheduleSchema] = [
+    all_schedules: List[ScheduleSchema] = [
         mockScheduleSchema for _ in range(len(mockScheduleList))
     ]
-    scheduleSchemaList = ScheduleSchemaList(scheduleSchemaList=scheduleSchemaList)
+    scheduleSchemaList = ScheduleSchemaList(all_schedules=all_schedules)
     expectModel = scheduleSchemaList.model_dump(mode="json")
     responseModel = response.json()
     assert responseModel == expectModel
