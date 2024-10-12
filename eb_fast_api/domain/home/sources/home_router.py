@@ -1,10 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from eb_fast_api.domain.home.sources import home_feature
-from eb_fast_api.domain.home.sources.home_schema import (
-    ScheduleSchemaList,
-    ScheduleSchema,
-)
+from eb_fast_api.domain.home.sources.home_schema import ScheduleInfoList
+from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.database.sources.database import EBDataBase
 
@@ -17,22 +15,22 @@ def get_all_schedules(
     userEmail=Depends(getUserEmail),
     scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
     placeCRUD=Depends(EBDataBase.place.getCRUD),
-) -> ScheduleSchemaList:
+) -> ScheduleInfoList:
     scheduleList = home_feature.read_all_schedule(
         userEmail=userEmail,
         scheduleCRUD=scheduleCRUD,
     )
 
-    all_schedules: List[ScheduleSchema] = [
-        home_feature.schedule_to_schedule_schema(
+    all_schedules: List[ScheduleInfo] = [
+        home_feature.schedule_to_schedule_info(
             schedule=schedule,
             placeCRUD=placeCRUD,
         )
         for schedule in scheduleList
     ]
 
-    scheduleSchemaList = ScheduleSchemaList(all_schedules=all_schedules)
-    return scheduleSchemaList
+    scheduleInfoList = ScheduleInfoList(all_schedules=all_schedules)
+    return scheduleInfoList
 
 
 @router.delete("/delete_schedule")

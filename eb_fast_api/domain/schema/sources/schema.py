@@ -84,6 +84,7 @@ class RegisterInfo(BaseModel):
 
 
 class ScheduleInfo(BaseModel):
+    id: Optional[int]
     title: str
     memo: Optional[str]
     time: datetime
@@ -114,6 +115,27 @@ class ScheduleInfo(BaseModel):
         endPlaceInfo.id = "endPlaceID"
 
         return ScheduleInfo(
+            id=None,
+            title="title",
+            memo="memo",
+            time=time,
+            isNotify=False,
+            startPlaceInfo=startPlaceInfo,
+            endPlaceInfo=endPlaceInfo,
+        )
+
+    @classmethod
+    def mockWithID(cls):
+        id = 10
+        timeString = "2024-07-28T05:04:32.299Z"
+        time = datetime.fromisoformat(timeString)
+        startPlaceInfo = PlaceInfo.mock()
+        startPlaceInfo.id = "startPlaceID"
+        endPlaceInfo = PlaceInfo.mock()
+        endPlaceInfo.id = "endPlaceID"
+
+        return ScheduleInfo(
+            id=id,
             title="title",
             memo="memo",
             time=time,

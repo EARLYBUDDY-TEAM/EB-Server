@@ -2,24 +2,22 @@ from typing import List
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.domain.home.sources.home_schema import (
-    ScheduleSchema,
-    ScheduleSchemaList,
-)
+from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
+from eb_fast_api.domain.home.sources.home_schema import ScheduleInfoList
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
 from eb_fast_api.domain.home.testings.mock_home_feature import (
     mock_read_all_schedule,
-    mock_schedule_to_schedule_schema,
+    mock_schedule_to_schedule_info,
     mockScheduleList,
-    mockScheduleSchema,
+    mockScheduleInfo,
 )
 
 
 def test_get_all_schedule_cards():
     # given
     mock_read_all_schedule()
-    mock_schedule_to_schedule_schema()
+    mock_schedule_to_schedule_info()
     app.dependency_overrides[getUserEmail] = mockGetUserEmail
     testClient = TestClient(app)
     headers = {"access_token": "access_token"}
@@ -31,11 +29,11 @@ def test_get_all_schedule_cards():
     )
 
     # then
-    all_schedules: List[ScheduleSchema] = [
-        mockScheduleSchema for _ in range(len(mockScheduleList))
+    all_schedules: List[ScheduleInfo] = [
+        mockScheduleInfo for _ in range(len(mockScheduleList))
     ]
-    scheduleSchemaList = ScheduleSchemaList(all_schedules=all_schedules)
-    expectModel = scheduleSchemaList.model_dump(mode="json")
+    scheduleInfoList = ScheduleInfoList(all_schedules=all_schedules)
+    expectModel = scheduleInfoList.model_dump(mode="json")
     responseModel = response.json()
     assert responseModel == expectModel
 

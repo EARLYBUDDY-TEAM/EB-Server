@@ -1,6 +1,9 @@
-from eb_fast_api.domain.schema.sources.schema import RegisterInfo, PlaceInfo
+from eb_fast_api.domain.schema.sources.schema import (
+    RegisterInfo,
+    PlaceInfo,
+    ScheduleInfo,
+)
 from eb_fast_api.database.sources.model.models import Schedule, Place
-from eb_fast_api.domain.home.sources.home_schema import ScheduleSchema
 from eb_fast_api.domain.home.sources import home_feature
 
 
@@ -109,8 +112,7 @@ def test_get_placeinfo_from_id_SUCCESS(
     assert placeInfo == expectPlaceInfo
 
 
-def test_schedule_to_schedule_schema(
-    home_MockScheduleCRUD,
+def test_schedule_to_schedule_info(
     home_MockPlaceCRUD,
 ):
     # given
@@ -119,14 +121,14 @@ def test_schedule_to_schedule_schema(
     mockSchedule.endPlaceID = None
 
     # when
-    scheduleSchema = home_feature.schedule_to_schedule_schema(
+    scheduleInfo = home_feature.schedule_to_schedule_info(
         schedule=mockSchedule,
         placeCRUD=home_MockPlaceCRUD,
     )
 
     # then
-    expectScheduleSchema = ScheduleSchema(
-        scheduleID=mockSchedule.id,
+    expectScheduleInfo = ScheduleInfo(
+        id=mockSchedule.id,
         title=mockSchedule.title,
         memo=mockSchedule.memo,
         time=mockSchedule.time,
@@ -134,4 +136,4 @@ def test_schedule_to_schedule_schema(
         startPlaceInfo=None,
         endPlaceInfo=None,
     )
-    assert scheduleSchema == expectScheduleSchema
+    assert scheduleInfo == expectScheduleInfo

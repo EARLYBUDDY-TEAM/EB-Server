@@ -1,8 +1,7 @@
 from typing import List, Optional
 from eb_fast_api.database.sources.model.models import Schedule
-from eb_fast_api.domain.schema.sources.schema import PlaceInfo
+from eb_fast_api.domain.schema.sources.schema import PlaceInfo, ScheduleInfo
 from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PlaceCRUD
-from eb_fast_api.domain.home.sources.home_schema import ScheduleSchema
 
 
 def read_all_schedule(
@@ -25,12 +24,12 @@ def get_placeinfo_from_id(
     return PlaceInfo.fromPlace(place=place)
 
 
-def schedule_to_schedule_schema(
+def schedule_to_schedule_info(
     schedule: Schedule,
     placeCRUD: PlaceCRUD,
-) -> ScheduleSchema:
+) -> ScheduleInfo:
     scheduleDict = schedule.__dict__
-    scheduleID = scheduleDict["id"]
+    id = scheduleDict["id"]
     title = scheduleDict["title"]
     memo = scheduleDict["memo"]
     time = scheduleDict["time"]
@@ -47,8 +46,8 @@ def schedule_to_schedule_schema(
         placeCRUD=placeCRUD,
     )
 
-    return ScheduleSchema(
-        scheduleID=scheduleID,
+    return ScheduleInfo(
+        id=id,
         title=title,
         memo=memo,
         time=time,
