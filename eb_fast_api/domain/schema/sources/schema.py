@@ -110,6 +110,7 @@ class ScheduleInfo(BaseModel):
     ):
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
+        time = time.replace(microsecond=0, tzinfo=None)
         startPlaceInfo = PlaceInfo.mock()
         startPlaceInfo.id = "startPlaceID"
         endPlaceInfo = PlaceInfo.mock()

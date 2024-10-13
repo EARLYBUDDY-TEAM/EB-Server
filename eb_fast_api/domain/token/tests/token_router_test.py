@@ -11,59 +11,61 @@ def test_recreateToken_Success(
     tokenMockUserCRUD,
     tokenMockScheduleCRUD,
 ):
-    # given
-    email = "test@test.com"
-    email = "email"
-    password = "password12"
-    refreshToken = "refreshToken"
-    nickName = "nickName"
-    registerInfo = RegisterInfo(
-        nickName=nickName,
-        email=email,
-        password=password,
-    )
-    user = registerInfo.toUser(refreshToken=refreshToken)
-    tokenMockUserCRUD.create(user)
-    refreshToken = realJWTService.createRefreshToken(email=email)
-    headers = {"refresh_token": refreshToken}
+    try:
+        # given
+        email = "test@test.com"
+        email = "email"
+        password = "password12"
+        refreshToken = "refreshToken"
+        nickName = "nickName"
+        registerInfo = RegisterInfo(
+            nickName=nickName,
+            email=email,
+            password=password,
+        )
+        user = registerInfo.toUser(refreshToken=refreshToken)
+        tokenMockUserCRUD.create(user)
+        refreshToken = realJWTService.createRefreshToken(email=email)
+        headers = {"refresh_token": refreshToken}
 
-    def getMockUserCRUD():
-        yield tokenMockUserCRUD
+        def getMockUserCRUD():
+            yield tokenMockUserCRUD
 
-    def getMockJWTService():
-        yield tokenMockJWTService
+        def getMockJWTService():
+            yield tokenMockJWTService
 
-    app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
-    app.dependency_overrides[getJWTService] = getMockJWTService
-    testClient = TestClient(app)
+        app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
+        app.dependency_overrides[getJWTService] = getMockJWTService
+        testClient = TestClient(app)
 
-    # when
-    response = testClient.get(
-        "/token/recreate",
-        headers=headers,
-    )
+        # when
+        response = testClient.get(
+            "/token/recreate",
+            headers=headers,
+        )
 
-    # then
-    assert response.status_code == 200
+        # then
+        assert response.status_code == 200
 
-    expectAccessToken = tokenMockJWTService.createAccessToken(email=email)
-    expectRefreshToken = tokenMockJWTService.createRefreshToken(email=email)
-    expectToken = Token(
-        accessToken=expectAccessToken,
-        refreshToken=expectRefreshToken,
-    ).model_dump(mode="json")
-    responseToken = response.json()
-    assert expectToken == responseToken
+        expectAccessToken = tokenMockJWTService.createAccessToken(email=email)
+        expectRefreshToken = tokenMockJWTService.createRefreshToken(email=email)
+        expectToken = Token(
+            accessToken=expectAccessToken,
+            refreshToken=expectRefreshToken,
+        ).model_dump(mode="json")
+        responseToken = response.json()
+        assert expectToken == responseToken
 
-    expectUser = tokenMockUserCRUD.read(email=email)
-    assert expectUser.refreshToken == expectRefreshToken
+        expectUser = tokenMockUserCRUD.read(email=email)
+        assert expectUser["refreshToken"] == expectRefreshToken
 
-    # restore dependency
-    del app.dependency_overrides[EBDataBase.user.getCRUD]
-    del app.dependency_overrides[getJWTService]
+        # restore dependency
+        del app.dependency_overrides[EBDataBase.user.getCRUD]
+        del app.dependency_overrides[getJWTService]
 
-    # delete schedule table
-    tokenMockScheduleCRUD.dropTable(userEmail=user.email)
+    finally:
+        # delete schedule table
+        tokenMockScheduleCRUD.dropTable(userEmail=user.email)
 
 
 def test_recreateToken_FAIL(

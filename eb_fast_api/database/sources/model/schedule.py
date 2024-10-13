@@ -27,8 +27,7 @@ class Schedule:
     ):
         self.title = title
         self.memo = memo
-        self.time = time
-        self.time.replace(microsecond=0, tzinfo=None)
+        self.time = time.replace(microsecond=0, tzinfo=None)
         self.isNotify = isNotify
         self.startPlaceID = startPlaceID
         self.endPlaceID = endPlaceID
