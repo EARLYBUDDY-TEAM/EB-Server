@@ -4,12 +4,15 @@ from typing import Optional
 
 
 class PlaceCRUD(BaseCRUD):
-    def read(self, placeID: str) -> Optional[Place]:
-        place = self.session.query(Place).filter(Place.id == placeID).first()
-        return place
+    def read(self, place_id: str) -> Optional[dict]:
+        try:
+            place = self.session.query(Place).filter(Place.id == place_id).one()
+            return place.to_dict()
+        except:
+            return None
 
     def create(self, place: Place):
-        fetchedPlace = self.read(place.id)
-        if not fetchedPlace:
+        fetched_place = self.read(place.id)
+        if not fetched_place:
             self.session.add(place)
             self.session.flush()

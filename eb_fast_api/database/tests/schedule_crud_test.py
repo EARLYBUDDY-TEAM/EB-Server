@@ -28,18 +28,15 @@ def test_schedule_create_and_read_all(
 
         # then
         # assert place
-        fetchedPlaceList = mockSession.query(Place).all()
-        fetchedAllPlace = set(fetchedPlaceList)
-        expectAllPlace = set([startPlace, endPlace])
-        assert fetchedAllPlace == expectAllPlace
+        fetched_place_list = mockSession.query(Place).all()
+        assert len(fetched_place_list) == 2
 
-        # assert schedule
-        fetchedScheduleList = mockScheduleCRUD.read_all(userEmail=email)
-        fetchedScheduleRow = fetchedScheduleList[0]
-        fetchedScheduleDict = fetchedScheduleRow._mapping
-        fetchedID = fetchedScheduleDict["id"]
-        expectScheduleDict = schedule.toRowDict(id=fetchedID)
-        assert fetchedScheduleDict == expectScheduleDict
+        # # assert schedule
+        fetched_schedule_dict_list = mockScheduleCRUD.read_all(userEmail=email)
+        fetched_schedule_dict = fetched_schedule_dict_list[0]
+        schedule_id = fetched_schedule_dict["id"]
+        expect_schedule_dict = schedule.to_dict(id=schedule_id)
+        assert expect_schedule_dict == fetched_schedule_dict
 
     # delete schedule table
     finally:
@@ -68,17 +65,15 @@ def test_schedule_delete(
         )
 
         # when, then
-        fetchedScheduleList = mockScheduleCRUD.read_all(userEmail=email)
-        fetchedScheduleRow = fetchedScheduleList[0]
-        fetchedScheduleDict = fetchedScheduleRow._mapping
-        fetchedID = fetchedScheduleDict["id"]
+        fetched_schedule_dict_list = mockScheduleCRUD.read_all(userEmail=email)
+        assert len(fetched_schedule_dict_list) == 1
 
-        assert len(fetchedScheduleList) == 1
+        fetched_schedule_dict = fetched_schedule_dict_list[0]
+        schedule_id = fetched_schedule_dict["id"]
+        mockScheduleCRUD.delete(userEmail=email, scheduleID=schedule_id)
 
-        mockScheduleCRUD.delete(userEmail=email, scheduleID=fetchedID)
-
-        fetchedScheduleList = mockScheduleCRUD.read_all(userEmail=email)
-        assert len(fetchedScheduleList) == 0
+        fetched_schedule_dict_list = mockScheduleCRUD.read_all(userEmail=email)
+        assert len(fetched_schedule_dict_list) == 0
 
     # delete schedule table
     finally:

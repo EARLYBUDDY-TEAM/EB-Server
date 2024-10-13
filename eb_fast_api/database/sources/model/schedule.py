@@ -102,9 +102,9 @@ class Schedule:
 
         return MixinSchedule
 
-    def toRowDict(self, id: int) -> dict:
+    def to_dict(self, id: Optional[int] = None) -> dict:
         return {
-            "id": id,
+            "id": id or self.id,
             "title": self.title,
             "memo": self.memo,
             "time": self.time.replace(microsecond=0, tzinfo=None),

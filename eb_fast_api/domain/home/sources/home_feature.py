@@ -1,4 +1,5 @@
 from typing import List, Optional
+from sqlalchemy.engine.row import Row
 from eb_fast_api.database.sources.model.models import Schedule
 from eb_fast_api.domain.schema.sources.schema import PlaceInfo, ScheduleInfo
 from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PlaceCRUD
@@ -18,17 +19,18 @@ def get_placeinfo_from_id(
 ) -> Optional[PlaceInfo]:
     if placeID == None:
         return None
-    place = placeCRUD.read(placeID=placeID)
+    place = placeCRUD.read(place_id=placeID)
     if place == None:
         return None
     return PlaceInfo.fromPlace(place=place)
 
 
 def schedule_to_schedule_info(
-    schedule: Schedule,
+    schedule: Row,
     placeCRUD: PlaceCRUD,
 ) -> ScheduleInfo:
-    scheduleDict = schedule.__dict__
+    scheduleDict = schedule._mapping
+
     id = scheduleDict["id"]
     title = scheduleDict["title"]
     memo = scheduleDict["memo"]

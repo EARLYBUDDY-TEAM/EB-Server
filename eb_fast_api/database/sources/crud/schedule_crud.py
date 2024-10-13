@@ -39,13 +39,13 @@ class ScheduleCRUD(BaseCRUD):
     def read_all(
         self,
         userEmail: str,
-    ) -> List[Row]:
+    ) -> List[dict]:
         scheduleTable = Schedule.getTable(
             email=userEmail,
             engine=self.engine(),
         )
         scheduleRowList = self.session.query(scheduleTable).all()
-        return scheduleRowList
+        return [row._mapping for row in scheduleRowList]
 
     def delete(
         self,

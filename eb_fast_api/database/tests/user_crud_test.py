@@ -2,7 +2,7 @@ from eb_fast_api.database.sources.model.models import User, Schedule
 from sqlalchemy import inspect
 
 
-def test_create(mockUserCRUD, mockScheduleCRUD, mockSession):
+def test_user_read_and_create(mockUserCRUD, mockScheduleCRUD, mockSession):
     try:
         # given
         email = "email"
@@ -13,8 +13,9 @@ def test_create(mockUserCRUD, mockScheduleCRUD, mockSession):
         mockUserCRUD.create(user=user)
 
         # then
-        fetchedUser = mockUserCRUD.read(email=email)
-        assert user == fetchedUser
+        fetched_user_dict = mockUserCRUD.read(email=email)
+        expect_user_dict = user.to_dict()
+        assert expect_user_dict == fetched_user_dict
 
         userCount1 = mockSession.query(User).count()
         assert userCount1 - userCount0 == 1
@@ -28,25 +29,7 @@ def test_create(mockUserCRUD, mockScheduleCRUD, mockSession):
         mockScheduleCRUD.dropTable(userEmail=user.email)
 
 
-def test_read(mockUserCRUD, mockScheduleCRUD):
-    try:
-        # given
-        email = "email"
-        user = User.mock(email=email)
-
-        # when
-        mockUserCRUD.create(user=user)
-        fetchedUser = mockUserCRUD.read(email=email)
-
-        # then
-        assert user == fetchedUser
-
-    # delete schedule table
-    finally:
-        mockScheduleCRUD.dropTable(userEmail=user.email)
-
-
-def test_update(mockUserCRUD, mockScheduleCRUD):
+def test_user_update(mockUserCRUD, mockScheduleCRUD):
     try:
         # given
         email = "email"
@@ -63,9 +46,9 @@ def test_update(mockUserCRUD, mockScheduleCRUD):
         )
 
         # then
-        fetchedUser = mockUserCRUD.read(email=user.email)
-        assert fetchedUser.hashedPassword == newHashedPassword
-        assert fetchedUser.refreshToken == newRefreshToken
+        fetched_user_dict = mockUserCRUD.read(email=user.email)
+        assert fetched_user_dict["hashedPassword"] == newHashedPassword
+        assert fetched_user_dict["refreshToken"] == newRefreshToken
 
     # delete schedule table
     finally:
