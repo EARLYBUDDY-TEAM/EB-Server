@@ -18,36 +18,38 @@ def test_login_ERROR_invalid_password(
     loginMockUserCRUD,
     loginMockScheduleCRUD,
 ):
-    # given
-    email = "email"
-    password = "password12"
-    refreshToken = "refreshToken"
-    loginInfo = LoginInfo(email=email, password=password)
-    hashedPassword = pwdcrypt.hash(password)
-    user = User.mock(
-        email=email,
-        refreshToken=refreshToken,
-        hashedPassword=hashedPassword,
-    )
-    loginMockUserCRUD.create(user)
+    try:
+        # given
+        email = "email"
+        password = "password12"
+        refreshToken = "refreshToken"
+        loginInfo = LoginInfo(email=email, password=password)
+        hashedPassword = pwdcrypt.hash(password)
+        user = User.mock(
+            email=email,
+            refreshToken=refreshToken,
+            hashedPassword=hashedPassword,
+        )
+        loginMockUserCRUD.create(user)
 
-    def getMockUserCRUD():
-        yield loginMockUserCRUD
+        def getMockUserCRUD():
+            yield loginMockUserCRUD
 
-    app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
-    testClient = TestClient(app)
+        app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
+        testClient = TestClient(app)
 
-    # when
-    loginInfo.password += "errorString"
-    json = loginInfo.model_dump(mode="json")
-    response = testClient.post("/auth/login", json=json)
+        # when
+        loginInfo.password += "errorString"
+        json = loginInfo.model_dump(mode="json")
+        response = testClient.post("/auth/login", json=json)
 
-    # then
-    assert response.status_code == 401
-    del app.dependency_overrides[EBDataBase.user.getCRUD]
+        # then
+        assert response.status_code == 401
+        del app.dependency_overrides[EBDataBase.user.getCRUD]
 
-    # delete schedule table
-    loginMockScheduleCRUD.dropTable(userEmail=user.email)
+    finally:
+        # delete schedule table
+        loginMockScheduleCRUD.dropTable(userEmail=user.email)
 
 
 def test_login_SUCCESS(
@@ -55,54 +57,56 @@ def test_login_SUCCESS(
     loginMockScheduleCRUD,
     loginMockJWTService,
 ):
-    # given
-    email = "email"
-    password = "password12"
-    refreshToken = "refreshToken"
-    loginInfo = LoginInfo(
-        email=email,
-        password=password,
-    )
-    hashedPassword = pwdcrypt.hash(password)
-    user = User.mock(
-        email=email,
-        refreshToken=refreshToken,
-        hashedPassword=hashedPassword,
-    )
-    loginMockUserCRUD.create(user)
+    try:
+        # given
+        email = "email"
+        password = "password12"
+        refreshToken = "refreshToken"
+        loginInfo = LoginInfo(
+            email=email,
+            password=password,
+        )
+        hashedPassword = pwdcrypt.hash(password)
+        user = User.mock(
+            email=email,
+            refreshToken=refreshToken,
+            hashedPassword=hashedPassword,
+        )
+        loginMockUserCRUD.create(user)
 
-    def getMockUserCRUD():
-        yield loginMockUserCRUD
+        def getMockUserCRUD():
+            yield loginMockUserCRUD
 
-    def getMockJWTService():
-        yield loginMockJWTService
+        def getMockJWTService():
+            yield loginMockJWTService
 
-    app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
-    app.dependency_overrides[getJWTService] = getMockJWTService
-    testClient = TestClient(app)
+        app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
+        app.dependency_overrides[getJWTService] = getMockJWTService
+        testClient = TestClient(app)
 
-    # when
-    json = loginInfo.model_dump(mode="json")
-    response = testClient.post("/auth/login", json=json)
+        # when
+        json = loginInfo.model_dump(mode="json")
+        response = testClient.post("/auth/login", json=json)
 
-    # then
-    assert response.status_code == 200
+        # then
+        assert response.status_code == 200
 
-    expectAccessToken = loginMockJWTService.createAccessToken(email=email)
-    expectRefreshToken = loginMockJWTService.createRefreshToken(email=email)
-    expectToken = Token(
-        accessToken=expectAccessToken,
-        refreshToken=expectRefreshToken,
-    ).model_dump(mode="json")
-    responseToken = response.json()
-    assert expectToken == responseToken
+        expectAccessToken = loginMockJWTService.createAccessToken(email=email)
+        expectRefreshToken = loginMockJWTService.createRefreshToken(email=email)
+        expectToken = Token(
+            accessToken=expectAccessToken,
+            refreshToken=expectRefreshToken,
+        ).model_dump(mode="json")
+        responseToken = response.json()
+        assert expectToken == responseToken
 
-    expectUser = loginMockUserCRUD.read(email=email)
-    assert expectUser.refreshToken == expectRefreshToken
+        expectUser = loginMockUserCRUD.read(email=email)
+        assert expectUser["refreshToken"] == expectRefreshToken
 
-    # restore dependency
-    del app.dependency_overrides[EBDataBase.user.getCRUD]
-    del app.dependency_overrides[getJWTService]
+        # restore dependency
+        del app.dependency_overrides[EBDataBase.user.getCRUD]
+        del app.dependency_overrides[getJWTService]
 
-    # delete schedule table
-    loginMockScheduleCRUD.dropTable(userEmail=user.email)
+    finally:
+        # delete schedule table
+        loginMockScheduleCRUD.dropTable(userEmail=user.email)

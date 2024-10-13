@@ -24,15 +24,16 @@ def login(
 
     if not pwdcrypt.check(
         password=loginInfo.password,
-        hashedPassword=user.hashedPassword,
+        hashedPassword=user["hashedPassword"],
     ):
         raise HTTPException(
             status_code=401,
             detail="잘못된 패스워드 입니다.",
         )
 
-    accessToken = jwtService.createAccessToken(user.email)
-    refreshToken = jwtService.createRefreshToken(user.email)
+    email = user["email"]
+    accessToken = jwtService.createAccessToken(email)
+    refreshToken = jwtService.createRefreshToken(email)
 
     userCRUD.update(
         key_email=loginInfo.email,
