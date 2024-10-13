@@ -1,6 +1,4 @@
 from typing import List, Optional
-from sqlalchemy.engine.row import Row
-from eb_fast_api.database.sources.model.models import Schedule
 from eb_fast_api.domain.schema.sources.schema import PlaceInfo, ScheduleInfo
 from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PlaceCRUD
 
@@ -8,9 +6,9 @@ from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PlaceCRUD
 def read_all_schedule(
     userEmail: str,
     scheduleCRUD: ScheduleCRUD,
-) -> List[Schedule]:
-    fetchedScheduleList = scheduleCRUD.read_all(userEmail=userEmail)
-    return fetchedScheduleList
+) -> List[dict]:
+    fetched_schedule_dict_list = scheduleCRUD.read_all(userEmail=userEmail)
+    return fetched_schedule_dict_list
 
 
 def get_placeinfo_from_id(
@@ -19,26 +17,24 @@ def get_placeinfo_from_id(
 ) -> Optional[PlaceInfo]:
     if placeID == None:
         return None
-    place = placeCRUD.read(place_id=placeID)
-    if place == None:
+    place_dict = placeCRUD.read(place_id=placeID)
+    if place_dict == None:
         return None
-    return PlaceInfo.fromPlace(place=place)
+    return PlaceInfo.fromPlaceDict(place_dict=place_dict)
 
 
-def schedule_to_schedule_info(
-    schedule: Row,
+def schedule_dict_to_schedule_info(
+    schedule_dict: dict,
     placeCRUD: PlaceCRUD,
 ) -> ScheduleInfo:
-    scheduleDict = schedule._mapping
+    id = schedule_dict["id"]
+    title = schedule_dict["title"]
+    memo = schedule_dict["memo"]
+    time = schedule_dict["time"]
+    isNotify = schedule_dict["isNotify"]
 
-    id = scheduleDict["id"]
-    title = scheduleDict["title"]
-    memo = scheduleDict["memo"]
-    time = scheduleDict["time"]
-    isNotify = scheduleDict["isNotify"]
-
-    startPlaceID = scheduleDict["startPlaceID"]
-    endPlaceID = scheduleDict["endPlaceID"]
+    startPlaceID = schedule_dict["startPlaceID"]
+    endPlaceID = schedule_dict["endPlaceID"]
     startPlaceInfo = get_placeinfo_from_id(
         placeID=startPlaceID,
         placeCRUD=placeCRUD,

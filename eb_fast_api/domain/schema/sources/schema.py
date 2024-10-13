@@ -26,18 +26,16 @@ class PlaceInfo(BaseModel):
     coordi: Coordi
 
     @classmethod
-    def fromPlace(cls, place: Place) -> Self:
-        placeDict = place.__dict__
-
+    def fromPlaceDict(cls, place_dict: dict) -> Self:
         return PlaceInfo(
-            id=placeDict["id"],
-            name=placeDict["name"],
-            address=placeDict["address"],
-            category=placeDict["category"],
-            distance=placeDict["distance"],
+            id=place_dict["id"],
+            name=place_dict["name"],
+            address=place_dict["address"],
+            category=place_dict["category"],
+            distance=place_dict["distance"],
             coordi=Coordi(
-                x=placeDict["coordiX"],
-                y=placeDict["coordiY"],
+                x=place_dict["coordiX"],
+                y=place_dict["coordiY"],
             ),
         )
 
@@ -106,27 +104,10 @@ class ScheduleInfo(BaseModel):
         )
 
     @classmethod
-    def mock(cls):
-        timeString = "2024-07-28T05:04:32.299Z"
-        time = datetime.fromisoformat(timeString)
-        startPlaceInfo = PlaceInfo.mock()
-        startPlaceInfo.id = "startPlaceID"
-        endPlaceInfo = PlaceInfo.mock()
-        endPlaceInfo.id = "endPlaceID"
-
-        return ScheduleInfo(
-            id=None,
-            title="title",
-            memo="memo",
-            time=time,
-            isNotify=False,
-            startPlaceInfo=startPlaceInfo,
-            endPlaceInfo=endPlaceInfo,
-        )
-
-    @classmethod
-    def mockWithID(cls):
-        id = 10
+    def mock(
+        cls,
+        id: Optional[int] = None,
+    ):
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
         startPlaceInfo = PlaceInfo.mock()

@@ -16,17 +16,17 @@ def get_all_schedules(
     scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
     placeCRUD=Depends(EBDataBase.place.getCRUD),
 ) -> ScheduleInfoList:
-    scheduleList = home_feature.read_all_schedule(
+    schedule_dict_list = home_feature.read_all_schedule(
         userEmail=userEmail,
         scheduleCRUD=scheduleCRUD,
     )
 
     all_schedules: List[ScheduleInfo] = [
-        home_feature.schedule_to_schedule_info(
-            schedule=schedule,
+        home_feature.schedule_dict_to_schedule_info(
+            schedule_dict=schedule_dict,
             placeCRUD=placeCRUD,
         )
-        for schedule in scheduleList
+        for schedule_dict in schedule_dict_list
     ]
 
     scheduleInfoList = ScheduleInfoList(all_schedules=all_schedules)

@@ -8,16 +8,16 @@ from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
 from eb_fast_api.domain.home.testings.mock_home_feature import (
     mock_read_all_schedule,
-    mock_schedule_to_schedule_info,
+    mock_schedule_dict_to_schedule_info,
     mockScheduleList,
     mockScheduleInfo,
 )
 
 
-def test_get_all_schedule_cards():
+def test_get_all_schedules():
     # given
     mock_read_all_schedule()
-    mock_schedule_to_schedule_info()
+    mock_schedule_dict_to_schedule_info()
     app.dependency_overrides[getUserEmail] = mockGetUserEmail
     testClient = TestClient(app)
     headers = {"access_token": "access_token"}

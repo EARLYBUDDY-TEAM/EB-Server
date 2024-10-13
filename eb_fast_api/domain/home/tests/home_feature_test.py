@@ -48,13 +48,13 @@ def test_read_all_schedule(
         )
 
         # when
-        scheduleList = home_feature.read_all_schedule(
+        fetched_schedule_dict_list = home_feature.read_all_schedule(
             userEmail=user.email,
             scheduleCRUD=home_MockScheduleCRUD,
         )
 
         # then
-        assert len(scheduleList) == 3
+        assert len(fetched_schedule_dict_list) == 3
 
     # delete schedule table
     finally:
@@ -108,21 +108,21 @@ def test_get_placeinfo_from_id_SUCCESS(
     )
 
     # then
-    expectPlaceInfo = PlaceInfo.fromPlace(place=mockPlace)
+    expectPlaceInfo = PlaceInfo.fromPlaceDict(place_dict=mockPlace.to_dict())
     assert placeInfo == expectPlaceInfo
 
 
-def test_schedule_to_schedule_info(
+def test_schedule_dict_to_schedule_info(
     home_MockPlaceCRUD,
 ):
     # given
-    mockSchedule = Schedule.mockWithID()
+    mockSchedule = Schedule.mock(id=10)
     mockSchedule.startPlaceID = None
     mockSchedule.endPlaceID = None
 
     # when
-    scheduleInfo = home_feature.schedule_to_schedule_info(
-        schedule=mockSchedule,
+    scheduleInfo = home_feature.schedule_dict_to_schedule_info(
+        schedule_dict=mockSchedule.to_dict(),
         placeCRUD=home_MockPlaceCRUD,
     )
 
@@ -136,4 +136,8 @@ def test_schedule_to_schedule_info(
         startPlaceInfo=None,
         endPlaceInfo=None,
     )
+
+    print(scheduleInfo)
+    print(expectScheduleInfo)
+
     assert scheduleInfo == expectScheduleInfo

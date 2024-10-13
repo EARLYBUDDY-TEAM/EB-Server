@@ -7,8 +7,8 @@ from typing import List
 
 
 scheduleCount = 5
-mockScheduleList = [Schedule.mockWithID() for _ in range(scheduleCount)]
-mockScheduleInfo = ScheduleInfo.mockWithID()
+mockScheduleList = [Schedule.mock(id=index) for index in range(scheduleCount)]
+mockScheduleInfo = ScheduleInfo.mock()
 
 
 def mock_def_read_all_schedule(
@@ -25,15 +25,15 @@ def mock_read_all_schedule():
     ).start()
 
 
-def mock_def_schedule_to_schedule_info(
-    schedule: Schedule,
+def mock_def_schedule_dict_to_schedule_info(
+    schedule_dict: dict,
     placeCRUD: PlaceCRUD,
 ) -> ScheduleInfoList:
     return mockScheduleInfo
 
 
-def mock_schedule_to_schedule_info():
+def mock_schedule_dict_to_schedule_info():
     patch(
-        "eb_fast_api.domain.home.sources.home_feature.schedule_to_schedule_info",
-        new=mock_def_schedule_to_schedule_info,
+        "eb_fast_api.domain.home.sources.home_feature.schedule_dict_to_schedule_info",
+        new=mock_def_schedule_dict_to_schedule_info,
     ).start()
