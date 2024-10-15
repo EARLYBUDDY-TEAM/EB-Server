@@ -2,7 +2,7 @@ from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.crud.place_crud import PlaceCRUD
 from eb_fast_api.database.sources.model.models import Schedule, Place, Base
 from typing import Optional, List
-from sqlalchemy.engine.row import Row
+from sqlalchemy import desc
 
 
 class ScheduleCRUD(BaseCRUD):
@@ -44,7 +44,9 @@ class ScheduleCRUD(BaseCRUD):
             email=userEmail,
             engine=self.engine(),
         )
-        scheduleRowList = self.session.query(scheduleTable).all()
+        scheduleRowList = (
+            self.session.query(scheduleTable).order_by(desc(scheduleTable.c.time)).all()
+        )
         return [row._mapping for row in scheduleRowList]
 
     def delete(
