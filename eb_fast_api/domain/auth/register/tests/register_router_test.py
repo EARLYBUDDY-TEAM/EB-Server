@@ -23,57 +23,61 @@ def test_register_FAIL_exist_user(
     registerMockUserCRUD,
     registerMockScheduleCRUD,
 ):
-    # given
-    email = "test@test.com"
-    password = "password12"
-    refreshToken = "refreshToken"
-    nickName = "nickName"
-    registerInfo = RegisterInfo(
-        nickName=nickName,
-        email=email,
-        password=password,
-    )
-    user = registerInfo.toUser(refreshToken=refreshToken)
-    registerMockUserCRUD.create(user)
+    try:
+        # given
+        email = "test@test.com"
+        password = "password12"
+        refreshToken = "refreshToken"
+        nickName = "nickName"
+        registerInfo = RegisterInfo(
+            nickName=nickName,
+            email=email,
+            password=password,
+        )
+        user = registerInfo.toUser(refreshToken=refreshToken)
+        registerMockUserCRUD.create(user)
 
-    def getMockRegisterCRUD():
-        yield registerMockUserCRUD
+        def getMockRegisterCRUD():
+            yield registerMockUserCRUD
 
-    app.dependency_overrides[EBDataBase.user.getCRUD] = getMockRegisterCRUD
-    testClient = TestClient(app)
+        app.dependency_overrides[EBDataBase.user.getCRUD] = getMockRegisterCRUD
+        testClient = TestClient(app)
 
-    # when
-    json = registerInfo.model_dump(mode="json")
-    response = testClient.post("/auth/register", json=json)
+        # when
+        json = registerInfo.model_dump(mode="json")
+        response = testClient.post("/auth/register", json=json)
 
-    # then
-    assert response.status_code == 401
-    del app.dependency_overrides[EBDataBase.user.getCRUD]
+        # then
+        assert response.status_code == 401
+        del app.dependency_overrides[EBDataBase.user.getCRUD]
 
-    # delete schedule table
-    registerMockScheduleCRUD.dropTable(userEmail=email)
+    finally:
+        # delete schedule table
+        registerMockScheduleCRUD.dropTable(userEmail=email)
 
 
 def test_register_SUCCESS(
     testClient,
     registerMockScheduleCRUD,
 ):
-    # given
-    email = "test@test.com"
-    password = "password12"
-    nickName = "nickName"
-    registerInfo = RegisterInfo(
-        nickName=nickName,
-        email=email,
-        password=password,
-    )
-    json = registerInfo.model_dump(mode="json")
+    try:
+        # given
+        email = "test@test.com"
+        password = "password12"
+        nickName = "nickName"
+        registerInfo = RegisterInfo(
+            nickName=nickName,
+            email=email,
+            password=password,
+        )
+        json = registerInfo.model_dump(mode="json")
 
-    # when
-    response = testClient.post("/auth/register", json=json)
+        # when
+        response = testClient.post("/auth/register", json=json)
 
-    # then
-    assert response.status_code == 200
+        # then
+        assert response.status_code == 200
 
-    # delete schedule table
-    registerMockScheduleCRUD.dropTable(userEmail=email)
+    finally:
+        # delete schedule table
+        registerMockScheduleCRUD.dropTable(userEmail=email)

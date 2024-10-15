@@ -1,35 +1,55 @@
 from typing import List, Optional
-from eb_fast_api.database.sources.model.models import Schedule
+from eb_fast_api.domain.schema.sources.schema import PlaceInfo, ScheduleInfo
 from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PlaceCRUD
-from eb_fast_api.domain.home.sources.home_schema import ScheduleCard
 
 
 def read_all_schedule(
     userEmail: str,
     scheduleCRUD: ScheduleCRUD,
-) -> List[Schedule]:
-    fetchedScheduleList = scheduleCRUD.read_all(userEmail=userEmail)
-    return fetchedScheduleList
+) -> List[dict]:
+    fetched_schedule_dict_list = scheduleCRUD.read_all(userEmail=userEmail)
+    return fetched_schedule_dict_list
 
 
-def schedule_to_schedulecard(
-    schedule: Schedule,
+def get_placeinfo_from_id(
+    placeID: Optional[str],
     placeCRUD: PlaceCRUD,
-) -> ScheduleCard:
-    scheduleID = schedule.id
-    title = schedule.title
-    time = schedule.time
+) -> Optional[PlaceInfo]:
+    if placeID == None:
+        return None
+    place_dict = placeCRUD.read(place_id=placeID)
+    if place_dict == None:
+        return None
+    return PlaceInfo.fromPlaceDict(place_dict=place_dict)
 
-    endPlaceID = schedule.endPlaceID
-    endPlaceName: Optional[str] = None
-    if endPlaceID != None:
-        endPlace = placeCRUD.read(placeID=endPlaceID)
-        if endPlace != None:
-            endPlaceName = endPlace.name
 
-    return ScheduleCard(
-        scheduleID=scheduleID,
+def schedule_dict_to_schedule_info(
+    schedule_dict: dict,
+    placeCRUD: PlaceCRUD,
+) -> ScheduleInfo:
+    id = schedule_dict["id"]
+    title = schedule_dict["title"]
+    memo = schedule_dict["memo"]
+    time = schedule_dict["time"]
+    isNotify = schedule_dict["isNotify"]
+
+    startPlaceID = schedule_dict["startPlaceID"]
+    endPlaceID = schedule_dict["endPlaceID"]
+    startPlaceInfo = get_placeinfo_from_id(
+        placeID=startPlaceID,
+        placeCRUD=placeCRUD,
+    )
+    endPlaceInfo = get_placeinfo_from_id(
+        placeID=endPlaceID,
+        placeCRUD=placeCRUD,
+    )
+
+    return ScheduleInfo(
+        id=id,
         title=title,
+        memo=memo,
         time=time,
-        endPlaceName=endPlaceName,
+        isNotify=isNotify,
+        startPlaceInfo=startPlaceInfo,
+        endPlaceInfo=endPlaceInfo,
     )

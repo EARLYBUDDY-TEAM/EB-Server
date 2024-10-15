@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Self
 from datetime import datetime
 from eb_fast_api.database.sources.model.models import User, Schedule, Place
 from eb_fast_api.snippets.sources import pwdcrypt
@@ -24,6 +24,20 @@ class PlaceInfo(BaseModel):
     category: str
     distance: str
     coordi: Coordi
+
+    @classmethod
+    def fromPlaceDict(cls, place_dict: dict) -> Self:
+        return PlaceInfo(
+            id=place_dict["id"],
+            name=place_dict["name"],
+            address=place_dict["address"],
+            category=place_dict["category"],
+            distance=place_dict["distance"],
+            coordi=Coordi(
+                x=place_dict["coordiX"],
+                y=place_dict["coordiY"],
+            ),
+        )
 
     def toPlace(self) -> Place:
         return Place(
@@ -68,49 +82,48 @@ class RegisterInfo(BaseModel):
 
 
 class ScheduleInfo(BaseModel):
+    id: Optional[int]
     title: str
+    memo: Optional[str]
     time: datetime
     isNotify: bool
-    memo: Optional[str] = None
-    startPlace: Optional[PlaceInfo] = None
-    endPlace: Optional[PlaceInfo] = None
-    # startPlace => id
-    # endPlace => id
-    # scheduleInfo - schedule 모델 프로퍼티 맞추기 위해서
-    # 아예 place를 class로 빼서 schedule, startplace, endplace 세개로 받아도 괜찮을듯
+    startPlaceInfo: Optional[PlaceInfo]
+    endPlaceInfo: Optional[PlaceInfo]
 
     def toSchedule(self) -> Schedule:
-        schedule = Schedule(
+        startPlaceID = self.startPlaceInfo.id if self.startPlaceInfo != None else None
+        endPlaceID = self.endPlaceInfo.id if self.endPlaceInfo != None else None
+
+        return Schedule(
             title=self.title,
+            memo=self.memo,
             time=self.time,
             isNotify=self.isNotify,
-            memo=self.memo,
+            startPlaceID=startPlaceID,
+            endPlaceID=endPlaceID,
         )
 
-        if self.startPlace != None:
-            schedule.startPlaceID = self.startPlace.id
-
-        if self.endPlace != None:
-            schedule.endPlaceID = self.endPlace.id
-
-        return schedule
-
     @classmethod
-    def mock(cls):
+    def mock(
+        cls,
+        id: Optional[int] = None,
+    ):
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
-        startPlace = PlaceInfo.mock()
-        startPlace.id = "startPlaceID"
-        endPlace = PlaceInfo.mock()
-        endPlace.id = "endPlaceID"
+        time = time.replace(microsecond=0, tzinfo=None)
+        startPlaceInfo = PlaceInfo.mock()
+        startPlaceInfo.id = "startPlaceID"
+        endPlaceInfo = PlaceInfo.mock()
+        endPlaceInfo.id = "endPlaceID"
 
         return ScheduleInfo(
+            id=id,
             title="title",
             memo="memo",
             time=time,
             isNotify=False,
-            startPlace=startPlace,
-            endPlace=endPlace,
+            startPlaceInfo=startPlaceInfo,
+            endPlaceInfo=endPlaceInfo,
         )
 
 

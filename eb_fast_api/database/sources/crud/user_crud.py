@@ -10,9 +10,12 @@ class UserCRUD(BaseCRUD):
         self.session.add(user)
         self.session.flush()
 
-    def read(self, email: str) -> Optional[User]:
-        user = self.session.query(User).filter(User.email == email).first()
-        return user
+    def read(self, email: str) -> Optional[dict]:
+        try:
+            user = self.session.query(User).filter(User.email == email).one()
+            return user.to_dict()
+        except:
+            return None
 
     def update(
         self,
@@ -21,7 +24,9 @@ class UserCRUD(BaseCRUD):
         hashedPassword: Optional[str] = None,
         refreshToken: Optional[str] = None,
     ):
-        user = self.read(email=key_email)
+        user = self.session.query(User).filter(User.email == key_email).first()
+        if not user:
+            return
         user.nickName = nickName or user.nickName
         user.hashedPassword = hashedPassword or user.hashedPassword
         user.refreshToken = refreshToken or user.refreshToken

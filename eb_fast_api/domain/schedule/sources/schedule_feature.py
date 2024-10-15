@@ -9,10 +9,14 @@ def createSchedule(
 ):
     schedule = scheduleInfo.toSchedule()
     startPlace = (
-        scheduleInfo.startPlace.toPlace() if scheduleInfo.startPlace != None else None
+        scheduleInfo.startPlaceInfo.toPlace()
+        if scheduleInfo.startPlaceInfo != None
+        else None
     )
     endPlace = (
-        scheduleInfo.endPlace.toPlace() if scheduleInfo.endPlace != None else None
+        scheduleInfo.endPlaceInfo.toPlace()
+        if scheduleInfo.endPlaceInfo != None
+        else None
     )
 
     scheduleCRUD.create(

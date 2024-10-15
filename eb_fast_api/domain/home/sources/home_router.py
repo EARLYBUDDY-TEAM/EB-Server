@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from eb_fast_api.domain.home.sources import home_feature
-from eb_fast_api.domain.home.sources.home_schema import ScheduleCardList, ScheduleCard
+from eb_fast_api.domain.home.sources.home_schema import ScheduleInfoList
+from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.database.sources.database import EBDataBase
 
@@ -9,31 +10,31 @@ from eb_fast_api.database.sources.database import EBDataBase
 router = APIRouter(prefix="/home")
 
 
-@router.get("/get_all_schedule_cards")
-def get_all_schedule_cards(
+@router.get("/get_all_schedules")
+def get_all_schedules(
     userEmail=Depends(getUserEmail),
     scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
     placeCRUD=Depends(EBDataBase.place.getCRUD),
-) -> ScheduleCardList:
-    scheduleList = home_feature.read_all_schedule(
+) -> ScheduleInfoList:
+    schedule_dict_list = home_feature.read_all_schedule(
         userEmail=userEmail,
         scheduleCRUD=scheduleCRUD,
     )
 
-    cards: List[ScheduleCard] = [
-        home_feature.schedule_to_schedulecard(
-            schedule=schedule,
+    all_schedules: List[ScheduleInfo] = [
+        home_feature.schedule_dict_to_schedule_info(
+            schedule_dict=schedule_dict,
             placeCRUD=placeCRUD,
         )
-        for schedule in scheduleList
+        for schedule_dict in schedule_dict_list
     ]
 
-    scheduleCardList = ScheduleCardList(scheduleCardList=cards)
-    return scheduleCardList
+    scheduleInfoList = ScheduleInfoList(all_schedules=all_schedules)
+    return scheduleInfoList
 
 
-@router.delete("/delete_schedule_card")
-def delete_schedule_card(
+@router.delete("/delete_schedule")
+def delete_schedule(
     scheduleID: int,
     userEmail=Depends(getUserEmail),
     scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),

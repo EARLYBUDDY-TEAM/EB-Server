@@ -14,6 +14,7 @@ async def addSchedule(
     userEmail=Depends(getUserEmail),
     scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
 ):
+    scheduleInfo.time = scheduleInfo.time.replace(microsecond=0, tzinfo=None)
     try:
         schedule_feature.createSchedule(
             userEmail=userEmail,

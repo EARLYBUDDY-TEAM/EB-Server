@@ -6,16 +6,6 @@ from eb_fast_api.database.tests.conftest import (
     mockSession,
     prepareTestDataBase,
 )
-from eb_fast_api.domain.home.testings.mock_home_feature import mocking_home_feature
-
-
-@pytest.fixture(scope="session")
-def mock_home_feature():
-    print("mock_home_feature, session start")
-    mocking_home_feature()
-    yield
-    print("mock_home_feature, session finish")
-
 
 @pytest.fixture(scope="function")
 def home_MockScheduleCRUD(mockScheduleCRUD):

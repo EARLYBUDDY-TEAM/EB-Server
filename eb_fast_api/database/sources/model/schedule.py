@@ -27,7 +27,7 @@ class Schedule:
     ):
         self.title = title
         self.memo = memo
-        self.time = time
+        self.time = time.replace(microsecond=0, tzinfo=None)
         self.isNotify = isNotify
         self.startPlaceID = startPlaceID
         self.endPlaceID = endPlaceID
@@ -35,6 +35,7 @@ class Schedule:
     @classmethod
     def mock(
         cls,
+        id: Optional[int] = None,
         title: str = "title",
     ) -> Self:
         timeString = "2024-07-28T05:04:32.299Z"
@@ -47,6 +48,8 @@ class Schedule:
             startPlaceID="startPlaceID",
             endPlaceID="endPlaceID",
         )
+        if id:
+            mockSchedule.id = id
         return mockSchedule
 
     @classmethod
@@ -83,12 +86,12 @@ class Schedule:
 
         return MixinSchedule
 
-    def toRowDict(self, id: int) -> dict:
+    def to_dict(self, id: Optional[int] = None) -> dict:
         return {
-            "id": id,
+            "id": id or self.id,
             "title": self.title,
             "memo": self.memo,
-            "time": self.time.replace(microsecond=0, tzinfo=None),
+            "time": self.time,
             "isNotify": int(self.isNotify),
             "startPlaceID": self.startPlaceID,
             "endPlaceID": self.endPlaceID,
