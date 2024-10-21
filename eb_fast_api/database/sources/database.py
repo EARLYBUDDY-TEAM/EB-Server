@@ -5,7 +5,7 @@ from eb_fast_api.database.sources.connection import (
     sessionMaker,
     checkConnection,
 )
-from eb_fast_api.database.sources.model.models import Base, User, Schedule
+from eb_fast_api.database.sources.model.models import Base, User, Schedule, Place
 from eb_fast_api.database.sources.crud.cruds import (
     PlaceCRUD,
     ScheduleCRUD,
@@ -13,7 +13,7 @@ from eb_fast_api.database.sources.crud.cruds import (
 )
 from eb_fast_api.env.sources.env import ENV_TEST_USER
 from eb_fast_api.snippets.sources import pwdcrypt
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class EBDataBase(Enum):
@@ -69,19 +69,39 @@ class EBDataBase(Enum):
             userCRUD.create(user=testUser)
 
         scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
-        for i in range(10):
-            mockSchedule = Schedule(
+        startPlace = Place.mockStart()
+        endPlace = Place.mockEnd()
+        today = datetime.now() + timedelta(minutes=20)
+        for i in range(1, 11):
+            mockSchedule1 = Schedule(
                 title=f"index : {i}, {nickName}'s mock schedule",
-                time=datetime.now(),
+                memo="This is Memo",
+                time=today + timedelta(days=i),
                 isNotify=False,
+                startPlaceID=startPlace.id,
+                endPlaceID=endPlace.id,
             )
             scheduleCRUD.create(
                 userEmail=email,
-                schedule=mockSchedule,
-                startPlace=None,
-                endPlace=None,
+                schedule=mockSchedule1,
+                startPlace=startPlace,
+                endPlace=endPlace,
             )
-            print(f"Create Mock Schedule, index : {i}")
+
+            mockSchedule2 = Schedule(
+                title=f"index : {i}, {nickName}'s mock schedule",
+                memo="This is Memo",
+                time=today + timedelta(minutes=10),
+                isNotify=False,
+                startPlaceID=startPlace.id,
+                endPlaceID=endPlace.id,
+            )
+            scheduleCRUD.create(
+                userEmail=email,
+                schedule=mockSchedule2,
+                startPlace=startPlace,
+                endPlace=endPlace,
+            )
 
         session.commit()
         session.close()

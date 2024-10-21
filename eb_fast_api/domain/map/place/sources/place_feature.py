@@ -9,7 +9,7 @@ async def getPlaceData(query: str, x: str, y: str):
         "query": query,
         "x": x,
         "y": y,
-        "sort": "distance",
+        "sort": "accuracy",
     }
 
     async with AsyncClient() as client:

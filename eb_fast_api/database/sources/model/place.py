@@ -47,3 +47,27 @@ class Place(Base):
             coordiX="coordiX",
             coordiY="coordiY",
         )
+
+    @classmethod
+    def mockEnd(cls) -> Self:
+        return Place(
+            id="2140311573",
+            name="스타벅스 수서역R점",
+            address="서울 강남구 광평로 281",
+            category="카페",
+            distance="0.1",
+            coordiX="127.10297988971773",
+            coordiY="37.48800665367514",
+        )
+
+    @classmethod
+    def mockStart(cls) -> Self:
+        return Place(
+            id="123",
+            name="멜로즈",
+            address="서울 용산구 보광로 82",
+            category="카페",
+            distance="12",
+            coordiX="126.996509759576",
+            coordiY="37.5306176474415",
+        )
