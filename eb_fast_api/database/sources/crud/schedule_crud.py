@@ -62,6 +62,23 @@ class ScheduleCRUD(BaseCRUD):
         self.session.execute(stmt)
         self.session.flush()
 
+    def update(
+        self,
+        userEmail: str,
+        schedule: Schedule,
+    ):
+        scheduleTable = Schedule.getTable(
+            email=userEmail,
+            engine=self.engine(),
+        )
+        stmt = (
+            scheduleTable.update()
+            .where(scheduleTable.c.id == schedule.id)
+            .values(schedule.to_dict())
+        )
+        self.session.execute(stmt)
+        self.session.flush()
+
     ### Caution !!! Session Close ###
     def dropTable(
         self,

@@ -40,6 +40,7 @@ class Schedule:
     ) -> Self:
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
+        time = time.replace(microsecond=0, tzinfo=None)
         mockSchedule = Schedule(
             title=title,
             memo="memo",
