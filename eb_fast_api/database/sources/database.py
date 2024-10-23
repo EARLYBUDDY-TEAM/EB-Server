@@ -68,9 +68,13 @@ class EBDataBase(Enum):
             )
             userCRUD.create(user=testUser)
 
-        scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
         startPlace = Place.mockStart()
         endPlace = Place.mockEnd()
+        placeCRUD = EBDataBase.place.createCRUD(session=session)
+        placeCRUD.create(place=startPlace)
+        placeCRUD.create(place=endPlace)
+
+        scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
         today = datetime.now() + timedelta(minutes=20)
         for i in range(1, 11):
             mockSchedule1 = Schedule(
@@ -84,8 +88,6 @@ class EBDataBase(Enum):
             scheduleCRUD.create(
                 userEmail=email,
                 schedule=mockSchedule1,
-                startPlace=startPlace,
-                endPlace=endPlace,
             )
 
             mockSchedule2 = Schedule(
@@ -99,13 +101,12 @@ class EBDataBase(Enum):
             scheduleCRUD.create(
                 userEmail=email,
                 schedule=mockSchedule2,
-                startPlace=startPlace,
-                endPlace=endPlace,
             )
 
         session.commit()
         session.close()
         del userCRUD
+        del placeCRUD
         del scheduleCRUD
 
 

@@ -1,7 +1,6 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
-from eb_fast_api.database.sources.crud.place_crud import PlaceCRUD
-from eb_fast_api.database.sources.model.models import Schedule, Place, Base
-from typing import Optional, List
+from eb_fast_api.database.sources.model.models import Schedule, Base
+from typing import List
 from sqlalchemy import desc
 
 
@@ -10,20 +9,11 @@ class ScheduleCRUD(BaseCRUD):
         self,
         userEmail: str,
         schedule: Schedule,
-        startPlace: Optional[Place],
-        endPlace: Optional[Place],
     ):
         scheduleTable = Schedule.getTable(
             email=userEmail,
             engine=self.engine(),
         )
-
-        if startPlace is not None or endPlace is not None:
-            placeCRUD = PlaceCRUD(session=self.session)
-            if startPlace is not None:
-                placeCRUD.create(startPlace)
-            if endPlace is not None:
-                placeCRUD.create(endPlace)
 
         stmt = scheduleTable.insert().values(
             title=schedule.title,
@@ -65,7 +55,7 @@ class ScheduleCRUD(BaseCRUD):
     def update(
         self,
         userEmail: str,
-        schedule: Schedule,
+        to_update_schedule: Schedule,
     ):
         scheduleTable = Schedule.getTable(
             email=userEmail,
@@ -73,8 +63,8 @@ class ScheduleCRUD(BaseCRUD):
         )
         stmt = (
             scheduleTable.update()
-            .where(scheduleTable.c.id == schedule.id)
-            .values(schedule.to_dict())
+            .where(scheduleTable.c.id == to_update_schedule.id)
+            .values(to_update_schedule.to_dict())
         )
         self.session.execute(stmt)
         self.session.flush()

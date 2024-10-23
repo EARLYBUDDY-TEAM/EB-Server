@@ -31,20 +31,14 @@ def test_read_all_schedule(
         home_MockScheduleCRUD.create(
             userEmail=user.email,
             schedule=schedule1,
-            startPlace=None,
-            endPlace=None,
         )
         home_MockScheduleCRUD.create(
             userEmail=user.email,
             schedule=schedule2,
-            startPlace=None,
-            endPlace=None,
         )
         home_MockScheduleCRUD.create(
             userEmail=user.email,
             schedule=schedule3,
-            startPlace=None,
-            endPlace=None,
         )
 
         # when
@@ -136,8 +130,5 @@ def test_schedule_dict_to_schedule_info(
         startPlaceInfo=None,
         endPlaceInfo=None,
     )
-
-    print(scheduleInfo)
-    print(expectScheduleInfo)
 
     assert scheduleInfo == expectScheduleInfo

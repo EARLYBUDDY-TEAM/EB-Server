@@ -94,7 +94,7 @@ class ScheduleInfo(BaseModel):
         startPlaceID = self.startPlaceInfo.id if self.startPlaceInfo != None else None
         endPlaceID = self.endPlaceInfo.id if self.endPlaceInfo != None else None
 
-        return Schedule(
+        schedule = Schedule(
             title=self.title,
             memo=self.memo,
             time=self.time,
@@ -102,6 +102,11 @@ class ScheduleInfo(BaseModel):
             startPlaceID=startPlaceID,
             endPlaceID=endPlaceID,
         )
+
+        if self.id != None:
+            schedule.id = self.id
+
+        return schedule
 
     @classmethod
     def mock(

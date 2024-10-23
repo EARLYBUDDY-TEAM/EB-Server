@@ -29,5 +29,28 @@ async def addSchedule(
             detail="서버 스케줄 생성 에러",
         )
 
-    scheduleCRUD.commit()
+    return
+
+
+@router.post("/update")
+def update_schedule(
+    scheduleInfo: ScheduleInfo,
+    userEmail=Depends(getUserEmail),
+    scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
+):
+    scheduleInfo.time = scheduleInfo.time.replace(microsecond=0, tzinfo=None)
+    try:
+        schedule_feature.update_schedule_with_info(
+            userEmail=userEmail,
+            scheduleInfo=scheduleInfo,
+            scheduleCRUD=scheduleCRUD,
+        )
+    except Exception as e:
+        print(e)
+        # 다른 에러 상황은?
+        raise HTTPException(
+            status_code=400,
+            detail="서버 스케줄 수정 에러",
+        )
+
     return
