@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.domain.schema.sources.schema import RegisterInfo
+from eb_fast_api.domain.schema.sources.schemas import RegisterInfo
 from eb_fast_api.database.sources.database import EBDataBase
 
 

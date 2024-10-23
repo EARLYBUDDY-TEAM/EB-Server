@@ -1,7 +1,7 @@
 from unittest.mock import patch
 from eb_fast_api.database.sources.model.models import Schedule
 from eb_fast_api.domain.home.sources.home_schema import ScheduleInfoList
-from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
+from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo
 from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PlaceCRUD
 from typing import List
 

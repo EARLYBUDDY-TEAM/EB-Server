@@ -3,7 +3,7 @@ from unittest.mock import patch
 from typing import List
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.domain.map.route.sources.route_schema import (
+from eb_fast_api.domain.schema.sources.schemas import (
     SubPathInfo,
     PathInfo,
     RouteInfo,

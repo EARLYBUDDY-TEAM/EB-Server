@@ -1,4 +1,4 @@
-from eb_fast_api.domain.schema.sources.schema import (
+from eb_fast_api.domain.schema.sources.schemas import (
     RegisterInfo,
     PlaceInfo,
     ScheduleInfo,

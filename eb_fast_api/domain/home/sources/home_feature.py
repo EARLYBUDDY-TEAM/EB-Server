@@ -1,5 +1,5 @@
 from typing import List, Optional
-from eb_fast_api.domain.schema.sources.schema import PlaceInfo, ScheduleInfo
+from eb_fast_api.domain.schema.sources.schemas import PlaceInfo, ScheduleInfo
 from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PlaceCRUD
 
 

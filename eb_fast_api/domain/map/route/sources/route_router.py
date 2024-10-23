@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from eb_fast_api.domain.map.route.sources import route_feature
-from eb_fast_api.domain.map.route.sources.route_schema import RouteInfo
+from eb_fast_api.domain.schema.sources.schemas import RouteInfo
 
 
 router = APIRouter(prefix="/map/route")

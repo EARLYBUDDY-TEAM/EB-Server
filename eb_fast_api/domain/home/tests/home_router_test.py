@@ -2,7 +2,7 @@ from typing import List
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
+from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo
 from eb_fast_api.domain.home.sources.home_schema import ScheduleInfoList
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail

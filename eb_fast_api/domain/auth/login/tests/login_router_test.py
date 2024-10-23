@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from eb_fast_api.main import app
-from eb_fast_api.domain.schema.sources.schema import Token, LoginInfo
+from eb_fast_api.domain.schema.sources.schemas import TokenInfo, LoginInfo
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.database.sources.model.user import User
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
@@ -96,7 +96,7 @@ def test_login_SUCCESS(
 
         expectAccessToken = loginMockJWTService.createAccessToken(email=email)
         expectRefreshToken = loginMockJWTService.createRefreshToken(email=email)
-        expectToken = Token(
+        expectToken = TokenInfo(
             accessToken=expectAccessToken,
             refreshToken=expectRefreshToken,
         ).model_dump(mode="json")

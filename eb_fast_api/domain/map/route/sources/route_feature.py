@@ -1,7 +1,7 @@
 from httpx import AsyncClient, Response
 from typing import List
 from eb_fast_api.env.sources.env import ENV_API
-from eb_fast_api.domain.map.route.sources.route_schema import (
+from eb_fast_api.domain.schema.sources.schemas import (
     SubPathInfo,
     PathInfo,
     RouteInfo,

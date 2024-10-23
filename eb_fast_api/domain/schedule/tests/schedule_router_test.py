@@ -1,4 +1,4 @@
-from eb_fast_api.domain.schema.sources.schema import ScheduleInfo
+from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo
 from eb_fast_api.domain.schedule.testings.mock_schedule_feature import (
     mock_create_schedule_SUCCESS,
     mock_create_schedule_FAIL,

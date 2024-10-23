@@ -1,5 +1,5 @@
 from eb_fast_api.domain.schedule.sources import schedule_feature
-from eb_fast_api.domain.schema.sources.schema import (
+from eb_fast_api.domain.schema.sources.schemas import (
     RegisterInfo,
     ScheduleInfo,
     PlaceInfo,
