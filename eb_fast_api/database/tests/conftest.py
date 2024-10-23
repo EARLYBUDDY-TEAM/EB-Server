@@ -56,3 +56,12 @@ def mockScheduleCRUD(mockSession):
         mockSession=mockSession,
         db=db,
     )
+
+
+@pytest.fixture(scope="function")
+def mockRouteCRUD(mockSession):
+    db = EBDataBase.route
+    yield from getMockCRUD(
+        mockSession=mockSession,
+        db=db,
+    )

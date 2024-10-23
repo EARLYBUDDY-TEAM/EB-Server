@@ -5,6 +5,7 @@ from datetime import datetime
 def test_schedule_create_and_read_all(
     mockUserCRUD,
     mockScheduleCRUD,
+    mockRouteCRUD,
 ):
     try:
         # given
@@ -19,7 +20,8 @@ def test_schedule_create_and_read_all(
             schedule=schedule,
         )
 
-        # # assert schedule
+        # then
+        # assert schedule
         fetched_schedule_dict_list = mockScheduleCRUD.read_all(userEmail=email)
         fetched_schedule_dict = fetched_schedule_dict_list[0]
         schedule_id = fetched_schedule_dict["id"]
@@ -29,11 +31,13 @@ def test_schedule_create_and_read_all(
     # delete schedule table
     finally:
         mockScheduleCRUD.dropTable(userEmail=user.email)
+        mockRouteCRUD.dropTable(user_email=user.email)
 
 
 def test_schedule_delete(
     mockUserCRUD,
     mockScheduleCRUD,
+    mockRouteCRUD,
 ):
     try:
         # given
@@ -60,11 +64,13 @@ def test_schedule_delete(
     # delete schedule table
     finally:
         mockScheduleCRUD.dropTable(userEmail=user.email)
+        mockRouteCRUD.dropTable(user_email=user.email)
 
 
 def test_schedule_update(
     mockUserCRUD,
     mockScheduleCRUD,
+    mockRouteCRUD,
 ):
     try:
         # given
@@ -101,3 +107,4 @@ def test_schedule_update(
     # delete schedule table
     finally:
         mockScheduleCRUD.dropTable(userEmail=user.email)
+        mockRouteCRUD.dropTable(user_email=user.email)

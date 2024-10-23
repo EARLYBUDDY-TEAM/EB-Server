@@ -22,6 +22,7 @@ def test_register_FAIL_invalid_register_info(testClient):
 def test_register_FAIL_exist_user(
     registerMockUserCRUD,
     registerMockScheduleCRUD,
+    registerMockRouteCRUD,
 ):
     try:
         # given
@@ -52,13 +53,15 @@ def test_register_FAIL_exist_user(
         del app.dependency_overrides[EBDataBase.user.getCRUD]
 
     finally:
-        # delete schedule table
+        # delete schedule, route table
         registerMockScheduleCRUD.dropTable(userEmail=email)
+        registerMockRouteCRUD.dropTable(user_email=email)
 
 
 def test_register_SUCCESS(
     testClient,
     registerMockScheduleCRUD,
+    registerMockRouteCRUD,
 ):
     try:
         # given
@@ -79,5 +82,6 @@ def test_register_SUCCESS(
         assert response.status_code == 200
 
     finally:
-        # delete schedule table
+        # delete schedule, route table
         registerMockScheduleCRUD.dropTable(userEmail=email)
+        registerMockRouteCRUD.dropTable(user_email=email)

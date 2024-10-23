@@ -10,6 +10,7 @@ def test_recreateToken_Success(
     tokenMockJWTService,
     tokenMockUserCRUD,
     tokenMockScheduleCRUD,
+    tokenMockRouteCRUD,
 ):
     try:
         # given
@@ -64,8 +65,9 @@ def test_recreateToken_Success(
         del app.dependency_overrides[getJWTService]
 
     finally:
-        # delete schedule table
+        # delete schedule, route table
         tokenMockScheduleCRUD.dropTable(userEmail=user.email)
+        tokenMockRouteCRUD.dropTable(user_email=user.email)
 
 
 def test_recreateToken_FAIL(

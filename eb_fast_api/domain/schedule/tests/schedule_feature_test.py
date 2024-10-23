@@ -11,6 +11,7 @@ def test_createSchedule(
     schedule_MockUserCRUD,
     schedule_MockScheduleCRUD,
     schedule_MockPlaceCRUD,
+    schedule_MockRouteCRUD,
 ):
     try:
         # given
@@ -54,12 +55,14 @@ def test_createSchedule(
     # delete schedule table
     finally:
         schedule_MockScheduleCRUD.dropTable(userEmail=email)
+        schedule_MockRouteCRUD.dropTable(user_email=email)
 
 
 def test_update_schedule_with_info(
     schedule_MockUserCRUD,
     schedule_MockScheduleCRUD,
     schedule_MockPlaceCRUD,
+    schedule_MockRouteCRUD,
 ):
     try:
         # given
@@ -125,3 +128,4 @@ def test_update_schedule_with_info(
     # delete schedule table
     finally:
         schedule_MockScheduleCRUD.dropTable(userEmail=email)
+        schedule_MockRouteCRUD.dropTable(user_email=email)

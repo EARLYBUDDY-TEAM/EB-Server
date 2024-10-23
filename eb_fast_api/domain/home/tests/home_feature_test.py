@@ -10,6 +10,7 @@ from eb_fast_api.domain.home.sources import home_feature
 def test_read_all_schedule(
     home_MockUserCRUD,
     home_MockScheduleCRUD,
+    home_MockRouteCRUD,
 ):
     try:
         # given
@@ -53,6 +54,7 @@ def test_read_all_schedule(
     # delete schedule table
     finally:
         home_MockScheduleCRUD.dropTable(userEmail=email)
+        home_MockRouteCRUD.dropTable(user_email=email)
 
 
 def test_get_placeinfo_from_id_When_PlaceID_is_None(

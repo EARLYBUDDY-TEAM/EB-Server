@@ -10,6 +10,7 @@ from eb_fast_api.database.sources.crud.cruds import (
     PlaceCRUD,
     ScheduleCRUD,
     UserCRUD,
+    RouteCRUD,
 )
 from eb_fast_api.env.sources.env import ENV_TEST_USER
 from eb_fast_api.snippets.sources import pwdcrypt
@@ -21,6 +22,7 @@ class EBDataBase(Enum):
     user = "user"
     schedule = "schedule"
     place = "place"
+    route = "route"
 
     # session 파라미터 타입지정했는데 왜 오류????
     def createCRUD(self, session=sessionMaker()):
@@ -31,6 +33,8 @@ class EBDataBase(Enum):
                 return ScheduleCRUD(session)
             case EBDataBase.place:
                 return PlaceCRUD(session)
+            case EBDataBase.route:
+                return RouteCRUD(session)
 
     def getCRUD(self):
         session = sessionMaker()

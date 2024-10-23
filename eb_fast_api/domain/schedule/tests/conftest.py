@@ -7,6 +7,7 @@ from eb_fast_api.database.tests.conftest import (
     mockUserCRUD,
     mockPlaceCRUD,
     prepareTestDataBase,
+    mockRouteCRUD,
 )
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
@@ -25,6 +26,11 @@ def schedule_MockUserCRUD(mockUserCRUD):
 @pytest.fixture(scope="function")
 def schedule_MockPlaceCRUD(mockPlaceCRUD):
     yield mockPlaceCRUD
+
+
+@pytest.fixture(scope="function")
+def schedule_MockRouteCRUD(mockRouteCRUD):
+    yield mockRouteCRUD
 
 
 @pytest.fixture(scope="session")

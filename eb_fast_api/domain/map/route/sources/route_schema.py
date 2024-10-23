@@ -3,15 +3,15 @@ from typing import List, Optional
 from eb_fast_api.snippets.sources import dictionary
 
 
-class Station(BaseModel):
+class StationInfo(BaseModel):
     name: str
 
     @classmethod
     def fromJson(cls, j: dict):
-        return Station(name=j["stationName"])
+        return StationInfo(name=j["stationName"])
 
 
-class Transport(BaseModel):
+class TransportInfo(BaseModel):
     subwayType: Optional[str] = None
     busNumber: Optional[str] = None
     busType: Optional[str] = None
@@ -24,7 +24,7 @@ class Transport(BaseModel):
         busCode = dictionary.safeDict(["type"], j)
         busType = dictionary.safeDict([busCode], busCodeToType)
 
-        trans = Transport(
+        trans = TransportInfo(
             subwayType=subwayType,
             busNumber=busNumber,
             busType=busType,
@@ -32,7 +32,7 @@ class Transport(BaseModel):
         return trans
 
 
-class SubPath(BaseModel):
+class SubPathInfo(BaseModel):
     type: int
     time: int
     startName: str
@@ -40,21 +40,23 @@ class SubPath(BaseModel):
     startY: Optional[str]
     endName: str
     distance: int
-    transports: Optional[List[Transport]]
-    stations: Optional[List[Station]]
+    transports: Optional[List[TransportInfo]]
+    stations: Optional[List[StationInfo]]
 
     @classmethod
     def fromJson(cls, j: dict):
         tmpTrans = dictionary.safeDict(["lane"], j)
         transports = (
-            list(map(Transport.fromJson, tmpTrans)) if tmpTrans != None else None
+            list(map(TransportInfo.fromJson, tmpTrans)) if tmpTrans != None else None
         )
         tmpStations = dictionary.safeDict(["passStopList", "stations"], j)
         stations = (
-            list(map(Station.fromJson, tmpStations)) if tmpStations != None else None
+            list(map(StationInfo.fromJson, tmpStations))
+            if tmpStations != None
+            else None
         )
 
-        subPath = SubPath(
+        subPath = SubPathInfo(
             type=j["trafficType"],
             time=j["sectionTime"],
             startName=dictionary.safeDict(["startName"], j) or "",
@@ -68,20 +70,20 @@ class SubPath(BaseModel):
         return subPath
 
 
-class Path(BaseModel):
+class PathInfo(BaseModel):
     type: int
     time: int
     walkTime: int = 0
     payment: int
     busTransitCount: int
     subwayTransitCount: int
-    subPaths: List[SubPath]
+    subPaths: List[SubPathInfo]
 
     @classmethod
     def fromJson(cls, j: dict):
         info = j["info"]
-        subPaths = list(map(SubPath.fromJson, j["subPath"]))
-        path = Path(
+        subPaths = list(map(SubPathInfo.fromJson, j["subPath"]))
+        path = PathInfo(
             type=j["pathType"],
             time=info["totalTime"],
             payment=info["payment"],
@@ -92,14 +94,14 @@ class Path(BaseModel):
         return path
 
 
-class Route(BaseModel):
+class RouteInfo(BaseModel):
     type: int
-    paths: List[Path]
+    paths: List[PathInfo]
 
     @classmethod
     def fromJson(cls, j: dict):
-        paths = list(map(Path.fromJson, j["path"]))
-        route = Route(type=j["searchType"], paths=paths)
+        paths = list(map(PathInfo.fromJson, j["path"]))
+        route = RouteInfo(type=j["searchType"], paths=paths)
         return route
 
 
