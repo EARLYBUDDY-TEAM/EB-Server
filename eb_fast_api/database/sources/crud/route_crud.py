@@ -14,7 +14,10 @@ class RouteCRUD(BaseCRUD):
             engine=self.engine(),
         )
 
-        stmt = routeTable.insert().values(data=route.data)
+        stmt = routeTable.insert().values(
+            id=route.id,
+            data=route.data,
+        )
         self.session.execute(stmt)
         self.session.flush()
 
@@ -31,14 +34,6 @@ class RouteCRUD(BaseCRUD):
             self.session.query(route_table).filter(route_table.c.id == route_id).one()
         )
         return route_row._mapping
-
-    def read_all(self, user_email: str) -> List[dict]:
-        route_table = Route.getTable(
-            email=user_email,
-            engine=self.engine(),
-        )
-        route_row_list = self.session.query(route_table).all()
-        return [row._mapping for row in route_row_list]
 
     ### Caution !!! Session Close ###
     def dropTable(

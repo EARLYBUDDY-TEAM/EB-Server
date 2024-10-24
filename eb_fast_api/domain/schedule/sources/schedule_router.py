@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.domain.schedule.sources import schedule_feature
-from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo
+from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo, PathInfo
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.database.sources.database import EBDataBase
+from typing import Optional
 
 
 router = APIRouter(prefix="/schedule")
@@ -11,8 +12,10 @@ router = APIRouter(prefix="/schedule")
 @router.post("/add")
 async def addSchedule(
     scheduleInfo: ScheduleInfo,
+    pathInfo: Optional[PathInfo] = None,
     userEmail=Depends(getUserEmail),
     scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
+    routeCRUD=Depends(EBDataBase.route.getCRUD),
 ):
     scheduleInfo.time = scheduleInfo.time.replace(microsecond=0, tzinfo=None)
     try:
@@ -28,8 +31,6 @@ async def addSchedule(
             status_code=400,
             detail="서버 스케줄 생성 에러",
         )
-
-    return
 
 
 @router.post("/update")

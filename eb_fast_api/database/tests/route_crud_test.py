@@ -1,4 +1,4 @@
-from eb_fast_api.database.sources.model.models import Schedule, Route, User
+from eb_fast_api.database.sources.model.models import Route, User
 
 
 def test_route_create_and_read(
@@ -10,8 +10,12 @@ def test_route_create_and_read(
         # given
         user = User.mock(email="email")
         mockUserCRUD.create(user=user)
-        mockData = {"test": "test"}
-        route = Route.mock(data=mockData)
+        mock_data = {"test": "test"}
+        route_id = 10
+        route = Route.mock(
+            id=route_id,
+            data=mock_data,
+        )
 
         # when
         mockRouteCRUD.create(
@@ -21,13 +25,10 @@ def test_route_create_and_read(
 
         # then
         # assert route
-        tmp_fetched_route_list = mockRouteCRUD.read_all(user_email=user.email)
-        tmp_fetched_route_dict = tmp_fetched_route_list[0]
-        route_id = tmp_fetched_route_dict["id"]
         fetched_route_dict = mockRouteCRUD.read(
             user_email=user.email, route_id=route_id
         )
-        assert mockData == fetched_route_dict["data"]
+        assert mock_data == fetched_route_dict["data"]
 
     # delete route table
     finally:

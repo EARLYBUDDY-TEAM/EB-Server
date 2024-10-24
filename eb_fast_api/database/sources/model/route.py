@@ -7,10 +7,15 @@ from eb_fast_api.database.sources.connection import engine
 
 
 class Route:
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     data: Mapped[JSON] = mapped_column(type_=JSON, nullable=False)
 
-    def __init__(self, data: dict):
+    def __init__(
+        self,
+        id: int,
+        data: dict,
+    ):
+        self.id = id
         self.data = data
 
     @classmethod
@@ -19,11 +24,11 @@ class Route:
         id: Optional[int] = None,
         data: Optional[dict] = None,
     ) -> Self:
-        mockData = {"mockData" : "mockData"}
-        mockRoute = Route(data=data or mockData)
-        if id:
-            mockRoute.id = id
-        return mockRoute
+        mockData = {"mockData": "mockData"}
+        return Route(
+            id=id or 1,
+            data=data or mockData,
+        )
 
     @classmethod
     def getTableName(cls, email: str) -> str:
