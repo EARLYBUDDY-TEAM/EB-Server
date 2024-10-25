@@ -1,5 +1,6 @@
 from enum import Enum
 from sqlalchemy import Engine
+from sqlalchemy.orm import Session
 from eb_fast_api.database.sources.connection import (
     engine,
     sessionMaker,
@@ -10,7 +11,7 @@ from eb_fast_api.database.sources.crud.cruds import (
     PlaceCRUD,
     ScheduleCRUD,
     UserCRUD,
-    RouteCRUD,
+    PathCRUD,
 )
 from eb_fast_api.env.sources.env import ENV_TEST_USER
 from eb_fast_api.snippets.sources import pwdcrypt
@@ -22,7 +23,7 @@ class EBDataBase(Enum):
     user = "user"
     schedule = "schedule"
     place = "place"
-    route = "route"
+    path = "path"
 
     # session 파라미터 타입지정했는데 왜 오류????
     def createCRUD(self, session=sessionMaker()):
@@ -33,8 +34,8 @@ class EBDataBase(Enum):
                 return ScheduleCRUD(session)
             case EBDataBase.place:
                 return PlaceCRUD(session)
-            case EBDataBase.route:
-                return RouteCRUD(session)
+            case EBDataBase.path:
+                return PathCRUD(session)
 
     def getCRUD(self):
         session = sessionMaker()
@@ -46,8 +47,20 @@ class EBDataBase(Enum):
             del crud
 
     @classmethod
+    def create_session() -> Session:
+        return sessionMaker()
+
+    @classmethod
+    def get_session(cls):
+        session = EBDataBase.create_session()
+        try:
+            yield session
+        finally:
+            session.close()
+
+    @classmethod
     def initialize(
-        self,
+        cls,
         engine: Engine = engine,
     ):
         checkConnection(engine=engine)

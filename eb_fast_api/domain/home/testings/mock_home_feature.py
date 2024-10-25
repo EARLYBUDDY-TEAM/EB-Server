@@ -7,7 +7,7 @@ from typing import List
 
 
 scheduleCount = 5
-mockScheduleList = [Schedule.mock(id=index) for index in range(scheduleCount)]
+mockScheduleList = [Schedule.mock() for index in range(scheduleCount)]
 mockScheduleInfo = ScheduleInfo.mock()
 
 

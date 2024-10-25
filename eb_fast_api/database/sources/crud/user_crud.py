@@ -1,5 +1,5 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
-from eb_fast_api.database.sources.model.models import User, Schedule, Route
+from eb_fast_api.database.sources.model.models import User, Schedule, Path
 from typing import Optional
 
 
@@ -7,7 +7,7 @@ class UserCRUD(BaseCRUD):
     def create(self, user: User):
         mixinSchedule = Schedule.createMixinSchedule(email=user.email)
         mixinSchedule.__table__.create(bind=self.engine())
-        mixinRoute = Route.createMixinRoute(email=user.email)
+        mixinRoute = Path.createMixinPath(email=user.email)
         mixinRoute.__table__.create(bind=self.engine())
 
         self.session.add(user)

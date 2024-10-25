@@ -3,15 +3,17 @@ from eb_fast_api.domain.schema.sources.schemas import (
     RegisterInfo,
     ScheduleInfo,
     PlaceInfo,
+    PathInfo,
 )
 from datetime import datetime
+from uuid import uuid4
 
 
-def test_createSchedule(
+def test_create_path(
+    schedule_MockPathCRUD,
     schedule_MockUserCRUD,
     schedule_MockScheduleCRUD,
-    schedule_MockPlaceCRUD,
-    schedule_MockRouteCRUD,
+    schedule_MockSession,
 ):
     try:
         # given
@@ -25,44 +27,53 @@ def test_createSchedule(
             password=password,
         )
         user = registerInfo.toUser(refreshToken=refreshToken)
-        schedule_MockUserCRUD.create(user)
-        scheduleInfo = ScheduleInfo.mock()
+        schedule_MockUserCRUD.create(user=user)
 
         # when
-        schedule_feature.createSchedule(
-            userEmail=email,
-            scheduleInfo=scheduleInfo,
-            scheduleCRUD=schedule_MockScheduleCRUD,
+        path_id = str(uuid4())
+        path_info = PathInfo.mock()
+        schedule_feature.create_path(
+            session=schedule_MockSession,
+            user_email=user.email,
+            path_id=path_id,
+            path_info=path_info,
         )
 
         # then
-        # place
-        place_info1 = scheduleInfo.startPlaceInfo
-        place_info2 = scheduleInfo.endPlaceInfo
-        place_dict1 = schedule_MockPlaceCRUD.read(place_id=place_info1.id)
-        place_dict2 = schedule_MockPlaceCRUD.read(place_id=place_info2.id)
-        fetched_place_info1 = PlaceInfo.fromPlaceDict(place_dict=place_dict1)
-        fetched_place_info2 = PlaceInfo.fromPlaceDict(place_dict=place_dict2)
-        assert place_info1 == fetched_place_info1
-        assert place_info2 == fetched_place_info2
+        fetched_path_dict = schedule_MockPathCRUD.read(
+            user_email=user.email, path_id=path_id
+        )
+        assert fetched_path_dict["data"] == path_info.model_dump(mode="json")
 
-        fetched_schedule_list = schedule_MockScheduleCRUD.read_all(userEmail=email)
-        fetched_schedule_dict = fetched_schedule_list[0]
-        expect_schedule = scheduleInfo.toSchedule()
-        expect_schedule.id = fetched_schedule_dict["id"]
-        assert expect_schedule.to_dict() == fetched_schedule_dict
-
-    # delete schedule table
+    # delete path, schedule table
     finally:
-        schedule_MockScheduleCRUD.dropTable(userEmail=email)
-        schedule_MockRouteCRUD.dropTable(user_email=email)
+        schedule_MockScheduleCRUD.dropTable(userEmail=user.email)
+        schedule_MockPathCRUD.dropTable(user_email=user.email)
 
 
-def test_update_schedule_with_info(
+def test_create_place(
+    schedule_MockSession,
+    schedule_MockPlaceCRUD,
+):
+    # given
+    place_info = PlaceInfo.mock()
+
+    # when
+    schedule_feature.create_place(
+        session=schedule_MockSession,
+        place_info=place_info,
+    )
+
+    fetched_place_dict = schedule_MockPlaceCRUD.read(place_id=place_info.id)
+    fetched_place_dict["refCount"] = None
+    assert fetched_place_dict == place_info.toPlace().to_dict()
+
+
+def test_create_my_schedule(
+    schedule_MockSession,
     schedule_MockUserCRUD,
     schedule_MockScheduleCRUD,
-    schedule_MockPlaceCRUD,
-    schedule_MockRouteCRUD,
+    schedule_MockPathCRUD,
 ):
     try:
         # given
@@ -77,23 +88,68 @@ def test_update_schedule_with_info(
         )
         user = registerInfo.toUser(refreshToken=refreshToken)
         schedule_MockUserCRUD.create(user)
+        schedule_id = str(uuid4())
         scheduleInfo = ScheduleInfo.mock()
+        scheduleInfo.id = None
 
-        schedule_feature.createSchedule(
-            userEmail=email,
-            scheduleInfo=scheduleInfo,
-            scheduleCRUD=schedule_MockScheduleCRUD,
+        # when
+        schedule_feature.create_my_schedule(
+            session=schedule_MockSession,
+            user_email=user.email,
+            schedule_id=schedule_id,
+            schedule_info=scheduleInfo,
+        )
+
+        # then
+        fetched_schedule_dict = schedule_MockScheduleCRUD.read(
+            user_email=user.email,
+            schedule_id=schedule_id,
+        )
+        schedule = scheduleInfo.toSchedule(id=schedule_id)
+        assert schedule.to_dict() == fetched_schedule_dict
+
+    # delete path, schedule table
+    finally:
+        schedule_MockScheduleCRUD.dropTable(userEmail=email)
+        schedule_MockPathCRUD.dropTable(user_email=email)
+
+
+def test_update_schedule(
+    schedule_MockSession,
+    schedule_MockUserCRUD,
+    schedule_MockScheduleCRUD,
+    schedule_MockPlaceCRUD,
+    schedule_MockPathCRUD,
+):
+    try:
+        # given
+        # create user
+        email = "email"
+        password = "password"
+        refreshToken = "refreshToken"
+        nickName = "nickName"
+        registerInfo = RegisterInfo(
+            nickName=nickName,
+            email=email,
+            password=password,
+        )
+        user = registerInfo.toUser(refreshToken=refreshToken)
+        schedule_MockUserCRUD.create(user)
+
+        # create schedule
+        schedule_id = str(uuid4())
+        scheduleInfo = ScheduleInfo.mock(id=schedule_id)
+        schedule = scheduleInfo.toSchedule()
+        schedule_MockScheduleCRUD.create(
+            userEmail=user.email,
+            schedule=schedule,
         )
 
         # when
-        fetched_schedule_list = schedule_MockScheduleCRUD.read_all(userEmail=email)
-        fetched_schedule_dict = fetched_schedule_list[0]
-        schedule_id = fetched_schedule_dict["id"]
-
+        to_update = scheduleInfo
         timeString = "2024-11-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
         time = time.replace(microsecond=0, tzinfo=None)
-        to_update = ScheduleInfo.mock(id=schedule_id)
         to_update.title = "test_title"
         to_update.memo = "test_memo"
         to_update.isNotify = not to_update.isNotify
@@ -101,31 +157,21 @@ def test_update_schedule_with_info(
         to_update.startPlaceInfo.id = "test_start_id"
         to_update.endPlaceInfo.id = "test_end_id"
 
-        schedule_feature.update_schedule_with_info(
-            userEmail=email,
-            scheduleInfo=to_update,
-            scheduleCRUD=schedule_MockScheduleCRUD,
+        schedule_feature.update_my_schedule(
+            session=schedule_MockSession,
+            user_email=user.email,
+            schedule_info=to_update,
         )
 
-        # then
-        # place
-        place_info1 = to_update.startPlaceInfo
-        place_info2 = to_update.endPlaceInfo
-        place_dict1 = schedule_MockPlaceCRUD.read(place_id=place_info1.id)
-        place_dict2 = schedule_MockPlaceCRUD.read(place_id=place_info2.id)
-        place1 = place_info1.toPlace()
-        place2 = place_info2.toPlace()
-        place_dict1["refCount"] = None
-        place_dict2["refCount"] = None
-        assert place1.to_dict() == place_dict1
-        assert place2.to_dict() == place_dict2
+        fetched_schedule_dict = schedule_MockScheduleCRUD.read(
+            user_email=user.email,
+            schedule_id=schedule_id,
+        )
 
-        fetched_schedule_list = schedule_MockScheduleCRUD.read_all(userEmail=email)
-        fetched_schedule_dict = fetched_schedule_list[0]
         expect_schedule = to_update.toSchedule()
         assert expect_schedule.to_dict() == fetched_schedule_dict
 
     # delete schedule table
     finally:
         schedule_MockScheduleCRUD.dropTable(userEmail=email)
-        schedule_MockRouteCRUD.dropTable(user_email=email)
+        schedule_MockPathCRUD.dropTable(user_email=email)

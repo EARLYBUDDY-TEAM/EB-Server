@@ -1,67 +1,70 @@
-from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo
-from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD
 from unittest.mock import patch
+from sqlalchemy.orm import Session
+from typing import Optional
 
-
-def mock_def_create_schedule_SUCCESS(
-    userEmail: str,
-    scheduleInfo: ScheduleInfo,
-    scheduleCRUD: ScheduleCRUD,
-):
-    print("mock_create_schedule_SUCCESS !!!")
-    return
+from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo, PathInfo
+from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD
 
 
 def mock_create_schedule_SUCCESS():
+    def mock_def_create_schedule_SUCCESS(
+        session: Session,
+        userEmail: str,
+        scheduleInfo: ScheduleInfo,
+        pathInfo: Optional[PathInfo],
+    ):
+        print("mock_create_schedule_SUCCESS !!!")
+        return
+
     patch(
-        "eb_fast_api.domain.schedule.sources.schedule_feature.createSchedule",
+        "eb_fast_api.domain.schedule.sources.schedule_feature.create_schedule",
         new=mock_def_create_schedule_SUCCESS,
     ).start()
 
 
-def mock_def_create_schedule_FAIL(
-    userEmail: str,
-    scheduleInfo: ScheduleInfo,
-    scheduleCRUD: ScheduleCRUD,
-):
-    print("mock_create_schedule_FAIL !!!")
-    raise Exception()
-
-
 def mock_create_schedule_FAIL():
+    def mock_def_create_schedule_FAIL(
+        session: Session,
+        userEmail: str,
+        scheduleInfo: ScheduleInfo,
+        pathInfo: Optional[PathInfo],
+    ):
+        print("mock_create_schedule_FAIL !!!")
+        raise Exception()
+
     patch(
-        "eb_fast_api.domain.schedule.sources.schedule_feature.createSchedule",
+        "eb_fast_api.domain.schedule.sources.schedule_feature.create_schedule",
         new=mock_def_create_schedule_FAIL,
     ).start()
 
 
-def mock_def_update_schedule_with_info_SUCCESS(
-    userEmail: str,
-    scheduleInfo: ScheduleInfo,
-    scheduleCRUD: ScheduleCRUD,
-):
-    print("mock_def_update_schedule_with_info_SUCCESS !!!")
-    return
+def mock_update_schedule_SUCCESS():
+    def mock_def_update_schedule_SUCCESS(
+        session: Session,
+        userEmail: str,
+        scheduleInfo: ScheduleInfo,
+        pathInfo: Optional[PathInfo],
+    ):
+        print("mock_def_update_schedule_SUCCESS !!!")
+        return
 
-
-def mock_update_schedule_with_info_SUCCESS():
     patch(
-        "eb_fast_api.domain.schedule.sources.schedule_feature.update_schedule_with_info",
-        new=mock_def_update_schedule_with_info_SUCCESS,
+        "eb_fast_api.domain.schedule.sources.schedule_feature.update_schedule",
+        new=mock_def_update_schedule_SUCCESS,
     ).start()
 
 
-def mock_def_update_schedule_with_info_FAIL(
-    userEmail: str,
-    scheduleInfo: ScheduleInfo,
-    scheduleCRUD: ScheduleCRUD,
-):
-    print("mock_def_update_schedule_with_info_FAIL !!!")
-    raise Exception()
+def mock_update_schedule_FAIL():
+    def mock_def_update_schedule_FAIL(
+        session: Session,
+        userEmail: str,
+        scheduleInfo: ScheduleInfo,
+        pathInfo: Optional[PathInfo],
+    ):
+        print("mock_def_update_schedule_FAIL !!!")
+        raise Exception()
 
-
-def mock_update_schedule_with_info_FAIL():
     patch(
-        "eb_fast_api.domain.schedule.sources.schedule_feature.update_schedule_with_info",
-        new=mock_def_update_schedule_with_info_FAIL,
+        "eb_fast_api.domain.schedule.sources.schedule_feature.update_schedule",
+        new=mock_def_update_schedule_FAIL,
     ).start()

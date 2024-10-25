@@ -2,6 +2,7 @@ from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.model.models import Schedule, Base
 from typing import List
 from sqlalchemy import desc
+from uuid import UUID
 
 
 class ScheduleCRUD(BaseCRUD):
@@ -15,16 +16,26 @@ class ScheduleCRUD(BaseCRUD):
             engine=self.engine(),
         )
 
-        stmt = scheduleTable.insert().values(
-            title=schedule.title,
-            time=schedule.time,
-            isNotify=schedule.isNotify,
-            memo=schedule.memo,
-            startPlaceID=schedule.startPlaceID,
-            endPlaceID=schedule.endPlaceID,
-        )
+        stmt = scheduleTable.insert().values(schedule.to_dict())
         self.session.execute(stmt)
         self.session.flush()
+
+    def read(
+        self,
+        user_email: str,
+        schedule_id: str,
+    ) -> dict:
+        scheduleTable = Schedule.getTable(
+            email=user_email,
+            engine=self.engine(),
+        )
+        schedule_row = (
+            self.session.query(scheduleTable)
+            .filter(scheduleTable.c.id == schedule_id)
+            .one()
+        )
+
+        return schedule_row._mapping
 
     def read_all(
         self,
@@ -42,7 +53,7 @@ class ScheduleCRUD(BaseCRUD):
     def delete(
         self,
         userEmail: str,
-        scheduleID: int,
+        scheduleID: str,
     ):
         scheduleTable = Schedule.getTable(
             email=userEmail,

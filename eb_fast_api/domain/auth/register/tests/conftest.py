@@ -7,7 +7,7 @@ from eb_fast_api.database.tests.conftest import (
     mockUserCRUD,
     prepareTestDataBase,
     mockScheduleCRUD,
-    mockRouteCRUD,
+    mockPathCRUD,
 )
 
 
@@ -22,8 +22,8 @@ def registerMockScheduleCRUD(mockScheduleCRUD):
 
 
 @pytest.fixture(scope="function")
-def registerMockRouteCRUD(mockRouteCRUD):
-    yield mockRouteCRUD
+def registermockPathCRUD(mockPathCRUD):
+    yield mockPathCRUD
 
 
 @pytest.fixture(scope="function")

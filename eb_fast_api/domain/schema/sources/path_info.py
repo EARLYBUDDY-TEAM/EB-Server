@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Self
+from eb_fast_api.database.sources.model.models import Path
 from eb_fast_api.snippets.sources import dictionary
 
 
@@ -9,6 +10,10 @@ class StationInfo(BaseModel):
     @classmethod
     def fromJson(cls, j: dict):
         return StationInfo(name=j["stationName"])
+
+    @classmethod
+    def mock(cls) -> Self:
+        return StationInfo(name="수서역")
 
 
 class TransportInfo(BaseModel):
@@ -30,6 +35,22 @@ class TransportInfo(BaseModel):
             busType=busType,
         )
         return trans
+
+    @classmethod
+    def mockBus(cls) -> Self:
+        return TransportInfo(
+            subwayType=None,
+            busNumer="1000",
+            busType="일반",
+        )
+
+    @classmethod
+    def mockSubway(cls) -> Self:
+        return TransportInfo(
+            subwayType="1호선",
+            busNumer=None,
+            busType=None,
+        )
 
 
 class SubPathInfo(BaseModel):
@@ -69,6 +90,28 @@ class SubPathInfo(BaseModel):
         )
         return subPath
 
+    @classmethod
+    def mock(cls) -> Self:
+        return SubPathInfo(
+            type=2,
+            time=10,
+            startName="수서역",
+            startX="123.12",
+            startY="123.12",
+            endName="수서역",
+            distance=10,
+            transports=[
+                TransportInfo.mockBus(),
+                TransportInfo.mockSubway(),
+                TransportInfo.mockBus(),
+                TransportInfo.mockSubway(),
+            ],
+            stations=[
+                StationInfo.mock(),
+                StationInfo.mock(),
+            ],
+        )
+
 
 class PathInfo(BaseModel):
     type: int
@@ -92,6 +135,29 @@ class PathInfo(BaseModel):
             subPaths=subPaths,
         )
         return path
+
+    @classmethod
+    def mock(cls) -> Self:
+        return PathInfo(
+            type=2,
+            time=10,
+            walkTime=10,
+            payment=1000,
+            busTransitCount=10,
+            subwayTransitCount=10,
+            subPaths=[
+                SubPathInfo.mock(),
+                SubPathInfo.mock(),
+                SubPathInfo.mock(),
+            ],
+        )
+
+    def to_path(self, id: str) -> Path:
+        data = self.model_dump(mode="json")
+        return Path(
+            id=id,
+            data=data,
+        )
 
 
 class RouteInfo(BaseModel):

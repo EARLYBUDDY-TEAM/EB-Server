@@ -22,7 +22,7 @@ def test_register_FAIL_invalid_register_info(testClient):
 def test_register_FAIL_exist_user(
     registerMockUserCRUD,
     registerMockScheduleCRUD,
-    registerMockRouteCRUD,
+    registermockPathCRUD,
 ):
     try:
         # given
@@ -55,13 +55,13 @@ def test_register_FAIL_exist_user(
     finally:
         # delete schedule, route table
         registerMockScheduleCRUD.dropTable(userEmail=email)
-        registerMockRouteCRUD.dropTable(user_email=email)
+        registermockPathCRUD.dropTable(user_email=email)
 
 
 def test_register_SUCCESS(
     testClient,
     registerMockScheduleCRUD,
-    registerMockRouteCRUD,
+    registermockPathCRUD,
 ):
     try:
         # given
@@ -84,4 +84,4 @@ def test_register_SUCCESS(
     finally:
         # delete schedule, route table
         registerMockScheduleCRUD.dropTable(userEmail=email)
-        registerMockRouteCRUD.dropTable(user_email=email)
+        registermockPathCRUD.dropTable(user_email=email)

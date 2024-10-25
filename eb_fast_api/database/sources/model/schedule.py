@@ -1,14 +1,15 @@
-from sqlalchemy import String, DateTime, Boolean, Engine
+from sqlalchemy import String, DateTime, Boolean, Engine, Column
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.schema import Table, MetaData
 from typing import Optional, Self
 from datetime import datetime
 from eb_fast_api.database.sources.model.base_model import Base
 from eb_fast_api.database.sources.connection import engine
+from uuid import uuid4
 
 
 class Schedule:
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id = Column(String(50), primary_key=True)
     title: Mapped[str] = mapped_column(String(200))
     memo: Mapped[Optional[str]] = mapped_column(String(200))
     time: Mapped[datetime] = mapped_column(DateTime())
@@ -24,7 +25,9 @@ class Schedule:
         memo: Optional[str] = None,
         startPlaceID: Optional[str] = None,
         endPlaceID: Optional[str] = None,
+        id: str = str(uuid4()),
     ):
+        self.id = id
         self.title = title
         self.memo = memo
         self.time = time.replace(microsecond=0, tzinfo=None)
@@ -35,13 +38,15 @@ class Schedule:
     @classmethod
     def mock(
         cls,
-        id: Optional[int] = None,
+        id: Optional[str] = None,
         title: str = "title",
     ) -> Self:
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
         time = time.replace(microsecond=0, tzinfo=None)
+        id = id or str(uuid4())
         mockSchedule = Schedule(
+            id=id,
             title=title,
             memo="memo",
             time=time,
@@ -49,8 +54,6 @@ class Schedule:
             startPlaceID="startPlaceID",
             endPlaceID="endPlaceID",
         )
-        if id:
-            mockSchedule.id = id
         return mockSchedule
 
     @classmethod
@@ -87,7 +90,7 @@ class Schedule:
 
         return MixinSchedule
 
-    def to_dict(self, id: Optional[int] = None) -> dict:
+    def to_dict(self, id: Optional[str] = None) -> dict:
         return {
             "id": id or self.id,
             "title": self.title,

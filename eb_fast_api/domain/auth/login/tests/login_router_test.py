@@ -17,7 +17,7 @@ def test_login_ERROR_no_user(testClient):
 def test_login_ERROR_invalid_password(
     loginMockUserCRUD,
     loginMockScheduleCRUD,
-    loginMockRouteCRUD,
+    loginMockPathCRUD,
 ):
     try:
         # given
@@ -51,14 +51,14 @@ def test_login_ERROR_invalid_password(
     finally:
         # delete schedule table
         loginMockScheduleCRUD.dropTable(userEmail=user.email)
-        loginMockRouteCRUD.dropTable(user_email=user.email)
+        loginMockPathCRUD.dropTable(user_email=user.email)
 
 
 def test_login_SUCCESS(
     loginMockUserCRUD,
     loginMockScheduleCRUD,
     loginMockJWTService,
-    loginMockRouteCRUD,
+    loginMockPathCRUD,
 ):
     try:
         # given
@@ -113,4 +113,4 @@ def test_login_SUCCESS(
     finally:
         # delete schedule table
         loginMockScheduleCRUD.dropTable(userEmail=user.email)
-        loginMockRouteCRUD.dropTable(user_email=user.email)
+        loginMockPathCRUD.dropTable(user_email=user.email)

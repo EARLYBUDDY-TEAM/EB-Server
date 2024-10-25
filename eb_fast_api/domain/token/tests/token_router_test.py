@@ -10,7 +10,7 @@ def test_recreateToken_Success(
     tokenMockJWTService,
     tokenMockUserCRUD,
     tokenMockScheduleCRUD,
-    tokenMockRouteCRUD,
+    tokenmockPathCRUD,
 ):
     try:
         # given
@@ -67,7 +67,7 @@ def test_recreateToken_Success(
     finally:
         # delete schedule, route table
         tokenMockScheduleCRUD.dropTable(userEmail=user.email)
-        tokenMockRouteCRUD.dropTable(user_email=user.email)
+        tokenmockPathCRUD.dropTable(user_email=user.email)
 
 
 def test_recreateToken_FAIL(

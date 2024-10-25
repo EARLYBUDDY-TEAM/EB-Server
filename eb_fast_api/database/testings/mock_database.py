@@ -15,6 +15,17 @@ def mockCommitInBaseCRUD():
     patcher.start()
 
 
+def mock_commit():
+    def mock_def_commit(self):
+        print("mock sqlalchemy orm session commit")
+        return
+
+    patch(
+        "sqlalchemy.orm.Session.commit",
+        new=mock_def_commit,
+    ).start()
+
+
 def getMockCRUD(
     mockSession: Session,
     db: EBDataBase,

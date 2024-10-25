@@ -1,11 +1,11 @@
-from eb_fast_api.database.sources.model.models import User, Schedule, Route
+from eb_fast_api.database.sources.model.models import User, Schedule, Path
 from sqlalchemy import inspect
 
 
 def test_user_read_and_create(
     mockUserCRUD,
     mockScheduleCRUD,
-    mockRouteCRUD,
+    mockPathCRUD,
     mockSession,
 ):
     try:
@@ -29,19 +29,19 @@ def test_user_read_and_create(
         mockEngine = mockSession.get_bind()
         scheduleTableName = Schedule.getTableName(email=user.email)
         assert True == inspect(mockEngine).has_table(table_name=scheduleTableName)
-        routeTableName = Route.getTableName(email=user.email)
+        routeTableName = Path.getTableName(email=user.email)
         assert True == inspect(mockEngine).has_table(table_name=routeTableName)
 
-    # delete schedule, route table
+    # delete schedule, path table
     finally:
         mockScheduleCRUD.dropTable(userEmail=user.email)
-        mockRouteCRUD.dropTable(user_email=user.email)
+        mockPathCRUD.dropTable(user_email=user.email)
 
 
 def test_user_update(
     mockUserCRUD,
     mockScheduleCRUD,
-    mockRouteCRUD,
+    mockPathCRUD,
 ):
     try:
         # given
@@ -63,7 +63,7 @@ def test_user_update(
         assert fetched_user_dict["hashedPassword"] == newHashedPassword
         assert fetched_user_dict["refreshToken"] == newRefreshToken
 
-    # delete schedule, route table
+    # delete schedule, path table
     finally:
         mockScheduleCRUD.dropTable(userEmail=user.email)
-        mockRouteCRUD.dropTable(user_email=user.email)
+        mockPathCRUD.dropTable(user_email=user.email)

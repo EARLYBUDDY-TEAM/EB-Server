@@ -5,12 +5,13 @@ from eb_fast_api.domain.schema.sources.schemas import (
 )
 from eb_fast_api.database.sources.model.models import Schedule, Place
 from eb_fast_api.domain.home.sources import home_feature
+from uuid import uuid4
 
 
 def test_read_all_schedule(
     home_MockUserCRUD,
     home_MockScheduleCRUD,
-    home_MockRouteCRUD,
+    home_mockPathCRUD,
 ):
     try:
         # given
@@ -54,7 +55,7 @@ def test_read_all_schedule(
     # delete schedule table
     finally:
         home_MockScheduleCRUD.dropTable(userEmail=email)
-        home_MockRouteCRUD.dropTable(user_email=email)
+        home_mockPathCRUD.dropTable(user_email=email)
 
 
 def test_get_placeinfo_from_id_When_PlaceID_is_None(
@@ -112,7 +113,8 @@ def test_schedule_dict_to_schedule_info(
     home_MockPlaceCRUD,
 ):
     # given
-    mockSchedule = Schedule.mock(id=10)
+    schedule_id = str(uuid4())
+    mockSchedule = Schedule.mock(id=schedule_id)
     mockSchedule.startPlaceID = None
     mockSchedule.endPlaceID = None
 
