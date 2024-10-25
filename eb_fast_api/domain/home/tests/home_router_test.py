@@ -1,5 +1,7 @@
 from unittest.mock import patch
 from fastapi.testclient import TestClient
+from typing import List
+
 from eb_fast_api.main import app
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
@@ -10,6 +12,10 @@ from eb_fast_api.domain.home.testings.mock_home_feature import (
     mockSchedulePathInfo,
 )
 from eb_fast_api.database.sources.database import EBDataBase
+from eb_fast_api.domain.home.sources.home_schema import (
+    SchedulePathInfo,
+    SchedulePathInfoList,
+)
 
 
 def test_get_all_schedules(home_MockSession):
@@ -31,11 +37,12 @@ def test_get_all_schedules(home_MockSession):
     )
 
     # then
-    expect_response = [
-        mockSchedulePathInfo.model_dump(mode="json")
-        for _ in range(len(mockScheduleList))
+    all_schedules: List[SchedulePathInfo] = [
+        mockSchedulePathInfo for _ in range(len(mockScheduleList))
     ]
-    assert expect_response == response.json()
+    schedulePathInfoList = SchedulePathInfoList(all_schedules=all_schedules)
+    assert response.json() == schedulePathInfoList.model_dump(mode="json")
+
     del app.dependency_overrides[getUserEmail]
     del app.dependency_overrides[EBDataBase.get_session]
 
