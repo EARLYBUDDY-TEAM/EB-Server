@@ -33,7 +33,7 @@ async def create_schedule(
         )
 
 
-@router.post("/update")
+@router.patch("/update")
 def update_schedule(
     scheduleInfo: ScheduleInfo,
     pathInfo: Optional[PathInfo] = None,
@@ -54,4 +54,23 @@ def update_schedule(
         raise HTTPException(
             status_code=400,
             detail="서버 스케줄 수정 에러",
+        )
+
+
+@router.delete("/delete")
+def delete_schedule(
+    schedule_id: str,
+    user_email=Depends(getUserEmail),
+    scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
+):
+    try:
+        scheduleCRUD.delete(
+            userEmail=user_email,
+            scheduleID=schedule_id,
+        )
+        scheduleCRUD.commit()
+    except:
+        raise HTTPException(
+            status_code=400,
+            detail="스케줄 삭제 에러",
         )

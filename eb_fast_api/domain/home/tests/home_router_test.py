@@ -42,7 +42,7 @@ def test_delete_schedule_card_SUCCESS():
     def mock_delete_success(
         self,
         userEmail: str,
-        scheduleID: int,
+        scheduleID: str,
     ):
         return
 
@@ -53,7 +53,7 @@ def test_delete_schedule_card_SUCCESS():
         app.dependency_overrides[getUserEmail] = mockGetUserEmail
         testClient = TestClient(app)
         headers = {"access_token": "access_token"}
-        params = {"scheduleID": 10}
+        params = {"scheduleID": "scheduleID"}
 
         # when
         response = testClient.delete(
@@ -70,7 +70,7 @@ def test_delete_schedule_card_FAIL():
     def mock_delete_fail(
         self,
         userEmail: str,
-        scheduleID: int,
+        scheduleID: str,
     ):
         raise Exception("mock_delete_fail")
 
@@ -81,7 +81,7 @@ def test_delete_schedule_card_FAIL():
         app.dependency_overrides[getUserEmail] = mockGetUserEmail
         testClient = TestClient(app)
         headers = {"access_token": "access_token"}
-        params = {"scheduleID": 10}
+        params = {"scheduleID": "scheduleID"}
 
         # when
         response = testClient.delete(

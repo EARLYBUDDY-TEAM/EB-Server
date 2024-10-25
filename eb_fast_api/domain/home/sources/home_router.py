@@ -35,7 +35,7 @@ def get_all_schedules(
 
 @router.delete("/delete_schedule")
 def delete_schedule(
-    scheduleID: int,
+    scheduleID: str,
     userEmail=Depends(getUserEmail),
     scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
 ):
