@@ -10,6 +10,16 @@ from eb_fast_api.database.tests.conftest import (
 
 
 @pytest.fixture(scope="function")
+def home_MockSession(mockSession):
+    yield mockSession
+
+
+@pytest.fixture(scope="function")
+def home_MockPathCRUD(mockPathCRUD):
+    yield mockPathCRUD
+
+
+@pytest.fixture(scope="function")
 def home_MockScheduleCRUD(mockScheduleCRUD):
     yield mockScheduleCRUD
 
@@ -25,5 +35,5 @@ def home_MockPlaceCRUD(mockPlaceCRUD):
 
 
 @pytest.fixture(scope="function")
-def home_mockPathCRUD(mockPathCRUD):
+def home_MockPathCRUD(mockPathCRUD):
     yield mockPathCRUD

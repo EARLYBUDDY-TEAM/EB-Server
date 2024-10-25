@@ -7,8 +7,8 @@ class UserCRUD(BaseCRUD):
     def create(self, user: User):
         mixinSchedule = Schedule.createMixinSchedule(email=user.email)
         mixinSchedule.__table__.create(bind=self.engine())
-        mixinRoute = Path.createMixinPath(email=user.email)
-        mixinRoute.__table__.create(bind=self.engine())
+        mixinPath = Path.createMixinPath(email=user.email)
+        mixinPath.__table__.create(bind=self.engine())
 
         self.session.add(user)
         self.session.flush()

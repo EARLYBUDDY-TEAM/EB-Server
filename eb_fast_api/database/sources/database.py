@@ -16,6 +16,7 @@ from eb_fast_api.database.sources.crud.cruds import (
 from eb_fast_api.env.sources.env import ENV_TEST_USER
 from eb_fast_api.snippets.sources import pwdcrypt
 from datetime import datetime, timedelta
+from uuid import uuid4
 
 
 class EBDataBase(Enum):
@@ -47,7 +48,7 @@ class EBDataBase(Enum):
             del crud
 
     @classmethod
-    def create_session() -> Session:
+    def create_session(cls) -> Session:
         return sessionMaker()
 
     @classmethod
@@ -59,9 +60,9 @@ class EBDataBase(Enum):
             session.close()
 
     @classmethod
-    def initialize(
+    def __create_meta_data(
         cls,
-        engine: Engine = engine,
+        engine: Engine,
     ):
         checkConnection(engine=engine)
         print("Success Connect to DB")
@@ -69,7 +70,11 @@ class EBDataBase(Enum):
         Base.metadata.create_all(bind=engine)
         print("Success Create Table")
 
-        session = sessionMaker()
+    @classmethod
+    def __create_test_user(
+        cls,
+        session: Session,
+    ) -> str:
         userCRUD = EBDataBase.user.createCRUD(session=session)
         email = ENV_TEST_USER.email
         nickName = ENV_TEST_USER.nick_name
@@ -85,46 +90,80 @@ class EBDataBase(Enum):
             )
             userCRUD.create(user=testUser)
 
-        startPlace = Place.mockStart()
-        endPlace = Place.mockEnd()
-        placeCRUD = EBDataBase.place.createCRUD(session=session)
-        placeCRUD.create(place=startPlace)
-        placeCRUD.create(place=endPlace)
+        return email
 
+    @classmethod
+    def __create_place(
+        cls,
+        session: Session,
+        place: Place,
+    ):
+        placeCRUD = EBDataBase.place.createCRUD(session=session)
+        placeCRUD.create(place=place)
+
+    @classmethod
+    def __create_schedule(
+        cls,
+        session: Session,
+        user_email: str,
+        startPlaceID: str,
+        endPlaceID: str,
+    ):
         scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
         today = datetime.now() + timedelta(minutes=20)
         for i in range(1, 11):
             mockSchedule1 = Schedule(
-                title=f"index : {i}, {nickName}'s mock schedule",
+                id=str(uuid4()),
+                title=f"index : {i}, testuser mock schedule",
                 memo="This is Memo",
                 time=today + timedelta(days=i),
                 isNotify=False,
-                startPlaceID=startPlace.id,
-                endPlaceID=endPlace.id,
+                startPlaceID=startPlaceID,
+                endPlaceID=endPlaceID,
             )
             scheduleCRUD.create(
-                userEmail=email,
+                userEmail=user_email,
                 schedule=mockSchedule1,
             )
 
             mockSchedule2 = Schedule(
-                title=f"index : {i}, {nickName}'s mock schedule",
+                id=str(uuid4()),
+                title=f"index : {i}, testuser mock schedule",
                 memo="This is Memo",
                 time=today + timedelta(minutes=10),
                 isNotify=False,
-                startPlaceID=startPlace.id,
-                endPlaceID=endPlace.id,
+                startPlaceID=startPlaceID,
+                endPlaceID=endPlaceID,
             )
             scheduleCRUD.create(
-                userEmail=email,
+                userEmail=user_email,
                 schedule=mockSchedule2,
             )
 
+    @classmethod
+    def initialize(
+        cls,
+        engine: Engine = engine,
+    ):
+        EBDataBase.__create_meta_data(engine=engine)
+
+        session = sessionMaker()
+        user_email = EBDataBase.__create_test_user(session=session)
+
+        startPlace = Place.mockStart()
+        endPlace = Place.mockEnd()
+        EBDataBase.__create_place(session=session, place=startPlace)
+        EBDataBase.__create_place(session=session, place=endPlace)
+
+        EBDataBase.__create_schedule(
+            session=session,
+            user_email=user_email,
+            startPlaceID=startPlace.id,
+            endPlaceID=endPlace.id,
+        )
+
         session.commit()
         session.close()
-        del userCRUD
-        del placeCRUD
-        del scheduleCRUD
 
 
 if __name__ == "__main__":

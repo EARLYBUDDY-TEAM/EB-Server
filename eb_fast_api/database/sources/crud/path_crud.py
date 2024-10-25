@@ -1,3 +1,5 @@
+from typing import Optional
+
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.model.models import Path, Base
 
@@ -39,15 +41,18 @@ class PathCRUD(BaseCRUD):
         self,
         user_email: str,
         path_id: str,
-    ) -> dict:
-        path_table = Path.getTable(
-            email=user_email,
-            engine=self.engine(),
-        )
-        route_row = (
-            self.session.query(path_table).filter(path_table.c.id == path_id).one()
-        )
-        return route_row._mapping
+    ) -> Optional[dict]:
+        try:
+            path_table = Path.getTable(
+                email=user_email,
+                engine=self.engine(),
+            )
+            route_row = (
+                self.session.query(path_table).filter(path_table.c.id == path_id).one()
+            )
+            return route_row._mapping
+        except:
+            return None
 
     ### Caution !!! Session Close ###
     def dropTable(
