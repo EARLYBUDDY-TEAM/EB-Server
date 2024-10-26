@@ -1,12 +1,15 @@
 from enum import Enum
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session
+from datetime import datetime, timedelta
+from uuid import uuid4
+
 from eb_fast_api.database.sources.connection import (
     engine,
     sessionMaker,
     checkConnection,
 )
-from eb_fast_api.database.sources.model.models import Base, User, Schedule, Place
+from eb_fast_api.database.sources.model.models import Base, User, Schedule, Place, Path
 from eb_fast_api.database.sources.crud.cruds import (
     PlaceCRUD,
     ScheduleCRUD,
@@ -15,8 +18,7 @@ from eb_fast_api.database.sources.crud.cruds import (
 )
 from eb_fast_api.env.sources.env import ENV_TEST_USER
 from eb_fast_api.snippets.sources import pwdcrypt
-from datetime import datetime, timedelta
-from uuid import uuid4
+from eb_fast_api.database.sources import dummy
 
 
 class EBDataBase(Enum):
@@ -106,39 +108,30 @@ class EBDataBase(Enum):
         cls,
         session: Session,
         user_email: str,
-        startPlaceID: str,
-        endPlaceID: str,
+        schedule: Schedule,
     ):
         scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
-        today = datetime.now() + timedelta(minutes=20)
-        for i in range(1, 11):
-            mockSchedule1 = Schedule(
-                id=str(uuid4()),
-                title=f"index : {i}, testuser mock schedule",
-                memo="This is Memo",
-                time=today + timedelta(days=i),
-                isNotify=False,
-                startPlaceID=startPlaceID,
-                endPlaceID=endPlaceID,
-            )
-            scheduleCRUD.create(
-                userEmail=user_email,
-                schedule=mockSchedule1,
-            )
+        scheduleCRUD.create(
+            userEmail=user_email,
+            schedule=schedule,
+        )
 
-            mockSchedule2 = Schedule(
-                id=str(uuid4()),
-                title=f"index : {i}, testuser mock schedule",
-                memo="This is Memo",
-                time=today + timedelta(minutes=10),
-                isNotify=False,
-                startPlaceID=startPlaceID,
-                endPlaceID=endPlaceID,
-            )
-            scheduleCRUD.create(
-                userEmail=user_email,
-                schedule=mockSchedule2,
-            )
+    @classmethod
+    def __create_path(
+        cls,
+        session: Session,
+        user_email: str,
+        schedule_id: str,
+    ):
+        pathCRUD = EBDataBase.path.createCRUD(session=session)
+        path = Path(
+            id=schedule_id,
+            data=dummy.path_data,
+        )
+        pathCRUD.create(
+            user_email=user_email,
+            path=path,
+        )
 
     @classmethod
     def initialize(
@@ -155,12 +148,47 @@ class EBDataBase(Enum):
         EBDataBase.__create_place(session=session, place=startPlace)
         EBDataBase.__create_place(session=session, place=endPlace)
 
-        EBDataBase.__create_schedule(
-            session=session,
-            user_email=user_email,
-            startPlaceID=startPlace.id,
-            endPlaceID=endPlace.id,
-        )
+        today = datetime.now() + timedelta(minutes=20)
+        for i in range(1, 11):
+            mockSchedule1 = Schedule(
+                id=str(uuid4()),
+                title=f"index : {i}, testuser mock schedule",
+                memo="This is Memo",
+                time=today + timedelta(days=i),
+                isNotify=False,
+                startPlaceID=startPlace.id,
+                endPlaceID=endPlace.id,
+            )
+            EBDataBase.__create_schedule(
+                session=session,
+                user_email=user_email,
+                schedule=mockSchedule1,
+            )
+            EBDataBase.__create_path(
+                session=session,
+                user_email=user_email,
+                schedule_id=mockSchedule1.id,
+            )
+
+            mockSchedule2 = Schedule(
+                id=str(uuid4()),
+                title=f"index : {i}, testuser mock schedule",
+                memo="This is Memo",
+                time=today + timedelta(minutes=10),
+                isNotify=False,
+                startPlaceID=startPlace.id,
+                endPlaceID=endPlace.id,
+            )
+            EBDataBase.__create_schedule(
+                session=session,
+                user_email=user_email,
+                schedule=mockSchedule2,
+            )
+            EBDataBase.__create_path(
+                session=session,
+                user_email=user_email,
+                schedule_id=mockSchedule2.id,
+            )
 
         session.commit()
         session.close()
