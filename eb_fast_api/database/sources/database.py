@@ -92,6 +92,8 @@ class EBDataBase(Enum):
             )
             userCRUD.create(user=testUser)
 
+        print("Success Create User")
+
         return email
 
     @classmethod
@@ -102,6 +104,7 @@ class EBDataBase(Enum):
     ):
         placeCRUD = EBDataBase.place.createCRUD(session=session)
         placeCRUD.create(place=place)
+        print("Success Create Place")
 
     @classmethod
     def __create_schedule(
@@ -115,6 +118,7 @@ class EBDataBase(Enum):
             userEmail=user_email,
             schedule=schedule,
         )
+        print("Success Create Schedule")
 
     @classmethod
     def __create_path(
@@ -132,6 +136,7 @@ class EBDataBase(Enum):
             user_email=user_email,
             path=path,
         )
+        print("Success Create Path")
 
     @classmethod
     def initialize(
@@ -143,52 +148,52 @@ class EBDataBase(Enum):
         session = sessionMaker()
         user_email = EBDataBase.__create_test_user(session=session)
 
-        startPlace = Place.mockStart()
-        endPlace = Place.mockEnd()
-        EBDataBase.__create_place(session=session, place=startPlace)
-        EBDataBase.__create_place(session=session, place=endPlace)
+        # startPlace = Place.mockStart()
+        # endPlace = Place.mockEnd()
+        # EBDataBase.__create_place(session=session, place=startPlace)
+        # EBDataBase.__create_place(session=session, place=endPlace)
 
-        today = datetime.now() + timedelta(minutes=20)
-        for i in range(1, 11):
-            mockSchedule1 = Schedule(
-                id=str(uuid4()),
-                title=f"index : {i}, testuser mock schedule",
-                memo="This is Memo",
-                time=today + timedelta(days=i),
-                isNotify=False,
-                startPlaceID=startPlace.id,
-                endPlaceID=endPlace.id,
-            )
-            EBDataBase.__create_schedule(
-                session=session,
-                user_email=user_email,
-                schedule=mockSchedule1,
-            )
-            EBDataBase.__create_path(
-                session=session,
-                user_email=user_email,
-                schedule_id=mockSchedule1.id,
-            )
+        # today = datetime.now() + timedelta(minutes=20)
+        # for i in range(1, 11):
+        #     mockSchedule1 = Schedule(
+        #         id=str(uuid4()),
+        #         title=f"index : {i}, testuser mock schedule",
+        #         memo="This is Memo",
+        #         time=today + timedelta(days=i),
+        #         isNotify=False,
+        #         startPlaceID=startPlace.id,
+        #         endPlaceID=endPlace.id,
+        #     )
+        #     EBDataBase.__create_schedule(
+        #         session=session,
+        #         user_email=user_email,
+        #         schedule=mockSchedule1,
+        #     )
+        #     EBDataBase.__create_path(
+        #         session=session,
+        #         user_email=user_email,
+        #         schedule_id=mockSchedule1.id,
+        #     )
 
-            mockSchedule2 = Schedule(
-                id=str(uuid4()),
-                title=f"index : {i}, testuser mock schedule",
-                memo="This is Memo",
-                time=today + timedelta(minutes=10),
-                isNotify=False,
-                startPlaceID=startPlace.id,
-                endPlaceID=endPlace.id,
-            )
-            EBDataBase.__create_schedule(
-                session=session,
-                user_email=user_email,
-                schedule=mockSchedule2,
-            )
-            EBDataBase.__create_path(
-                session=session,
-                user_email=user_email,
-                schedule_id=mockSchedule2.id,
-            )
+        #     mockSchedule2 = Schedule(
+        #         id=str(uuid4()),
+        #         title=f"index : {i}, testuser mock schedule",
+        #         memo="This is Memo",
+        #         time=today + timedelta(minutes=10),
+        #         isNotify=False,
+        #         startPlaceID=startPlace.id,
+        #         endPlaceID=endPlace.id,
+        #     )
+        #     EBDataBase.__create_schedule(
+        #         session=session,
+        #         user_email=user_email,
+        #         schedule=mockSchedule2,
+        #     )
+        #     EBDataBase.__create_path(
+        #         session=session,
+        #         user_email=user_email,
+        #         schedule_id=mockSchedule2.id,
+        #     )
 
         session.commit()
         session.close()

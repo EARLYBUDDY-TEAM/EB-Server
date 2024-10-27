@@ -36,7 +36,9 @@ def get_schedule_info_from_dict(
     title = schedule_dict["title"]
     memo = schedule_dict["memo"]
     time = schedule_dict["time"]
-    isNotify = schedule_dict["isNotify"]
+    notify_schedule = schedule_dict["notify_schedule"]
+    notify_transport = schedule_dict["notify_transport"]
+    notify_transport_range = schedule_dict["notify_transport_range"]
 
     startPlaceID = schedule_dict["startPlaceID"]
     endPlaceID = schedule_dict["endPlaceID"]
@@ -54,7 +56,9 @@ def get_schedule_info_from_dict(
         title=title,
         memo=memo,
         time=time,
-        isNotify=isNotify,
+        notify_schedule=notify_schedule,
+        notify_transport=notify_transport,
+        notify_transport_range=notify_transport_range,
         startPlaceInfo=startPlaceInfo,
         endPlaceInfo=endPlaceInfo,
     )
@@ -94,3 +98,21 @@ def schedule_dict_to_schedule_path_info(
         schedule_info=schedule_info,
         path_info=path_info,
     )
+
+
+def delete_schedule(
+    session: Session,
+    user_email: str,
+    schedule_id: str,
+):
+    scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
+    scheduleCRUD.delete(
+        userEmail=user_email,
+        scheduleID=schedule_id,
+    )
+    pathCRUD = EBDataBase.path.createCRUD(session=session)
+    pathCRUD.delete(
+        user_email=user_email,
+        path_id=schedule_id,
+    )
+    session.commit()

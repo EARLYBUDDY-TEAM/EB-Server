@@ -103,10 +103,15 @@ def test_schedule_update(
         new_time = tmp_time.replace(microsecond=0, tzinfo=None)
         schedule.time = new_time
         schedule.memo += prefix
-        schedule.isNotify = not schedule.isNotify
+        schedule.notify_schedule = 20
+        schedule.notify_transport = 20
+        schedule.notify_transport_range = 20
         schedule.startPlaceID += prefix
         schedule.endPlaceID += prefix
-        mockScheduleCRUD.update(userEmail=email, to_update_schedule=schedule)
+        mockScheduleCRUD.update(
+            userEmail=email,
+            to_update_schedule=schedule,
+        )
 
         # then
         second_fetched_schedule_dict = mockScheduleCRUD.read(

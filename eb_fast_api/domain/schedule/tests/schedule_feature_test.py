@@ -118,7 +118,6 @@ def test_update_schedule(
     schedule_MockSession,
     schedule_MockUserCRUD,
     schedule_MockScheduleCRUD,
-    schedule_MockPlaceCRUD,
     schedule_MockPathCRUD,
 ):
     try:
@@ -152,7 +151,9 @@ def test_update_schedule(
         time = time.replace(microsecond=0, tzinfo=None)
         to_update.title = "test_title"
         to_update.memo = "test_memo"
-        to_update.isNotify = not to_update.isNotify
+        to_update.notify_schedule = 20
+        to_update.notify_transport = 20
+        to_update.notify_transport_range = 20
         to_update.time = time
         to_update.startPlaceInfo.id = "test_start_id"
         to_update.endPlaceInfo.id = "test_end_id"

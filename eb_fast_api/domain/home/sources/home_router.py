@@ -14,7 +14,8 @@ router = APIRouter(prefix="/home")
 
 @router.get("/get_all_schedules")
 def get_all_schedules(
-    userEmail=Depends(getUserEmail), session=Depends(EBDataBase.get_session)
+    userEmail=Depends(getUserEmail),
+    session=Depends(EBDataBase.get_session),
 ) -> SchedulePathInfoList:
     schedule_dict_list = home_feature.read_all_schedule(
         session=session,
@@ -37,14 +38,14 @@ def get_all_schedules(
 def delete_schedule(
     scheduleID: str,
     userEmail=Depends(getUserEmail),
-    scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
+    session=Depends(EBDataBase.get_session),
 ):
     try:
-        scheduleCRUD.delete(
-            userEmail=userEmail,
-            scheduleID=scheduleID,
+        home_feature.delete_schedule(
+            session=session,
+            user_email=userEmail,
+            schedule_id=scheduleID,
         )
-        scheduleCRUD.commit()
     except:
         raise HTTPException(
             status_code=400,

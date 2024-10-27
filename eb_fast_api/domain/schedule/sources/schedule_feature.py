@@ -27,10 +27,20 @@ def update_path(
 ):
     path_crud = EBDataBase.path.createCRUD(session=session)
     to_update_path = path_info.to_path(id=path_id)
-    path_crud.update(
+    is_exist = path_crud.read(
         user_email=user_email,
-        to_update_path=to_update_path,
+        path_id=path_id,
     )
+    if is_exist:
+        path_crud.update(
+            user_email=user_email,
+            to_update_path=to_update_path,
+        )
+    else:
+        path_crud.create(
+            user_email=user_email,
+            path=to_update_path,
+        )
 
 
 def create_place(

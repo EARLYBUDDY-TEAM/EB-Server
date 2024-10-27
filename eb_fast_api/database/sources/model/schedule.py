@@ -1,4 +1,4 @@
-from sqlalchemy import String, DateTime, Boolean, Engine, Column
+from sqlalchemy import String, DateTime, Engine, Column, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.schema import Table, MetaData
 from typing import Optional, Self
@@ -13,7 +13,9 @@ class Schedule:
     title: Mapped[str] = mapped_column(String(200))
     memo: Mapped[Optional[str]] = mapped_column(String(200))
     time: Mapped[datetime] = mapped_column(DateTime())
-    isNotify: Mapped[bool] = mapped_column(Boolean())
+    notify_schedule: Mapped[Optional[int]] = mapped_column(Integer())
+    notify_transport: Mapped[Optional[int]] = mapped_column(Integer())
+    notify_transport_range: Mapped[Optional[int]] = mapped_column(Integer())
     startPlaceID: Mapped[Optional[str]] = mapped_column(String(200))
     endPlaceID: Mapped[Optional[str]] = mapped_column(String(200))
 
@@ -21,7 +23,9 @@ class Schedule:
         self,
         title: str,
         time: datetime,
-        isNotify: bool,
+        notify_schedule: Optional[int] = None,
+        notify_transport: Optional[int] = None,
+        notify_transport_range: Optional[int] = None,
         memo: Optional[str] = None,
         startPlaceID: Optional[str] = None,
         endPlaceID: Optional[str] = None,
@@ -31,7 +35,9 @@ class Schedule:
         self.title = title
         self.memo = memo
         self.time = time.replace(microsecond=0, tzinfo=None)
-        self.isNotify = isNotify
+        self.notify_schedule = notify_schedule
+        self.notify_transport = notify_transport
+        self.notify_transport_range = notify_transport_range
         self.startPlaceID = startPlaceID
         self.endPlaceID = endPlaceID
 
@@ -50,7 +56,9 @@ class Schedule:
             title=title,
             memo="memo",
             time=time,
-            isNotify=False,
+            notify_schedule=10,
+            notify_transport=10,
+            notify_transport_range=10,
             startPlaceID="startPlaceID",
             endPlaceID="endPlaceID",
         )
@@ -96,7 +104,9 @@ class Schedule:
             "title": self.title,
             "memo": self.memo,
             "time": self.time,
-            "isNotify": int(self.isNotify),
+            "notify_schedule": self.notify_schedule,
+            "notify_transport": self.notify_transport,
+            "notify_transport_range": self.notify_transport_range,
             "startPlaceID": self.startPlaceID,
             "endPlaceID": self.endPlaceID,
         }

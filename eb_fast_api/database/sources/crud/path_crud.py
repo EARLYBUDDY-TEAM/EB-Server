@@ -54,6 +54,19 @@ class PathCRUD(BaseCRUD):
         except:
             return None
 
+    def delete(
+        self,
+        user_email: str,
+        path_id: str,
+    ):
+        path_table = Path.getTable(
+            email=user_email,
+            engine=self.engine(),
+        )
+        stmt = path_table.delete().where(path_table.c.id == path_id)
+        self.session.execute(stmt)
+        self.session.flush()
+
     ### Caution !!! Session Close ###
     def dropTable(
         self,

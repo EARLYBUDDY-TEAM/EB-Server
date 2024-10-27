@@ -41,3 +41,33 @@ def mock_schedule_dict_to_schedule_path_info():
         "eb_fast_api.domain.home.sources.home_feature.schedule_dict_to_schedule_path_info",
         new=mock_def_schedule_dict_to_schedule_path_info,
     ).start()
+
+
+def mock_delete_schedule_SUCCESS():
+    def mock_def_delete_schedule(
+        session: Session,
+        user_email: str,
+        schedule_id: str,
+    ):
+        return
+    
+    patch(
+        "eb_fast_api.domain.home.sources.home_feature.delete_schedule",
+        new=mock_def_delete_schedule,
+    ).start()
+
+
+def mock_delete_schedule_FAIL():
+    def mock_def_delete_schedule(
+        session: Session,
+        user_email: str,
+        schedule_id: str,
+    ):
+        raise Exception("mock_delete_schedule_FAIL")
+        return
+    
+    patch(
+        "eb_fast_api.domain.home.sources.home_feature.delete_schedule",
+        new=mock_def_delete_schedule,
+    ).start()
+        

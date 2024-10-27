@@ -2,7 +2,6 @@ from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.model.models import Schedule, Base
 from typing import List
 from sqlalchemy import desc
-from uuid import UUID
 
 
 class ScheduleCRUD(BaseCRUD):

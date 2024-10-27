@@ -11,7 +11,9 @@ class ScheduleInfo(BaseModel):
     title: str
     memo: Optional[str]
     time: datetime
-    isNotify: bool
+    notify_schedule: Optional[int]
+    notify_transport: Optional[int]
+    notify_transport_range: Optional[int]
     startPlaceInfo: Optional[PlaceInfo]
     endPlaceInfo: Optional[PlaceInfo]
 
@@ -29,12 +31,14 @@ class ScheduleInfo(BaseModel):
             title=self.title,
             memo=self.memo,
             time=self.time,
-            isNotify=self.isNotify,
+            notify_schedule=self.notify_schedule,
+            notify_transport=self.notify_transport,
+            notify_transport_range=self.notify_transport_range,
             startPlaceID=startPlaceID,
             endPlaceID=endPlaceID,
         )
-
         return schedule
+    
 
     @classmethod
     def mock(
@@ -54,7 +58,9 @@ class ScheduleInfo(BaseModel):
             title="title",
             memo="memo",
             time=time,
-            isNotify=False,
+            notify_schedule=10,
+            notify_transport=10,
+            notify_transport_range=10,
             startPlaceInfo=startPlaceInfo,
             endPlaceInfo=endPlaceInfo,
         )
