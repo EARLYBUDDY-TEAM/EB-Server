@@ -1,7 +1,7 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.model.models import Schedule, Base
 from typing import List
-from sqlalchemy import desc
+from sqlalchemy import desc, asc
 
 
 class ScheduleCRUD(BaseCRUD):
@@ -45,7 +45,7 @@ class ScheduleCRUD(BaseCRUD):
             engine=self.engine(),
         )
         scheduleRowList = (
-            self.session.query(scheduleTable).order_by(desc(scheduleTable.c.time)).all()
+            self.session.query(scheduleTable).order_by(asc(scheduleTable.c.time)).all()
         )
         return [row._mapping for row in scheduleRowList]
 
