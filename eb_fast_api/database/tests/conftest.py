@@ -1,6 +1,7 @@
 import pytest
 from eb_fast_api.database.testings.mock_database import (
     mockCommitInBaseCRUD,
+    mock_commit,
     getMockCRUD,
 )
 from eb_fast_api.database.testings.mock_connection import mockEngine, mockSessionMaker
@@ -18,6 +19,7 @@ def prepareTestDataBase():
     print("Success Create Table")
 
     mockCommitInBaseCRUD()
+    mock_commit()
 
 
 @pytest.fixture(scope="function")
@@ -52,6 +54,15 @@ def mockUserCRUD(mockSession):
 @pytest.fixture(scope="function")
 def mockScheduleCRUD(mockSession):
     db = EBDataBase.schedule
+    yield from getMockCRUD(
+        mockSession=mockSession,
+        db=db,
+    )
+
+
+@pytest.fixture(scope="function")
+def mockPathCRUD(mockSession):
+    db = EBDataBase.path
     yield from getMockCRUD(
         mockSession=mockSession,
         db=db,

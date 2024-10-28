@@ -1,4 +1,4 @@
-from eb_fast_api.domain.schema.sources.schema import Token, RegisterInfo
+from eb_fast_api.domain.schema.sources.schemas import TokenInfo, RegisterInfo
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
 from fastapi.testclient import TestClient
@@ -10,6 +10,7 @@ def test_recreateToken_Success(
     tokenMockJWTService,
     tokenMockUserCRUD,
     tokenMockScheduleCRUD,
+    tokenmockPathCRUD,
 ):
     try:
         # given
@@ -49,7 +50,7 @@ def test_recreateToken_Success(
 
         expectAccessToken = tokenMockJWTService.createAccessToken(email=email)
         expectRefreshToken = tokenMockJWTService.createRefreshToken(email=email)
-        expectToken = Token(
+        expectToken = TokenInfo(
             accessToken=expectAccessToken,
             refreshToken=expectRefreshToken,
         ).model_dump(mode="json")
@@ -64,8 +65,9 @@ def test_recreateToken_Success(
         del app.dependency_overrides[getJWTService]
 
     finally:
-        # delete schedule table
+        # delete schedule, route table
         tokenMockScheduleCRUD.dropTable(userEmail=user.email)
+        tokenmockPathCRUD.dropTable(user_email=user.email)
 
 
 def test_recreateToken_FAIL(

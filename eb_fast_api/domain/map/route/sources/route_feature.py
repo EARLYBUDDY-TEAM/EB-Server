@@ -1,17 +1,21 @@
 from httpx import AsyncClient, Response
 from typing import List
 from eb_fast_api.env.sources.env import ENV_API
-from eb_fast_api.domain.map.route.sources.route_schema import SubPath, Path, Route
+from eb_fast_api.domain.schema.sources.schemas import (
+    SubPathInfo,
+    PathInfo,
+    RouteInfo,
+)
 
 
-def calTotalWalkTime(path: Path):
+def calTotalWalkTime(path: PathInfo):
     walkTime = sum([subPath.time for subPath in path.subPaths if subPath.type == 3])
     path.walkTime = walkTime
 
 
 # walk subpath 중복이면 빈값처리 ...
 def modifyWalkSubPath(
-    subPaths: List[SubPath],
+    subPaths: List[SubPathInfo],
     startPlace: str,
     endPlace: str,
 ):
@@ -37,10 +41,10 @@ def modifyWalkSubPath(
 
 
 def refactorRoute(
-    route: Route,
+    route: RouteInfo,
     startPlace: str,
     endPlace: str,
-) -> Route:
+) -> RouteInfo:
     for path in route.paths:
         calTotalWalkTime(path)
         modifyWalkSubPath(path.subPaths, startPlace, endPlace)

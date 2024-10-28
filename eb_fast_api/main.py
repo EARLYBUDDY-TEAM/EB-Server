@@ -38,6 +38,7 @@ async def add_process_time_header(request: Request, call_next):
     async for chunk in response.body_iterator:
         response_body += chunk
     print(f"RESPONSE_BODY : {response_body.decode()}")
+    print()
     return Response(
         content=response_body,
         status_code=response.status_code,

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.snippets.sources import pwdcrypt
 from eb_fast_api.database.sources.database import EBDataBase
-from eb_fast_api.domain.schema.sources.schema import Token, LoginInfo
+from eb_fast_api.domain.schema.sources.schemas import TokenInfo, LoginInfo
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
 
 
@@ -13,7 +13,7 @@ def login(
     loginInfo: LoginInfo,
     userCRUD=Depends(EBDataBase.user.getCRUD),
     jwtService=Depends(getJWTService),
-) -> Token:
+) -> TokenInfo:
     user = userCRUD.read(email=loginInfo.email)
 
     if not user:
@@ -41,7 +41,7 @@ def login(
     )
     userCRUD.commit()
 
-    return Token(
+    return TokenInfo(
         accessToken=accessToken,
         refreshToken=refreshToken,
     )

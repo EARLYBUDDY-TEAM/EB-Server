@@ -3,7 +3,7 @@ from fastapi.security import APIKeyHeader
 from eb_fast_api.domain.token.sources.token_feature import verifyToken
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
-from eb_fast_api.domain.schema.sources.schema import Token
+from eb_fast_api.domain.schema.sources.schemas import TokenInfo
 
 
 router = APIRouter(prefix="/token")
@@ -16,11 +16,11 @@ def recreate_token(
     ),
     userCRUD=Depends(EBDataBase.user.getCRUD),
     jwtService=Depends(getJWTService),
-) -> Token:
+) -> TokenInfo:
     userEmail = verifyToken(token=refreshToken)
     accessToken = jwtService.createAccessToken(email=userEmail)
     refreshToken = jwtService.createRefreshToken(email=userEmail)
-    token = Token(
+    token = TokenInfo(
         accessToken=accessToken,
         refreshToken=refreshToken,
     )

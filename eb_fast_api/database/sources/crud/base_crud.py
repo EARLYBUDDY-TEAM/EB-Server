@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import Engine, inspect
+from sqlalchemy import Engine
 
 
 class BaseCRUD:
@@ -16,6 +16,3 @@ class BaseCRUD:
 
     def commit(self):
         self.session.commit()
-
-    # def object_as_dict(obj):
-    #     return {c.key: getattr(obj, c.key) for c in inspect(obj).mapper.column_attrs}

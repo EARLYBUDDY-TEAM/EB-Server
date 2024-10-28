@@ -1,82 +1,126 @@
-from eb_fast_api.database.sources.model.models import Schedule, Place, User
+from eb_fast_api.database.sources.model.models import Schedule, User
+from datetime import datetime
+from uuid import uuid4
 
 
 def test_schedule_create_and_read_all(
-    mockSession,
     mockUserCRUD,
     mockScheduleCRUD,
+    mockPathCRUD,
 ):
     try:
         # given
         email = "email"
         user = User.mock(email=email)
         mockUserCRUD.create(user=user)
-        schedule = Schedule.mock()
-        startPlace = Place.mock(id="mockStartPlace")
-        endPlace = Place.mock(id="mockEndPlace")
-        schedule.startPlaceID = startPlace.id
-        schedule.endPlaceID = endPlace.id
+        schedule_id = str(uuid4())
+        schedule = Schedule.mock(id=schedule_id)
 
         # when
         mockScheduleCRUD.create(
-            userEmail=email,
+            userEmail=user.email,
             schedule=schedule,
-            startPlace=startPlace,
-            endPlace=endPlace,
         )
 
         # then
-        # assert place
-        fetched_place_list = mockSession.query(Place).all()
-        assert len(fetched_place_list) == 2
+        # assert schedule
+        fetched_schedule_dict = mockScheduleCRUD.read(
+            user_email=user.email,
+            schedule_id=schedule_id,
+        )
+        expect_schedule_dict = schedule.to_dict()
+        assert expect_schedule_dict == fetched_schedule_dict
 
-        # # assert schedule
-        fetched_schedule_dict_list = mockScheduleCRUD.read_all(userEmail=email)
-        fetched_schedule_dict = fetched_schedule_dict_list[0]
-        schedule_id = fetched_schedule_dict["id"]
-        expect_schedule_dict = schedule.to_dict(id=schedule_id)
-
-        print(expect_schedule_dict)
-        print(fetched_schedule_dict)
-        # assert expect_schedule_dict == fetched_schedule_dict
-
-    # delete schedule table
+    # delete path, schedule table
     finally:
         mockScheduleCRUD.dropTable(userEmail=user.email)
+        mockPathCRUD.dropTable(user_email=user.email)
 
 
 def test_schedule_delete(
     mockUserCRUD,
     mockScheduleCRUD,
+    mockPathCRUD,
 ):
     try:
         # given
         email = "email"
         user = User.mock(email=email)
         mockUserCRUD.create(user=user)
-        schedule = Schedule.mock()
-        startPlace = Place.mock(id="mockStartPlace")
-        endPlace = Place.mock(id="mockEndPlace")
-        schedule.startPlaceID = startPlace.id
-        schedule.endPlaceID = endPlace.id
+        schedule_id = str(uuid4())
+        schedule = Schedule.mock(id=schedule_id)
         mockScheduleCRUD.create(
-            userEmail=email,
+            userEmail=user.email,
             schedule=schedule,
-            startPlace=startPlace,
-            endPlace=endPlace,
         )
 
         # when, then
-        fetched_schedule_dict_list = mockScheduleCRUD.read_all(userEmail=email)
-        assert len(fetched_schedule_dict_list) == 1
+        fetched_schedule_dict = mockScheduleCRUD.read(
+            user_email=user.email,
+            schedule_id=schedule_id,
+        )
+        expect_schedule_dict = schedule.to_dict()
+        assert expect_schedule_dict == fetched_schedule_dict
 
-        fetched_schedule_dict = fetched_schedule_dict_list[0]
-        schedule_id = fetched_schedule_dict["id"]
-        mockScheduleCRUD.delete(userEmail=email, scheduleID=schedule_id)
+        mockScheduleCRUD.delete(userEmail=user.email, scheduleID=schedule_id)
 
-        fetched_schedule_dict_list = mockScheduleCRUD.read_all(userEmail=email)
-        assert len(fetched_schedule_dict_list) == 0
+        try:
+            mockScheduleCRUD.read(
+                user_email=user.email,
+                schedule_id=schedule_id,
+            )
+            raise Exception("test_schedule_delete_fail")
+        except:
+            return
 
-    # delete schedule table
+    # delete path, schedule table
     finally:
         mockScheduleCRUD.dropTable(userEmail=user.email)
+        mockPathCRUD.dropTable(user_email=user.email)
+
+
+def test_schedule_update(
+    mockUserCRUD,
+    mockScheduleCRUD,
+    mockPathCRUD,
+):
+    try:
+        # given
+        email = "email"
+        user = User.mock(email=email)
+        mockUserCRUD.create(user=user)
+        schedule_id = str(uuid4())
+        schedule = Schedule.mock(id=schedule_id)
+        mockScheduleCRUD.create(
+            userEmail=user.email,
+            schedule=schedule,
+        )
+
+        # when
+        prefix = "to_update"
+        schedule.title += prefix
+        tmp_time = datetime.fromisoformat("2024-08-28T05:04:32.299Z")
+        new_time = tmp_time.replace(microsecond=0, tzinfo=None)
+        schedule.time = new_time
+        schedule.memo += prefix
+        schedule.notify_schedule = 20
+        schedule.notify_transport = 20
+        schedule.notify_transport_range = 20
+        schedule.startPlaceID += prefix
+        schedule.endPlaceID += prefix
+        mockScheduleCRUD.update(
+            userEmail=email,
+            to_update_schedule=schedule,
+        )
+
+        # then
+        second_fetched_schedule_dict = mockScheduleCRUD.read(
+            user_email=user.email,
+            schedule_id=schedule_id,
+        )
+        assert second_fetched_schedule_dict == schedule.to_dict()
+
+    # delete path, schedule table
+    finally:
+        mockScheduleCRUD.dropTable(userEmail=user.email)
+        mockPathCRUD.dropTable(user_email=user.email)

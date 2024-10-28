@@ -7,6 +7,7 @@ from eb_fast_api.database.tests.conftest import (
     mockSession,
     mockUserCRUD,
     mockScheduleCRUD,
+    mockPathCRUD,
 )
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
 from eb_fast_api.service.jwt.tests.conftest import mockJWTService
@@ -20,6 +21,11 @@ def loginMockUserCRUD(mockUserCRUD):
 @pytest.fixture(scope="function")
 def loginMockScheduleCRUD(mockScheduleCRUD):
     yield mockScheduleCRUD
+
+
+@pytest.fixture(scope="function")
+def loginMockPathCRUD(mockPathCRUD):
+    yield mockPathCRUD
 
 
 @pytest.fixture(scope="function")

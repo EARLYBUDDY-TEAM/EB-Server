@@ -1,18 +1,21 @@
-from sqlalchemy import String, DateTime, Boolean, Engine
+from sqlalchemy import String, DateTime, Engine, Column, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.schema import Table, MetaData
 from typing import Optional, Self
 from datetime import datetime
 from eb_fast_api.database.sources.model.base_model import Base
 from eb_fast_api.database.sources.connection import engine
+from uuid import uuid4
 
 
 class Schedule:
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id = Column(String(50), primary_key=True)
     title: Mapped[str] = mapped_column(String(200))
     memo: Mapped[Optional[str]] = mapped_column(String(200))
     time: Mapped[datetime] = mapped_column(DateTime())
-    isNotify: Mapped[bool] = mapped_column(Boolean())
+    notify_schedule: Mapped[Optional[int]] = mapped_column(Integer())
+    notify_transport: Mapped[Optional[int]] = mapped_column(Integer())
+    notify_transport_range: Mapped[Optional[int]] = mapped_column(Integer())
     startPlaceID: Mapped[Optional[str]] = mapped_column(String(200))
     endPlaceID: Mapped[Optional[str]] = mapped_column(String(200))
 
@@ -20,36 +23,45 @@ class Schedule:
         self,
         title: str,
         time: datetime,
-        isNotify: bool,
+        notify_schedule: Optional[int] = None,
+        notify_transport: Optional[int] = None,
+        notify_transport_range: Optional[int] = None,
         memo: Optional[str] = None,
         startPlaceID: Optional[str] = None,
         endPlaceID: Optional[str] = None,
+        id: str = str(uuid4()),
     ):
+        self.id = id
         self.title = title
         self.memo = memo
         self.time = time.replace(microsecond=0, tzinfo=None)
-        self.isNotify = isNotify
+        self.notify_schedule = notify_schedule
+        self.notify_transport = notify_transport
+        self.notify_transport_range = notify_transport_range
         self.startPlaceID = startPlaceID
         self.endPlaceID = endPlaceID
 
     @classmethod
     def mock(
         cls,
-        id: Optional[int] = None,
+        id: Optional[str] = None,
         title: str = "title",
     ) -> Self:
         timeString = "2024-07-28T05:04:32.299Z"
         time = datetime.fromisoformat(timeString)
+        time = time.replace(microsecond=0, tzinfo=None)
+        id = id or str(uuid4())
         mockSchedule = Schedule(
+            id=id,
             title=title,
             memo="memo",
             time=time,
-            isNotify=False,
+            notify_schedule=10,
+            notify_transport=10,
+            notify_transport_range=10,
             startPlaceID="startPlaceID",
             endPlaceID="endPlaceID",
         )
-        if id:
-            mockSchedule.id = id
         return mockSchedule
 
     @classmethod
@@ -86,13 +98,15 @@ class Schedule:
 
         return MixinSchedule
 
-    def to_dict(self, id: Optional[int] = None) -> dict:
+    def to_dict(self, id: Optional[str] = None) -> dict:
         return {
             "id": id or self.id,
             "title": self.title,
             "memo": self.memo,
             "time": self.time,
-            "isNotify": int(self.isNotify),
+            "notify_schedule": self.notify_schedule,
+            "notify_transport": self.notify_transport,
+            "notify_transport_range": self.notify_transport_range,
             "startPlaceID": self.startPlaceID,
             "endPlaceID": self.endPlaceID,
         }

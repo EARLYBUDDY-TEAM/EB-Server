@@ -1,19 +1,24 @@
 from enum import Enum
 from sqlalchemy import Engine
+from sqlalchemy.orm import Session
+from datetime import datetime, timedelta
+from uuid import uuid4
+
 from eb_fast_api.database.sources.connection import (
     engine,
     sessionMaker,
     checkConnection,
 )
-from eb_fast_api.database.sources.model.models import Base, User, Schedule
+from eb_fast_api.database.sources.model.models import Base, User, Schedule, Place, Path
 from eb_fast_api.database.sources.crud.cruds import (
     PlaceCRUD,
     ScheduleCRUD,
     UserCRUD,
+    PathCRUD,
 )
 from eb_fast_api.env.sources.env import ENV_TEST_USER
 from eb_fast_api.snippets.sources import pwdcrypt
-from datetime import datetime
+from eb_fast_api.database.sources import dummy
 
 
 class EBDataBase(Enum):
@@ -21,6 +26,7 @@ class EBDataBase(Enum):
     user = "user"
     schedule = "schedule"
     place = "place"
+    path = "path"
 
     # session 파라미터 타입지정했는데 왜 오류????
     def createCRUD(self, session=sessionMaker()):
@@ -31,6 +37,8 @@ class EBDataBase(Enum):
                 return ScheduleCRUD(session)
             case EBDataBase.place:
                 return PlaceCRUD(session)
+            case EBDataBase.path:
+                return PathCRUD(session)
 
     def getCRUD(self):
         session = sessionMaker()
@@ -42,9 +50,21 @@ class EBDataBase(Enum):
             del crud
 
     @classmethod
-    def initialize(
-        self,
-        engine: Engine = engine,
+    def create_session(cls) -> Session:
+        return sessionMaker()
+
+    @classmethod
+    def get_session(cls):
+        session = EBDataBase.create_session()
+        try:
+            yield session
+        finally:
+            session.close()
+
+    @classmethod
+    def __create_meta_data(
+        cls,
+        engine: Engine,
     ):
         checkConnection(engine=engine)
         print("Success Connect to DB")
@@ -52,7 +72,11 @@ class EBDataBase(Enum):
         Base.metadata.create_all(bind=engine)
         print("Success Create Table")
 
-        session = sessionMaker()
+    @classmethod
+    def __create_test_user(
+        cls,
+        session: Session,
+    ) -> str:
         userCRUD = EBDataBase.user.createCRUD(session=session)
         email = ENV_TEST_USER.email
         nickName = ENV_TEST_USER.nick_name
@@ -68,25 +92,115 @@ class EBDataBase(Enum):
             )
             userCRUD.create(user=testUser)
 
+        print("Success Create User")
+
+        return email
+
+    @classmethod
+    def __create_place(
+        cls,
+        session: Session,
+        place: Place,
+    ):
+        placeCRUD = EBDataBase.place.createCRUD(session=session)
+        placeCRUD.create(place=place)
+        print("Success Create Place")
+
+    @classmethod
+    def __create_schedule(
+        cls,
+        session: Session,
+        user_email: str,
+        schedule: Schedule,
+    ):
         scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
-        for i in range(10):
-            mockSchedule = Schedule(
-                title=f"index : {i}, {nickName}'s mock schedule",
-                time=datetime.now(),
-                isNotify=False,
+        scheduleCRUD.create(
+            userEmail=user_email,
+            schedule=schedule,
+        )
+        print("Success Create Schedule")
+
+    @classmethod
+    def __create_path(
+        cls,
+        session: Session,
+        user_email: str,
+        schedule_id: str,
+    ):
+        pathCRUD = EBDataBase.path.createCRUD(session=session)
+        path = Path(
+            id=schedule_id,
+            data=dummy.path_data,
+        )
+        pathCRUD.create(
+            user_email=user_email,
+            path=path,
+        )
+        print("Success Create Path")
+
+    @classmethod
+    def initialize(
+        cls,
+        engine: Engine = engine,
+    ):
+        EBDataBase.__create_meta_data(engine=engine)
+
+        session = sessionMaker()
+        user_email = EBDataBase.__create_test_user(session=session)
+
+        startPlace = Place.mockStart()
+        endPlace = Place.mockEnd()
+        EBDataBase.__create_place(session=session, place=startPlace)
+        EBDataBase.__create_place(session=session, place=endPlace)
+
+        today = datetime.now() + timedelta(minutes=-30)
+        for i in range(1, 11):
+            mockSchedule1 = Schedule(
+                id=str(uuid4()),
+                title=f"index : {i}, testuser mock schedule",
+                memo="This is Memo",
+                time=today + timedelta(days=i),
+                notify_schedule=10,
+                notify_transport=10,
+                notify_transport_range=10,
+                startPlaceID=startPlace.id,
+                endPlaceID=endPlace.id,
             )
-            scheduleCRUD.create(
-                userEmail=email,
-                schedule=mockSchedule,
-                startPlace=None,
-                endPlace=None,
+            EBDataBase.__create_schedule(
+                session=session,
+                user_email=user_email,
+                schedule=mockSchedule1,
             )
-            print(f"Create Mock Schedule, index : {i}")
+            EBDataBase.__create_path(
+                session=session,
+                user_email=user_email,
+                schedule_id=mockSchedule1.id,
+            )
+
+            mockSchedule2 = Schedule(
+                id=str(uuid4()),
+                title=f"index : {i}, testuser mock schedule",
+                memo="This is Memo",
+                time=today + timedelta(minutes=10 * i),
+                notify_schedule=20,
+                notify_transport=20,
+                notify_transport_range=20,
+                startPlaceID=startPlace.id,
+                endPlaceID=endPlace.id,
+            )
+            EBDataBase.__create_schedule(
+                session=session,
+                user_email=user_email,
+                schedule=mockSchedule2,
+            )
+            EBDataBase.__create_path(
+                session=session,
+                user_email=user_email,
+                schedule_id=mockSchedule2.id,
+            )
 
         session.commit()
         session.close()
-        del userCRUD
-        del scheduleCRUD
 
 
 if __name__ == "__main__":

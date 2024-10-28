@@ -24,7 +24,11 @@ def test_place_create_check_duplicate(mockPlaceCRUD):
     mockPlaceCRUD.create(place=place1)
     mockPlaceCRUD.create(place=place2)
     mockPlaceCRUD.create(place=place3)
+    place2.refCount = 0
+    place3.refCount = 0
 
     # then
-    place_count = mockPlaceCRUD.session.query(Place).count()
-    assert place_count == 1
+    fetched_place_dict = mockPlaceCRUD.read(place_id=place1.id)
+    assert place1.to_dict() == fetched_place_dict
+    assert place2.to_dict() == fetched_place_dict
+    assert place3.to_dict() == fetched_place_dict

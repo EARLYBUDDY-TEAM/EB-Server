@@ -1,8 +1,7 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
-from eb_fast_api.database.sources.crud.place_crud import PlaceCRUD
-from eb_fast_api.database.sources.model.models import Schedule, Place, Base
-from typing import Optional, List
-from sqlalchemy import desc
+from eb_fast_api.database.sources.model.models import Schedule, Base
+from typing import List
+from sqlalchemy import desc, asc
 
 
 class ScheduleCRUD(BaseCRUD):
@@ -10,31 +9,32 @@ class ScheduleCRUD(BaseCRUD):
         self,
         userEmail: str,
         schedule: Schedule,
-        startPlace: Optional[Place],
-        endPlace: Optional[Place],
     ):
         scheduleTable = Schedule.getTable(
             email=userEmail,
             engine=self.engine(),
         )
 
-        if startPlace is not None or endPlace is not None:
-            placeCRUD = PlaceCRUD(session=self.session)
-            if startPlace is not None:
-                placeCRUD.create(startPlace)
-            if endPlace is not None:
-                placeCRUD.create(endPlace)
-
-        stmt = scheduleTable.insert().values(
-            title=schedule.title,
-            time=schedule.time,
-            isNotify=schedule.isNotify,
-            memo=schedule.memo,
-            startPlaceID=schedule.startPlaceID,
-            endPlaceID=schedule.endPlaceID,
-        )
+        stmt = scheduleTable.insert().values(schedule.to_dict())
         self.session.execute(stmt)
         self.session.flush()
+
+    def read(
+        self,
+        user_email: str,
+        schedule_id: str,
+    ) -> dict:
+        scheduleTable = Schedule.getTable(
+            email=user_email,
+            engine=self.engine(),
+        )
+        schedule_row = (
+            self.session.query(scheduleTable)
+            .filter(scheduleTable.c.id == schedule_id)
+            .one()
+        )
+
+        return schedule_row._mapping
 
     def read_all(
         self,
@@ -45,20 +45,37 @@ class ScheduleCRUD(BaseCRUD):
             engine=self.engine(),
         )
         scheduleRowList = (
-            self.session.query(scheduleTable).order_by(desc(scheduleTable.c.time)).all()
+            self.session.query(scheduleTable).order_by(asc(scheduleTable.c.time)).all()
         )
         return [row._mapping for row in scheduleRowList]
 
     def delete(
         self,
         userEmail: str,
-        scheduleID: int,
+        scheduleID: str,
     ):
         scheduleTable = Schedule.getTable(
             email=userEmail,
             engine=self.engine(),
         )
         stmt = scheduleTable.delete().where(scheduleTable.c.id == scheduleID)
+        self.session.execute(stmt)
+        self.session.flush()
+
+    def update(
+        self,
+        userEmail: str,
+        to_update_schedule: Schedule,
+    ):
+        scheduleTable = Schedule.getTable(
+            email=userEmail,
+            engine=self.engine(),
+        )
+        stmt = (
+            scheduleTable.update()
+            .where(scheduleTable.c.id == to_update_schedule.id)
+            .values(to_update_schedule.to_dict())
+        )
         self.session.execute(stmt)
         self.session.flush()
 
