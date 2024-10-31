@@ -23,9 +23,16 @@ def update_path(
     session: Session,
     user_email: str,
     path_id: str,
-    path_info: PathInfo,
+    path_info: Optional[PathInfo],
 ):
     path_crud = EBDataBase.path.createCRUD(session=session)
+    if path_info == None:
+        path_crud.delete(
+            user_email=user_email,
+            path_id=path_id,
+        )
+        return
+
     to_update_path = path_info.to_path(id=path_id)
     is_exist = path_crud.read(
         user_email=user_email,
@@ -136,12 +143,29 @@ def update_schedule(
         schedule_info=scheduleInfo,
     )
 
-    if pathInfo != None:
-        update_path(
-            session=session,
-            user_email=userEmail,
-            path_id=schedule_id,
-            path_info=pathInfo,
-        )
+    update_path(
+        session=session,
+        user_email=userEmail,
+        path_id=schedule_id,
+        path_info=pathInfo,
+    )
 
+    session.commit()
+
+
+def delete_schedule(
+    session: Session,
+    user_email: str,
+    schedule_id: str,
+):
+    scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
+    scheduleCRUD.delete(
+        userEmail=user_email,
+        scheduleID=schedule_id,
+    )
+    pathCRUD = EBDataBase.path.createCRUD(session=session)
+    pathCRUD.delete(
+        user_email=user_email,
+        path_id=schedule_id,
+    )
     session.commit()

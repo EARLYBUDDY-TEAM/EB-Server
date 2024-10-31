@@ -61,14 +61,14 @@ def update_schedule(
 def delete_schedule(
     schedule_id: str,
     user_email=Depends(getUserEmail),
-    scheduleCRUD=Depends(EBDataBase.schedule.getCRUD),
+    session=Depends(EBDataBase.get_session),
 ):
     try:
-        scheduleCRUD.delete(
-            userEmail=user_email,
-            scheduleID=schedule_id,
+        schedule_feature.delete_schedule(
+            session=session,
+            user_email=user_email,
+            schedule_id=schedule_id,
         )
-        scheduleCRUD.commit()
     except:
         raise HTTPException(
             status_code=400,

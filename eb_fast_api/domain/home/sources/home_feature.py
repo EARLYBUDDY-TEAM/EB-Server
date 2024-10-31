@@ -98,21 +98,3 @@ def schedule_dict_to_schedule_path_info(
         schedule_info=schedule_info,
         path_info=path_info,
     )
-
-
-def delete_schedule(
-    session: Session,
-    user_email: str,
-    schedule_id: str,
-):
-    scheduleCRUD = EBDataBase.schedule.createCRUD(session=session)
-    scheduleCRUD.delete(
-        userEmail=user_email,
-        scheduleID=schedule_id,
-    )
-    pathCRUD = EBDataBase.path.createCRUD(session=session)
-    pathCRUD.delete(
-        user_email=user_email,
-        path_id=schedule_id,
-    )
-    session.commit()
