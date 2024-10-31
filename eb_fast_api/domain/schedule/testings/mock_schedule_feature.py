@@ -68,3 +68,32 @@ def mock_update_schedule_FAIL():
         "eb_fast_api.domain.schedule.sources.schedule_feature.update_schedule",
         new=mock_def_update_schedule_FAIL,
     ).start()
+
+
+def mock_delete_schedule_SUCCESS():
+    def mock_def_delete_schedule_SUCCESS(
+        session: Session,
+        user_email: str,
+        schedule_id: str,
+    ):
+        return
+
+    patch(
+        "eb_fast_api.domain.schedule.sources.schedule_feature.delete_schedule",
+        new=mock_def_delete_schedule_SUCCESS,
+    ).start()
+
+
+def mock_delete_schedule_FAIL():
+    def mock_def_delete_schedule_FAIL(
+        session: Session,
+        user_email: str,
+        schedule_id: str,
+    ):
+        raise Exception("mock_delete_schedule_FAIL")
+        return
+
+    patch(
+        "eb_fast_api.domain.schedule.sources.schedule_feature.delete_schedule",
+        new=mock_def_delete_schedule_FAIL,
+    ).start()

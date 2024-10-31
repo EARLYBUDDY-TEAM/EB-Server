@@ -32,22 +32,3 @@ def get_all_schedules(
     ]
 
     return SchedulePathInfoList(all_schedules=all_schedules)
-
-
-@router.delete("/delete_schedule")
-def delete_schedule(
-    scheduleID: str,
-    userEmail=Depends(getUserEmail),
-    session=Depends(EBDataBase.get_session),
-):
-    try:
-        home_feature.delete_schedule(
-            session=session,
-            user_email=userEmail,
-            schedule_id=scheduleID,
-        )
-    except:
-        raise HTTPException(
-            status_code=400,
-            detail="스케줄 삭제 에러",
-        )

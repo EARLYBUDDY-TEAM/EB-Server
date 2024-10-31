@@ -1,7 +1,7 @@
 from eb_fast_api.main import app
-from unittest.mock import patch
 from fastapi.testclient import TestClient
 
+from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo
 from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
@@ -10,6 +10,8 @@ from eb_fast_api.domain.schedule.testings.mock_schedule_feature import (
     mock_create_schedule_FAIL,
     mock_update_schedule_SUCCESS,
     mock_update_schedule_FAIL,
+    mock_delete_schedule_SUCCESS,
+    mock_delete_schedule_FAIL,
 )
 
 
@@ -101,57 +103,51 @@ def test_update_schedule_FAIL(testClient):
     assert response.status_code == 400
 
 
-def test_delete_schedule_SUCCESS():
-    def mock_delete_success(
-        self,
-        userEmail: str,
-        scheduleID: str,
-    ):
-        return
+def test_delete_schedule_SUCCESS(
+    schedule_MockSession,
+):
+    mock_delete_schedule_SUCCESS()
 
-    with patch(
-        "eb_fast_api.database.sources.crud.schedule_crud.ScheduleCRUD.delete",
-        mock_delete_success,
-    ):
-        app.dependency_overrides[getUserEmail] = mockGetUserEmail
-        testClient = TestClient(app)
-        headers = {"access_token": "access_token"}
-        params = {"schedule_id": "schedule_id"}
+    def mock_def_session():
+        yield schedule_MockSession
 
-        # when
-        response = testClient.delete(
-            "/schedule/delete",
-            params=params,
-            headers=headers,
-        )
+    app.dependency_overrides[getUserEmail] = mockGetUserEmail
+    app.dependency_overrides[EBDataBase.get_session] = mock_def_session
+    testClient = TestClient(app)
+    headers = {"access_token": "access_token"}
+    params = {"schedule_id": "schedule_id"}
 
-        # then
-        assert response.status_code == 200
+    # when
+    response = testClient.delete(
+        "/schedule/delete",
+        params=params,
+        headers=headers,
+    )
+
+    # then
+    assert response.status_code == 200
 
 
-def test_delete_schedule_FAIL():
-    def mock_delete_fail(
-        self,
-        userEmail: str,
-        scheduleID: str,
-    ):
-        raise Exception("mock_delete_fail")
+def test_delete_schedule_card_FAIL(
+    schedule_MockSession,
+):
+    mock_delete_schedule_FAIL()
 
-    with patch(
-        "eb_fast_api.database.sources.crud.schedule_crud.ScheduleCRUD.delete",
-        mock_delete_fail,
-    ):
-        app.dependency_overrides[getUserEmail] = mockGetUserEmail
-        testClient = TestClient(app)
-        headers = {"access_token": "access_token"}
-        params = {"schedule_id": "schedule_id"}
+    def mock_def_session():
+        yield schedule_MockSession
 
-        # when
-        response = testClient.delete(
-            "/schedule/delete",
-            params=params,
-            headers=headers,
-        )
+    app.dependency_overrides[getUserEmail] = mockGetUserEmail
+    app.dependency_overrides[EBDataBase.get_session] = mock_def_session
+    testClient = TestClient(app)
+    headers = {"access_token": "access_token"}
+    params = {"schedule_id": "schedule_id"}
 
-        # then
-        assert response.status_code == 400
+    # when
+    response = testClient.delete(
+        "/schedule/delete",
+        params=params,
+        headers=headers,
+    )
+
+    # then
+    assert response.status_code == 400

@@ -7,8 +7,6 @@ from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmai
 from eb_fast_api.domain.home.testings.mock_home_feature import (
     mock_read_all_schedule,
     mock_schedule_dict_to_schedule_path_info,
-    mock_delete_schedule_SUCCESS,
-    mock_delete_schedule_FAIL,
     mockScheduleList,
     mockSchedulePathInfo,
 )
@@ -44,59 +42,5 @@ def test_get_all_schedules(home_MockSession):
     schedulePathInfoList = SchedulePathInfoList(all_schedules=all_schedules)
     assert response.json() == schedulePathInfoList.model_dump(mode="json")
 
-    del app.dependency_overrides[getUserEmail]
-    del app.dependency_overrides[EBDataBase.get_session]
-
-
-def test_delete_schedule_card_SUCCESS(
-    home_MockSession,
-):
-    mock_delete_schedule_SUCCESS()
-
-    def mock_def_session():
-        yield home_MockSession
-
-    app.dependency_overrides[getUserEmail] = mockGetUserEmail
-    app.dependency_overrides[EBDataBase.get_session] = mock_def_session
-    testClient = TestClient(app)
-    headers = {"access_token": "access_token"}
-    params = {"scheduleID": "scheduleID"}
-
-    # when
-    response = testClient.delete(
-        "/home/delete_schedule",
-        params=params,
-        headers=headers,
-    )
-
-    # then
-    assert response.status_code == 200
-    del app.dependency_overrides[getUserEmail]
-    del app.dependency_overrides[EBDataBase.get_session]
-
-
-def test_delete_schedule_card_FAIL(
-    home_MockSession,
-):
-    mock_delete_schedule_FAIL()
-
-    def mock_def_session():
-        yield home_MockSession
-
-    app.dependency_overrides[getUserEmail] = mockGetUserEmail
-    app.dependency_overrides[EBDataBase.get_session] = mock_def_session
-    testClient = TestClient(app)
-    headers = {"access_token": "access_token"}
-    params = {"scheduleID": "scheduleID"}
-
-    # when
-    response = testClient.delete(
-        "/home/delete_schedule",
-        params=params,
-        headers=headers,
-    )
-
-    # then
-    assert response.status_code == 400
     del app.dependency_overrides[getUserEmail]
     del app.dependency_overrides[EBDataBase.get_session]
