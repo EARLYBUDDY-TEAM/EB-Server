@@ -58,7 +58,14 @@ async def getRouteData(
     ey: float,
 ) -> Response:
     url = "https://api.odsay.com/v1/api/searchPubTransPathT"
-    params = {"apiKey": ENV_API.odsay, "SX": sx, "SY": sy, "EX": ex, "EY": ey, "OPT": 0}
+    params = {
+        "apiKey": ENV_API.odsay,
+        "SX": sx,
+        "SY": sy,
+        "EX": ex,
+        "EY": ey,
+        "OPT": 0,
+    }
     async with AsyncClient() as client:
         response = await client.get(url=url, params=params)
         return response
