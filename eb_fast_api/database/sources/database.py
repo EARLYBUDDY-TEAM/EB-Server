@@ -139,15 +139,11 @@ class EBDataBase(Enum):
         print("Success Create Path")
 
     @classmethod
-    def initialize(
+    def __create_dummy_data(
         cls,
-        engine: Engine = engine,
+        session: Session,
+        user_email: str,
     ):
-        EBDataBase.__create_meta_data(engine=engine)
-
-        session = sessionMaker()
-        user_email = EBDataBase.__create_test_user(session=session)
-
         startPlace = Place.mockStart()
         endPlace = Place.mockEnd()
         EBDataBase.__create_place(session=session, place=startPlace)
@@ -198,6 +194,21 @@ class EBDataBase(Enum):
                 user_email=user_email,
                 schedule_id=mockSchedule2.id,
             )
+
+    @classmethod
+    def initialize(
+        cls,
+        engine: Engine = engine,
+    ):
+        EBDataBase.__create_meta_data(engine=engine)
+
+        session = sessionMaker()
+        user_email = EBDataBase.__create_test_user(session=session)
+
+        # EBDataBase.__create_dummy_data(
+        #     session=session,
+        #     user_email=user_email,
+        # )
 
         session.commit()
         session.close()
