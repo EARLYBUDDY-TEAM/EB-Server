@@ -1,4 +1,3 @@
-import pytest
 from eb_fast_api.main import app
 from fastapi.testclient import TestClient
 from eb_fast_api.domain.realtime.testings.mock_realtime_feature import (

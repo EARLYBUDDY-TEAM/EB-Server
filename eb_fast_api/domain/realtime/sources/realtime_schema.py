@@ -5,7 +5,9 @@ from typing import List, Optional
 class RealTimeInfo(BaseModel):
     transport_number: str
     arrival_sec1: Optional[int]
+    left_station1: Optional[int]
     arrival_sec2: Optional[int]
+    left_station2: Optional[int]
 
 
 class RealTimeInfoList(BaseModel):

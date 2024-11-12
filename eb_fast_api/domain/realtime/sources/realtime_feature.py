@@ -22,11 +22,17 @@ async def get_bus_station_realtime_info(
 
 def real_time_json_to_real_time_info(json: dict) -> RealTimeInfo:
     transport_number: str = dictionary.safeDict(keyList=["routeNm"], fromDict=json)
-    arrival_sec1: int = dictionary.safeDict(
+    arrival_sec1 = dictionary.safeDict(
         keyList=["arrival1", "arrivalSec"], fromDict=json
     )
-    arrival_sec2: int = dictionary.safeDict(
+    left_station1 = dictionary.safeDict(
+        keyList=["arrival1", "leftStation"], fromDict=json
+    )
+    arrival_sec2 = dictionary.safeDict(
         keyList=["arrival2", "arrivalSec"], fromDict=json
+    )
+    left_station2 = dictionary.safeDict(
+        keyList=["arrival2", "leftStation"], fromDict=json
     )
 
     if transport_number == None:
@@ -35,7 +41,9 @@ def real_time_json_to_real_time_info(json: dict) -> RealTimeInfo:
     return RealTimeInfo(
         transport_number=transport_number,
         arrival_sec1=arrival_sec1,
+        left_station1=left_station1,
         arrival_sec2=arrival_sec2,
+        left_station2=left_station2,
     )
 
 
@@ -50,5 +58,7 @@ def decode_real_time_info_list(
         real_time_json_to_real_time_info(json=real_time_json)
         for real_time_json in real_time_json_list
     ]
+
+    real_time_list.sort(key=lambda x: x.arrival_sec1 or float("inf"))
 
     return real_time_list

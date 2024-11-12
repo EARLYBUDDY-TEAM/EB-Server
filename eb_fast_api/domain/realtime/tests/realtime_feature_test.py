@@ -6,13 +6,6 @@ from eb_fast_api.domain.realtime.testings import mock_realtime_info
 from eb_fast_api.domain.realtime.sources.realtime_schema import RealTimeInfo
 
 
-expected_real_time_info = RealTimeInfo(
-    transport_number="101",
-    arrival_sec1=130,
-    arrival_sec2=696,
-)
-
-
 @pytest.mark.asyncio
 async def test_get_bus_station_realtime_info():
     # given
@@ -46,7 +39,7 @@ def test_real_time_json_to_real_time_info():
     decoded = realtime_feature.real_time_json_to_real_time_info(json=mock_json)
 
     # then
-    assert expected_real_time_info == decoded
+    assert mock_realtime_info.expected_real_time_info == decoded
 
 
 def test_decode_real_time_info_list():
@@ -57,5 +50,5 @@ def test_decode_real_time_info_list():
     decoded = realtime_feature.decode_real_time_info_list(json=mock_json)
 
     # then
-    expected = [expected_real_time_info] * 5
+    expected = [mock_realtime_info.expected_real_time_info] * 5
     assert expected == decoded
