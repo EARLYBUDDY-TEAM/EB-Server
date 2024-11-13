@@ -60,6 +60,7 @@ class SubPathInfo(BaseModel):
     startX: Optional[str]
     startY: Optional[str]
     start_station_id: Optional[int]
+    way_code: Optional[int]
     endName: str
     distance: int
     transports: Optional[List[TransportInfo]]
@@ -85,6 +86,7 @@ class SubPathInfo(BaseModel):
             startX=str(dictionary.safeDict(["startX"], j)),
             startY=str(dictionary.safeDict(["startY"], j)),
             start_station_id=dictionary.safeDict(["startID"], j),
+            way_code=dictionary.safeDict(["wayCode"], j),
             startID=dictionary.safeDict(["startName"], j),
             endName=dictionary.safeDict(["endName"], j) or "",
             distance=int(j["distance"]),
@@ -103,6 +105,7 @@ class SubPathInfo(BaseModel):
             startY="123.12",
             endName="수서역",
             start_station_id=None,
+            way_code=None,
             distance=10,
             transports=[
                 TransportInfo.mockBus(),

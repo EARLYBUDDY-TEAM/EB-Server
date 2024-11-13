@@ -1,7 +1,11 @@
 from httpx import AsyncClient, Response
 from typing import List
 
-from eb_fast_api.domain.realtime.sources.realtime_schema import RealTimeInfo
+from eb_fast_api.domain.realtime.sources.realtime_schema import (
+    RealTimeInfo,
+    TotalSubwaySchedule,
+    SubwaySchedule,
+)
 from eb_fast_api.env.sources.env import ENV_API
 from eb_fast_api.snippets.sources import dictionary
 
@@ -62,3 +66,56 @@ def decode_real_time_info_list(
     real_time_list.sort(key=lambda x: x.arrival_sec1 or float("inf"))
 
     return real_time_list
+
+
+async def search_subway_schedule(
+    station_id: int,
+    way_code: int,
+) -> Response:
+    url = "https://api.odsay.com/v1/api/searchSubwaySchedule"
+    params = {
+        "apiKey": ENV_API.odsay,
+        "stationID": station_id,
+        "wayCode": way_code,
+    }
+    async with AsyncClient() as client:
+        response = await client.get(url=url, params=params)
+        return response
+
+
+def decode_subway_schedule_list(
+    subway_schedule_list: List[dict],
+) -> List[SubwaySchedule]:
+    return [SubwaySchedule.fromJson(j=json) for json in subway_schedule_list]
+
+
+def subway_schedule_json_to_schema(
+    way_code: int,
+    json: dict,
+) -> TotalSubwaySchedule:
+    up_down = "up" if (way_code == 1) else "down"
+    weekday_schedule_list = dictionary.safeDict(
+        keyList=["result", "weekdaySchedule", up_down], fromDict=json
+    )
+    saturday_schedule_list = dictionary.safeDict(
+        keyList=["result", "saturdaySchedule", up_down], fromDict=json
+    )
+    holiday_schedule_list = dictionary.safeDict(
+        keyList=["result", "holidaySchedule", up_down], fromDict=json
+    )
+
+    weekday_schedule = decode_subway_schedule_list(
+        subway_schedule_list=weekday_schedule_list,
+    )
+    saturday_schedule = decode_subway_schedule_list(
+        subway_schedule_list=saturday_schedule_list,
+    )
+    holiday_schedule = decode_subway_schedule_list(
+        subway_schedule_list=holiday_schedule_list,
+    )
+
+    return TotalSubwaySchedule(
+        weekday_schedule=weekday_schedule,
+        saturday_schedule=saturday_schedule,
+        holiday_schedule=holiday_schedule,
+    )
