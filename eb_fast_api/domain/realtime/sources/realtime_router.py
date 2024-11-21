@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from eb_fast_api.domain.realtime.sources import realtime_feature
+from eb_fast_api.domain.realtime.sources.realtime_feature import realtime_feature
 from eb_fast_api.domain.realtime.sources.realtime_schema import (
     RealTimeInfoList,
     TotalSubwaySchedule,

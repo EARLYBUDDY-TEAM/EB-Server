@@ -1,5 +1,5 @@
 from httpx import AsyncClient, Response
-from typing import List
+from typing import List, Optional
 
 from eb_fast_api.domain.realtime.sources.realtime_schema import (
     RealTimeInfo,
@@ -25,7 +25,9 @@ async def get_bus_station_realtime_info(
 
 
 def real_time_json_to_real_time_info(json: dict) -> RealTimeInfo:
-    transport_number: str = dictionary.safeDict(keyList=["routeNm"], fromDict=json)
+    transport_number: Optional[str] = dictionary.safeDict(
+        keyList=["routeNm"], fromDict=json
+    )
     arrival_sec1 = dictionary.safeDict(
         keyList=["arrival1", "arrivalSec"], fromDict=json
     )

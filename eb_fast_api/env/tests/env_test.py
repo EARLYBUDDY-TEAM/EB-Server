@@ -12,6 +12,7 @@ def test_get_value_API():
 
     assert env_api.kakaomap == "kakaomap"
     assert env_api.odsay == "odsay"
+    assert env_api.seoul_subway == "seoul_subway"
 
 
 def test_get_value_MYSQL():
