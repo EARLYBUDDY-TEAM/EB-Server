@@ -56,8 +56,8 @@ def test_filter_subway_realtime_data():
         result_subway_realtime_info = (
             subway_realtime_feature.filter_subway_realtime_data(
                 data=mockSubwayRealtimeJson,
-                subway_name=mock_subway_name,
-                subway_direction=subway_direction,
+                line_name=mock_subway_name,
+                direction=subway_direction,
             )
         )
 

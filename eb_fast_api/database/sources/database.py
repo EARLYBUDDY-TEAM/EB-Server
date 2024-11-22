@@ -17,7 +17,7 @@ from eb_fast_api.database.sources.crud.cruds import (
     PathCRUD,
 )
 from eb_fast_api.env.sources.env import ENV_TEST_USER
-from eb_fast_api.snippets.sources import pwdcrypt
+from eb_fast_api.snippets.sources import pwdcrypt, eb_datetime
 from eb_fast_api.database.sources import dummy
 
 
@@ -149,7 +149,7 @@ class EBDataBase(Enum):
         EBDataBase.__create_place(session=session, place=startPlace)
         EBDataBase.__create_place(session=session, place=endPlace)
 
-        today = datetime.now() + timedelta(minutes=-30)
+        today = eb_datetime.get_datetime_now() + timedelta(minutes=-30)
         for i in range(1, 11):
             mockSchedule1 = Schedule(
                 id=str(uuid4()),

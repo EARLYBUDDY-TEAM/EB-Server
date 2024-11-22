@@ -1,6 +1,6 @@
 from httpx import AsyncClient, Response
 from eb_fast_api.env.sources.env import ENV_API
-from eb_fast_api.snippets.sources import dictionary
+from eb_fast_api.snippets.sources import dictionary, eb_datetime
 from eb_fast_api.domain.realtime.sources.realtime_schema import RealTimeInfo
 from datetime import datetime
 
@@ -35,19 +35,19 @@ async def get_seoul_subway_realtime_info(
 
 
 def get_date_time_now() -> datetime:
-    return datetime.now()
+    return eb_datetime.get_datetime_now()
 
 
 def filter_subway_realtime_data(
     data: dict,
-    subway_name: str,
-    subway_direction: int,
+    line_name: str,
+    direction: int,
 ) -> RealTimeInfo:
     realtimeArrivalList = dictionary.safeDict(
         keyList=["realtimeArrivalList"], fromDict=data
     )
     realTimeInfo = RealTimeInfo(
-        transport_number=subway_name,
+        transport_number=line_name,
         arrival_sec1=None,
         left_station1=None,
         arrival_sec2=None,
@@ -57,11 +57,11 @@ def filter_subway_realtime_data(
     for realtimeData in realtimeArrivalList:
         subwayId = dictionary.safeDict(keyList=["subwayId"], fromDict=realtimeData)
         expectSubwayName = SubwayID[subwayId]
-        if expectSubwayName != subway_name:
+        if expectSubwayName != line_name:
             continue
 
         ordkey = dictionary.safeDict(keyList=["ordkey"], fromDict=realtimeData)
-        if int(ordkey[0]) != subway_direction:
+        if int(ordkey[0]) != direction:
             continue
 
         left_station = int(ordkey[2:5])
