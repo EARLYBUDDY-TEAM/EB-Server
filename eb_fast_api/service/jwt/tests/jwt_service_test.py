@@ -7,6 +7,7 @@ from eb_fast_api.service.jwt.testings.mock_jwt_service import (
 )
 from typing import Optional
 from datetime import datetime, timedelta
+from eb_fast_api.snippets.sources import eb_datetime
 
 
 class TestJWTSerialization:
@@ -19,7 +20,7 @@ class TestJWTSerialization:
         # given
         testEmail = "test@test.com"
         data = {"sub": testEmail}
-        expireDate = datetime.now()
+        expireDate = eb_datetime.get_datetime_now()
         exp = int(datetime.timestamp(expireDate))
 
         # when, then

@@ -12,6 +12,7 @@ def API_VALUE(env_file: Path):
     class API_BaseSettings(BaseSettings):
         kakaomap: str
         odsay: str
+        seoul_subway: str
 
         model_config = SettingsConfigDict(
             env_file=env_file,

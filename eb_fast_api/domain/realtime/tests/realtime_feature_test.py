@@ -1,15 +1,10 @@
 import httpx, pytest
 from unittest.mock import patch
 
-from eb_fast_api.domain.realtime.sources import realtime_feature
+from eb_fast_api.domain.realtime.sources.realtime_feature import realtime_feature
 from eb_fast_api.domain.realtime.testings import (
     mock_realtime_info,
     mock_subway_schedule,
-)
-from eb_fast_api.domain.realtime.sources.realtime_schema import (
-    RealTimeInfo,
-    SubwaySchedule,
-    TotalSubwaySchedule,
 )
 
 
@@ -19,7 +14,7 @@ async def test_search_subway_schedule():
     status_code = 200
     json = {"test": "test"}
     with patch(
-        "eb_fast_api.domain.realtime.sources.realtime_feature.AsyncClient.get"
+        "eb_fast_api.domain.realtime.sources.realtime_feature.realtime_feature.AsyncClient.get"
     ) as fake_get:
         fake_get.return_value = httpx.Response(
             status_code,
@@ -84,7 +79,7 @@ async def test_get_bus_station_realtime_info():
     status_code = 200
     json = {"test": "test"}
     with patch(
-        "eb_fast_api.domain.realtime.sources.realtime_feature.AsyncClient.get"
+        "eb_fast_api.domain.realtime.sources.realtime_feature.realtime_feature.AsyncClient.get"
     ) as fake_get:
         fake_get.return_value = httpx.Response(
             status_code,
