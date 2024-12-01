@@ -89,6 +89,7 @@ class EBDataBase(Enum):
                 email=email,
                 hashedPassword=hashedPassword,
                 refreshToken="",
+                fcm_token="",
             )
             userCRUD.create(user=testUser)
 

@@ -10,6 +10,7 @@ class UserCRUD(BaseCRUD):
         mixinPath = Path.createMixinPath(email=user.email)
         mixinPath.__table__.create(bind=self.engine())
 
+        self.__delete_exist_fcm_token(fcm_token=user.fcm_token)
         self.session.add(user)
         self.session.flush()
 
@@ -26,12 +27,32 @@ class UserCRUD(BaseCRUD):
         nickName: Optional[str] = None,
         hashedPassword: Optional[str] = None,
         refreshToken: Optional[str] = None,
+        fcm_token: Optional[str] = None,
     ):
+        self.__delete_exist_fcm_token(fcm_token=fcm_token)
+
         user = self.session.query(User).filter(User.email == key_email).first()
         if not user:
-            return
+            raise Exception("User not found")
+
         user.nickName = nickName or user.nickName
         user.hashedPassword = hashedPassword or user.hashedPassword
         user.refreshToken = refreshToken or user.refreshToken
+        user.fcm_token = fcm_token or user.fcm_token
         self.session.flush()
-        return
+
+    def __delete_exist_fcm_token(
+        self,
+        fcm_token: Optional[str],
+    ):
+        if not fcm_token:
+            return
+
+        user_own_fcm_token = (
+            self.session.query(User).filter(User.fcm_token == fcm_token).first()
+        )
+        if not user_own_fcm_token:
+            return
+
+        user_own_fcm_token.fcm_token = None
+        self.session.flush()

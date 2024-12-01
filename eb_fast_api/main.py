@@ -1,8 +1,11 @@
 import time
 from fastapi import FastAPI, Request, Response
+from eb_fast_api.service.notification.sources.notification_service import (
+    notification_scheduler,
+)
 
 
-app = FastAPI()
+app = FastAPI(lifespan=notification_scheduler)
 
 
 from eb_fast_api.domain.auth.register.sources import register_routers
@@ -59,4 +62,4 @@ if __name__ == "__main__":
     from eb_fast_api.database.sources.database import EBDataBase
 
     EBDataBase.initialize()
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, log_level="debug")

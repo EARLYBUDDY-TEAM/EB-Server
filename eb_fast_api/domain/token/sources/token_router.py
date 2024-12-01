@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, Security
+from fastapi import APIRouter, Depends, Security, HTTPException
 from fastapi.security import APIKeyHeader
-from eb_fast_api.domain.token.sources.token_feature import verifyToken
+from eb_fast_api.domain.token.sources import token_feature
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
 from eb_fast_api.domain.schema.sources.schemas import TokenInfo
@@ -17,18 +17,22 @@ def recreate_token(
     userCRUD=Depends(EBDataBase.user.getCRUD),
     jwtService=Depends(getJWTService),
 ) -> TokenInfo:
-    userEmail = verifyToken(token=refreshToken)
-    accessToken = jwtService.createAccessToken(email=userEmail)
-    refreshToken = jwtService.createRefreshToken(email=userEmail)
-    token = TokenInfo(
-        accessToken=accessToken,
-        refreshToken=refreshToken,
+    userEmail = token_feature.verifyToken(token=refreshToken)
+    token_info = token_feature.create_token_info(
+        email=userEmail,
+        jwt_service=jwtService,
     )
 
-    userCRUD.update(
-        key_email=userEmail,
-        refreshToken=refreshToken,
-    )
-    userCRUD.commit()
-
-    return token
+    try:
+        token_feature.update_refresh_token(
+            userCRUD=userCRUD,
+            email=userEmail,
+            refreshToken=token_info.refreshToken,
+        )
+        return token_info
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=491,
+            detail="토큰 저장 실패",
+        )

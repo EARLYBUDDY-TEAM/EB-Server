@@ -1,9 +1,10 @@
+from unittest.mock import patch
 from eb_fast_api.service.jwt.interfaces.abc_jwt_serialization import (
     ABC_JWTDecoder,
     ABC_JWTEncoder,
 )
 from eb_fast_api.service.jwt.sources.jwt_service import JWTService
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 mockTimeString = "2024-07-28T05:04:32.299Z"
@@ -44,3 +45,22 @@ class MockJWTService(JWTService):
 
     def dateTimeNow(self) -> datetime:
         return self.now
+
+
+mock_token = "mock_token"
+
+
+def patcher_create_access_token():
+    return patch.object(
+        JWTService,
+        "createAccessToken",
+        return_value=mock_token,
+    )
+
+
+def patcher_create_refresh_token():
+    return patch.object(
+        JWTService,
+        "createRefreshToken",
+        return_value=mock_token,
+    )

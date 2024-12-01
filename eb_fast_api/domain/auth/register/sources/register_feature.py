@@ -1,4 +1,30 @@
 from email_validator import validate_email
+from eb_fast_api.domain.schema.sources.schemas import RegisterInfo
+from eb_fast_api.database.sources.crud.user_crud import UserCRUD
+
+
+def createUser(
+    registerInfo: RegisterInfo,
+    userCRUD: UserCRUD,
+):
+    tmpUser = userCRUD.read(registerInfo.email)
+    if tmpUser:
+        raise Exception("이미 존재하는 사용자입니다.")
+
+    user = registerInfo.toUser()
+    userCRUD.create(user)
+    userCRUD.commit()
+
+
+def isValidRegisterInfo(
+    registerInfo: RegisterInfo,
+) -> bool:
+    return (
+        False
+        if not isValidEmail(registerInfo.email)
+        or not isValidPassword(registerInfo.password)
+        else True
+    )
 
 
 def isValidEmail(email: str) -> bool:
@@ -7,12 +33,12 @@ def isValidEmail(email: str) -> bool:
         return True
     except:
         return False
-    
+
 
 def isValidPassword(password: str) -> bool:
-    if ' ' in password or not password.strip():
+    if " " in password or not password.strip():
         return False
-    
+
     if len(password) < 6:
         return False
 

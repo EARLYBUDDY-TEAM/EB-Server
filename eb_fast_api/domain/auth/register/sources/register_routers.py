@@ -12,21 +12,19 @@ def register(
     registerInfo: RegisterInfo,
     userCRUD=Depends(EBDataBase.user.getCRUD),
 ):
-    if not register_feature.isValidEmail(
-        registerInfo.email
-    ) or not register_feature.isValidPassword(registerInfo.password):
+    if not register_feature.isValidRegisterInfo(registerInfo):
         raise HTTPException(
             status_code=400,
             detail="유저 정보가 올바르지 않습니다.",
         )
 
-    tmpUser = userCRUD.read(registerInfo.email)
-    if tmpUser:
+    try:
+        register_feature.createUser(
+            registerInfo=registerInfo,
+            userCRUD=userCRUD,
+        )
+    except Exception as e:
         raise HTTPException(
             status_code=401,
-            detail="이미 존재하는 사용자입니다.",
+            detail=str(e),
         )
-
-    user = registerInfo.toUser(refreshToken="")
-    userCRUD.create(user)
-    userCRUD.commit()

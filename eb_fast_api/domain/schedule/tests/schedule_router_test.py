@@ -12,12 +12,20 @@ from eb_fast_api.domain.schedule.testings.mock_schedule_feature import (
     mock_update_schedule_FAIL,
     mock_delete_schedule_SUCCESS,
     mock_delete_schedule_FAIL,
+    mock_create_notification_schedule_SUCCESS,
+    mock_create_notification_schedule_FAIL,
+    mock_update_notification_schedule_SUCCESS,
+    mock_update_notification_schedule_FAIL,
+    mock_delete_notification_schedule_SUCCESS,
+    mock_delete_notification_schedule_FAIL,
 )
 
 
 def test_create_schedule_SUCCESS(testClient):
     # given
     mock_create_schedule_SUCCESS()
+    mock_create_notification_schedule_SUCCESS()
+
     headers = {"access_token": "access_token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
@@ -37,7 +45,7 @@ def test_create_schedule_SUCCESS(testClient):
     assert response.status_code == 200
 
 
-def test_creaet_schedule_FAIL(testClient):
+def test_create_schedule_FAIL_create_schedule(testClient):
     # given
     mock_create_schedule_FAIL()
     headers = {"access_token": "access_token"}
@@ -57,6 +65,29 @@ def test_creaet_schedule_FAIL(testClient):
 
     # then
     assert response.status_code == 400
+
+
+def test_create_schedule_FAIL_create_notification_schedule(testClient):
+    # given
+    mock_create_schedule_SUCCESS()
+    mock_create_notification_schedule_FAIL()
+    headers = {"access_token": "access_token"}
+    scheduleInfo = ScheduleInfo.mock()
+    schedule_info_json = scheduleInfo.model_dump(mode="json")
+    json = {
+        "scheduleInfo": schedule_info_json,
+        "pathInfo": None,
+    }
+
+    # when
+    response = testClient.post(
+        "/schedule/create",
+        headers=headers,
+        json=json,
+    )
+
+    # then
+    assert response.status_code == 401
 
 
 def test_update_schedule_SUCCESS(testClient):
@@ -101,6 +132,29 @@ def test_update_schedule_FAIL(testClient):
 
     # then
     assert response.status_code == 400
+
+
+def test_update_schedule_FAIL_update_notification_schedule(testClient):
+    # given
+    mock_update_schedule_SUCCESS()
+    mock_update_notification_schedule_FAIL()
+    headers = {"access_token": "access_token"}
+    scheduleInfo = ScheduleInfo.mock()
+    schedule_info_json = scheduleInfo.model_dump(mode="json")
+    json = {
+        "scheduleInfo": schedule_info_json,
+        "pathInfo": None,
+    }
+
+    # when
+    response = testClient.patch(
+        "/schedule/update",
+        headers=headers,
+        json=json,
+    )
+
+    # then
+    assert response.status_code == 401
 
 
 def test_delete_schedule_SUCCESS(
@@ -151,3 +205,29 @@ def test_delete_schedule_card_FAIL(
 
     # then
     assert response.status_code == 400
+
+
+def test_delete_schedule_card_FAIL_delete_notification_schedule(
+    schedule_MockSession,
+):
+    mock_delete_schedule_SUCCESS()
+    mock_delete_notification_schedule_FAIL()
+
+    def mock_def_session():
+        yield schedule_MockSession
+
+    app.dependency_overrides[getUserEmail] = mockGetUserEmail
+    app.dependency_overrides[EBDataBase.get_session] = mock_def_session
+    testClient = TestClient(app)
+    headers = {"access_token": "access_token"}
+    params = {"schedule_id": "schedule_id"}
+
+    # when
+    response = testClient.delete(
+        "/schedule/delete",
+        params=params,
+        headers=headers,
+    )
+
+    # then
+    assert response.status_code == 401
