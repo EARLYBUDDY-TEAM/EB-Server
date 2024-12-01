@@ -38,7 +38,6 @@ class ScheduleInfo(BaseModel):
             endPlaceID=endPlaceID,
         )
         return schedule
-    
 
     @classmethod
     def mock(

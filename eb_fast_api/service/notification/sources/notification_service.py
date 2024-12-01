@@ -14,8 +14,10 @@ from eb_fast_api.snippets.sources import dictionary
 from eb_fast_api.snippets.sources.logger import logger
 
 
-## eb_fast_api/service/notification/fcm_oauth.json
-fcm_oauth_json_path = Path(__file__).parent.parent.joinpath("fcm_oauth.json").absolute()
+## eb_fast_api/service/notification/fcm_oauth/fcm_oauth.json
+fcm_oauth_json_path = (
+    Path(__file__).parent.parent.joinpath("fcm_oauth/fcm_oauth.json").absolute()
+)
 cred = firebase_admin.credentials.Certificate(fcm_oauth_json_path)
 firebase_default_app = firebase_admin.initialize_app(cred)
 
