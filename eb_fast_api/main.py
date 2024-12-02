@@ -1,6 +1,6 @@
 import time
 from fastapi import FastAPI, Request, Response
-from eb_fast_api.service.notification.sources.notification_service import (
+from eb_fast_api.service.notification.sources.notification_scheduler import (
     notification_scheduler,
 )
 

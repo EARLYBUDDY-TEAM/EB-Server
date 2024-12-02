@@ -1,6 +1,6 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.model.models import User, Schedule, Path
-from typing import Optional
+from typing import Optional, List
 
 
 class UserCRUD(BaseCRUD):
@@ -40,6 +40,10 @@ class UserCRUD(BaseCRUD):
         user.refreshToken = refreshToken or user.refreshToken
         user.fcm_token = fcm_token or user.fcm_token
         self.session.flush()
+
+    def read_all(self) -> List[dict]:
+        user_list = self.session.query(User).all()
+        return [user.to_dict() for user in user_list]
 
     def __delete_exist_fcm_token(
         self,

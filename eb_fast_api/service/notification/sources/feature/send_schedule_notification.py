@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from pathlib import Path
 import firebase_admin
 from firebase_admin.messaging import Message
-from contextlib import asynccontextmanager
 from apscheduler.schedulers.background import BackgroundScheduler
 from eb_fast_api.service.notification.sources.notification_provider import (
     noti_schedule_provider,
@@ -16,7 +15,7 @@ from eb_fast_api.snippets.sources.logger import logger
 
 ## eb_fast_api/service/notification/fcm_oauth/fcm_oauth.json
 fcm_oauth_json_path = (
-    Path(__file__).parent.parent.joinpath("fcm_oauth/fcm_oauth.json").absolute()
+    Path(__file__).parent.parent.parent.joinpath("fcm_oauth/fcm_oauth.json").absolute()
 )
 cred = firebase_admin.credentials.Certificate(fcm_oauth_json_path)
 firebase_default_app = firebase_admin.initialize_app(cred)
@@ -80,15 +79,3 @@ def send_schedule_notification(
         title=title,
         body=body,
     )
-
-
-@asynccontextmanager
-async def notification_scheduler(app: FastAPI):
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(
-        lambda: send_schedule_notification(),
-        "interval",
-        minutes=1,
-    )
-    scheduler.start()
-    yield

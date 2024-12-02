@@ -1,4 +1,4 @@
-from eb_fast_api.service.notification.sources.notification_service import (
+from eb_fast_api.service.notification.sources.feature.send_schedule_notification import (
     get_fcm_token,
     send_schedule_notification,
 )
