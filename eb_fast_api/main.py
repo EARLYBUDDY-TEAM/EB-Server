@@ -1,11 +1,19 @@
 import time
+import uvicorn
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Response
-from eb_fast_api.service.notification.sources.notification_service import (
-    notification_scheduler,
+from eb_fast_api.service.notification.sources.notification_scheduler import (
+    initialize_notification_scheduler,
 )
 
 
-app = FastAPI(lifespan=notification_scheduler)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    initialize_notification_scheduler()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 from eb_fast_api.domain.auth.register.sources import register_routers
@@ -58,8 +66,7 @@ def read_root():
 
 
 if __name__ == "__main__":
-    import uvicorn
     from eb_fast_api.database.sources.database import EBDataBase
-
+    
     EBDataBase.initialize()
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, log_level="debug")

@@ -80,7 +80,7 @@ def test_user_update_two_user(
         # then
         user_own_fcm_token_count = (
             mockSession.query(User)
-            .filter(User.fcm_token == second_user.fcm_token)
+            .filter(User.fcm_token == first_user.fcm_token)
             .count()
         )
         assert user_own_fcm_token_count == 1
@@ -102,7 +102,6 @@ def test_user_update_one_user(
     mockUserCRUD,
     mockScheduleCRUD,
     mockPathCRUD,
-    mockSession,
 ):
     try:
         # given
@@ -131,3 +130,33 @@ def test_user_update_one_user(
     finally:
         mockScheduleCRUD.dropTable(userEmail=first_user.email)
         mockPathCRUD.dropTable(user_email=first_user.email)
+
+
+def test_user_get_all_user(
+    mockUserCRUD,
+    mockScheduleCRUD,
+    mockPathCRUD,
+):
+    try:
+        # given
+        first_email = "first_email"
+        second_email = "second_email"
+        first_user = User.mock(email=first_email)
+        second_user = User.mock(email=second_email)
+        mockUserCRUD.create(user=second_user)
+        mockUserCRUD.create(user=first_user)
+
+        # when, then
+        fetched_user_dict_list = mockUserCRUD.read_all()
+        fetched_email_set = set(
+            [user_dict["email"] for user_dict in fetched_user_dict_list]
+        )
+        expect_result = set([first_email, second_email])
+        assert expect_result & fetched_email_set == expect_result
+
+    # delete schedule, path table
+    finally:
+        mockScheduleCRUD.dropTable(userEmail=first_user.email)
+        mockPathCRUD.dropTable(user_email=first_user.email)
+        mockScheduleCRUD.dropTable(userEmail=second_user.email)
+        mockPathCRUD.dropTable(user_email=second_user.email)

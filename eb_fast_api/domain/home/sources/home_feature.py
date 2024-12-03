@@ -74,7 +74,13 @@ def get_path_info(
         user_email=user_email,
         path_id=schedule_id,
     )
-    return None if path_dict == None else PathInfo(**path_dict["data"])
+
+    if path_dict == None:
+        return None
+    
+    path_info_dict = path_dict["data"]
+    path_info = PathInfo.model_validate(path_info_dict)
+    return path_info
 
 
 def schedule_dict_to_schedule_path_info(

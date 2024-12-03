@@ -6,6 +6,7 @@ from datetime import datetime
 from eb_fast_api.database.sources.model.base_model import Base
 from eb_fast_api.database.sources.connection import engine
 from uuid import uuid4
+from eb_fast_api.snippets.testings.mock_eb_datetime import mock_now 
 
 
 class Schedule:
@@ -46,10 +47,8 @@ class Schedule:
         cls,
         id: Optional[str] = None,
         title: str = "title",
+        time: datetime = mock_now,
     ) -> Self:
-        timeString = "2024-07-28T05:04:32.299Z"
-        time = datetime.fromisoformat(timeString)
-        time = time.replace(microsecond=0, tzinfo=None)
         id = id or str(uuid4())
         mockSchedule = Schedule(
             id=id,

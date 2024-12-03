@@ -21,6 +21,10 @@ from eb_fast_api.snippets.sources import pwdcrypt, eb_datetime
 from eb_fast_api.database.sources import dummy
 
 
+test_ios_token = "fkefvhXsAUMBiwaUoNZCCE:APA91bGi0oyAwI1Qx4AklaeqHiFawy2v5tH4m_8TRfe56cUcCAjLbLMT2sbcqSglp_Hx1suYoDj84C_E6voCiffgqVliOjNw71GbeO4261PkP4QjU9hnLI0"
+test_android_token = "fkefvhXsAUMBiwaUoNZCCE:APA91bGi0oyAwI1Qx4AklaeqHiFawy2v5tH4m_8TRfe56cUcCAjLbLMT2sbcqSglp_Hx1suYoDj84C_E6voCiffgqVliOjNw71GbeO4261PkP4QjU9hnLI0"
+
+
 class EBDataBase(Enum):
     base = "base"
     user = "user"
@@ -89,7 +93,7 @@ class EBDataBase(Enum):
                 email=email,
                 hashedPassword=hashedPassword,
                 refreshToken="",
-                fcm_token="",
+                fcm_token=test_ios_token,
             )
             userCRUD.create(user=testUser)
 
@@ -150,13 +154,14 @@ class EBDataBase(Enum):
         EBDataBase.__create_place(session=session, place=startPlace)
         EBDataBase.__create_place(session=session, place=endPlace)
 
-        today = eb_datetime.get_datetime_now() + timedelta(minutes=-30)
-        for i in range(1, 11):
+        max_index = 10
+        today = eb_datetime.get_datetime_now()
+        for i in range(1, max_index + 1):
             mockSchedule1 = Schedule(
                 id=str(uuid4()),
                 title=f"index : {i}, testuser mock schedule",
                 memo="This is Memo",
-                time=today + timedelta(days=i),
+                time=today + timedelta(minutes=(10 + i)),
                 notify_schedule=10,
                 notify_transport=10,
                 notify_transport_range=10,
@@ -174,27 +179,27 @@ class EBDataBase(Enum):
                 schedule_id=mockSchedule1.id,
             )
 
-            mockSchedule2 = Schedule(
-                id=str(uuid4()),
-                title=f"index : {i}, testuser mock schedule",
-                memo="This is Memo",
-                time=today + timedelta(minutes=10 * i),
-                notify_schedule=20,
-                notify_transport=20,
-                notify_transport_range=20,
-                startPlaceID=startPlace.id,
-                endPlaceID=endPlace.id,
-            )
-            EBDataBase.__create_schedule(
-                session=session,
-                user_email=user_email,
-                schedule=mockSchedule2,
-            )
-            EBDataBase.__create_path(
-                session=session,
-                user_email=user_email,
-                schedule_id=mockSchedule2.id,
-            )
+            # mockSchedule2 = Schedule(
+            #     id=str(uuid4()),
+            #     title=f"index : {i}, testuser mock schedule",
+            #     memo="This is Memo",
+            #     time=today + timedelta(minutes=10 * i),
+            #     notify_schedule=20,
+            #     notify_transport=20,
+            #     notify_transport_range=20,
+            #     startPlaceID=startPlace.id,
+            #     endPlaceID=endPlace.id,
+            # )
+            # EBDataBase.__create_schedule(
+            #     session=session,
+            #     user_email=user_email,
+            #     schedule=mockSchedule2,
+            # )
+            # EBDataBase.__create_path(
+            #     session=session,
+            #     user_email=user_email,
+            #     schedule_id=mockSchedule2.id,
+            # )
 
     @classmethod
     def initialize(
@@ -206,10 +211,10 @@ class EBDataBase(Enum):
         session = sessionMaker()
         user_email = EBDataBase.__create_test_user(session=session)
 
-        # EBDataBase.__create_dummy_data(
-        #     session=session,
-        #     user_email=user_email,
-        # )
+        EBDataBase.__create_dummy_data(
+            session=session,
+            user_email=user_email,
+        )
 
         session.commit()
         session.close()
