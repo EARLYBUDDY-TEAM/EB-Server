@@ -5,6 +5,8 @@ from eb_fast_api.service.notification.sources.notification_schema import (
     NotificationSchedule,
 )
 import heapq
+from eb_fast_api.snippets.sources import eb_datetime
+from datetime import timedelta
 
 
 def test_notification_schedule_provider_add_delete():
@@ -21,19 +23,16 @@ def test_notification_schedule_provider_add_delete():
 
 
 def test_notification_schedule_provider_get_schedule():
-    def heap_to_list(tmp_heap) -> list:
-        tmp_list = []
-
-        while tmp_heap:
-            tmp = heapq.heappop(tmp_heap)
-            tmp_list.append(tmp)
-
-        return tmp_list
+    now = eb_datetime.get_datetime_now()
 
     # given
-    noti_schedule1 = NotificationSchedule.mock(schedule_remain_time=10)
-    noti_schedule2 = NotificationSchedule.mock(schedule_remain_time=20)
-    noti_schedule3 = NotificationSchedule.mock(schedule_remain_time=30)
+    noti_schedule1 = NotificationSchedule.mock(schedule_time=now)
+    noti_schedule2 = NotificationSchedule.mock(
+        schedule_time=now + timedelta(minutes=10)
+    )
+    noti_schedule3 = NotificationSchedule.mock(
+        schedule_time=now + timedelta(minutes=20)
+    )
     noti_schedule_list = [
         noti_schedule1,
         noti_schedule2,
@@ -44,10 +43,8 @@ def test_notification_schedule_provider_get_schedule():
         noti_schedule_provider.add_schedule(noti_schedule=noti_schedule)
 
     # when
-    noti_schedule = noti_schedule_provider.get_schedule()
-    if noti_schedule != None:
-        noti_schedule_list.remove(noti_schedule)
+    noti_schedule_list = noti_schedule_provider.get_schedule(now=now)
 
     # then
-    heapq.heapify(noti_schedule_list)
-    assert heap_to_list(noti_schedule_list) == heap_to_list(noti_schedule_provider.data)
+    assert len(noti_schedule_list) == 1
+    assert noti_schedule_list[0] == noti_schedule1

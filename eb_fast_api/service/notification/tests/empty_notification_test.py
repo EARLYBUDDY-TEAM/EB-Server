@@ -1,11 +1,10 @@
-from eb_fast_api.service.notification.sources.feature.empty_notification import (
+from eb_fast_api.service.notification.sources.feature.empty_and_add_notification import (
     bisect_left_schedule,
     bisect_right_schedule,
     add_today_schedule_notification,
     get_all_user,
 )
 from eb_fast_api.database.sources.model.models import Schedule
-from eb_fast_api.snippets.sources.eb_datetime import get_datetime_now
 from eb_fast_api.service.notification.sources.notification_provider import (
     NotificationScheduleProvider,
 )
@@ -14,12 +13,24 @@ from eb_fast_api.database.testings.mock_crud import mock_schedule_crud as msc
 from eb_fast_api.database.testings.mock_crud import mock_user_crud as muc
 from datetime import timedelta
 from unittest import TestCase
+from eb_fast_api.snippets.testings import mock_eb_datetime as med
 
 
 class TestEmptyNotification(TestCase):
-    now = get_datetime_now()
     schedule_dict_list = []
     provider = NotificationScheduleProvider()
+
+    now = med.mock_now
+
+    @classmethod
+    def setUpClass(cls):
+        cls.patcher_get_datetime_now = med.patcher_get_datetime_now()
+        cls.patcher_get_datetime_now.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.patcher_get_datetime_now.stop()
+        cls.patcher_get_datetime_now = None
 
     def tearDown(self):
         self.schedule_dict_list = []
@@ -31,16 +42,19 @@ class TestEmptyNotification(TestCase):
         for i in range(1, 6):
             mock_schedule = Schedule.mock()
             mock_schedule.time = self.now - timedelta(days=i)
+            mock_schedule.notify_schedule = 0
             tmp_schedule_list.append(mock_schedule.to_dict())
 
         for _ in range(1, 6):
             mock_schedule = Schedule.mock()
             mock_schedule.time = self.now
+            mock_schedule.notify_schedule = 0
             tmp_schedule_list.append(mock_schedule.to_dict())
 
         for i in range(1, 6):
             mock_schedule = Schedule.mock()
             mock_schedule.time = self.now + timedelta(days=i)
+            mock_schedule.notify_schedule = 0
             tmp_schedule_list.append(mock_schedule.to_dict())
 
         self.schedule_dict_list = tmp_schedule_list
@@ -51,11 +65,13 @@ class TestEmptyNotification(TestCase):
         for i in range(1, 6):
             mock_schedule = Schedule.mock()
             mock_schedule.time = self.now - timedelta(days=i)
+            mock_schedule.notify_schedule = 0
             tmp_schedule_list.append(mock_schedule.to_dict())
 
         for i in range(1, 6):
             mock_schedule = Schedule.mock()
             mock_schedule.time = self.now + timedelta(days=i)
+            mock_schedule.notify_schedule = 0
             tmp_schedule_list.append(mock_schedule.to_dict())
 
         self.schedule_dict_list = tmp_schedule_list

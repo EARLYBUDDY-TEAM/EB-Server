@@ -1,6 +1,6 @@
 from eb_fast_api.service.notification.sources.notification_provider import (
-    noti_schedule_provider,
     NotificationScheduleProvider,
+    noti_schedule_provider,
 )
 from eb_fast_api.service.notification.sources.notification_schema import (
     NotificationSchedule,
@@ -9,6 +9,8 @@ from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, UserCRUD
 from typing import List
 from datetime import datetime
 from eb_fast_api.database.sources.database import EBDataBase
+from eb_fast_api.snippets.sources.logger import logger
+from eb_fast_api.snippets.sources import eb_datetime
 
 
 def bisect_left_schedule(
@@ -60,13 +62,15 @@ def add_today_schedule_notification(
     if not schedule_dict_list:
         return
 
-    today_date = datetime.now().date()
-    left = bisect_left_schedule(schedule_dict_list, today_date)
-    right = bisect_right_schedule(schedule_dict_list, today_date)
+    now = eb_datetime.get_datetime_now()
+    now_date = now.date()
+    left = bisect_left_schedule(schedule_dict_list, now_date)
+    right = bisect_right_schedule(schedule_dict_list, now_date)
 
-    if schedule_dict_list[left]["time"].date() != today_date:
+    if schedule_dict_list[left]["time"].date() != now_date:
         return
 
+    count = 0
     for i in range(left, right):
         schedule_dict = schedule_dict_list[i]
         notify_schedule = schedule_dict["notify_schedule"]
@@ -87,9 +91,14 @@ def add_today_schedule_notification(
         if noti_schedule == None:
             continue
 
+        count += 1
         noti_schedule_provider.add_schedule(
             noti_schedule=noti_schedule,
         )
+    else:
+        logger.debug("add_today_schedule_notification")
+        logger.debug(f"user_email : {user_email}")
+        logger.debug(f"add count : {count}")
 
 
 def get_all_user(
@@ -98,7 +107,7 @@ def get_all_user(
     return user_crud.read_all()
 
 
-def empty_notification(
+def empty_and_add_all_user_notification(
     provider=noti_schedule_provider,
     session=EBDataBase.create_session(),
 ):

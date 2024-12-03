@@ -7,7 +7,7 @@ from eb_fast_api.service.notification.sources.notification_provider import (
 def patcher_get_schedule():
     def mock_get_schedule(self):
         cur_noti_schedule = self.pop()
-        return cur_noti_schedule
+        return [cur_noti_schedule]
 
     patcher = patch.object(
         NotificationScheduleProvider,

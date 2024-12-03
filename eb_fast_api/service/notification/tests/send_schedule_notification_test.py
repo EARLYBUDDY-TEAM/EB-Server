@@ -11,7 +11,9 @@ from eb_fast_api.service.notification.sources.notification_schema import (
 from eb_fast_api.service.notification.sources.notification_provider import (
     NotificationScheduleProvider,
 )
-from eb_fast_api.service.notification.testings import mock_notification_service as mns
+from eb_fast_api.service.notification.testings import (
+    mock_send_schedule_notification as mns,
+)
 from eb_fast_api.service.notification.testings import mock_notification_provider as mnp
 
 

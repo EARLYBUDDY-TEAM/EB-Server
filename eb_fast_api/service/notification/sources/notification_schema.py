@@ -62,6 +62,10 @@ class NotificationSchedule:
             return None
 
         my_noti_time = eb_datetime.get_only_time(noti_time)
+        now_time = eb_datetime.get_only_time(now)
+        if my_noti_time < now_time:
+            return None
+
         return my_noti_time
 
     def __lt__(self, other):
@@ -76,15 +80,15 @@ class NotificationSchedule:
     @classmethod
     def mock(
         cls,
-        schedule_remain_time: int = 10,
+        schedule_remain_time: int = 0,
+        schedule_time: datetime = eb_datetime.get_datetime_now(),
     ) -> Self:
         id = str(uuid4())
         user_email = "test@test.com"
         schedule_name = "schedule_name"
         schedule_remain_time = schedule_remain_time
-        now = eb_datetime.get_datetime_now()
         noti_time = eb_datetime.get_only_time(
-            now + timedelta(minutes=schedule_remain_time)
+            schedule_time - timedelta(minutes=schedule_remain_time)
         )
 
         return NotificationSchedule(

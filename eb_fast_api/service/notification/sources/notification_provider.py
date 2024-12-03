@@ -2,9 +2,9 @@ import heapq
 from eb_fast_api.service.notification.sources.notification_schema import (
     NotificationSchedule,
 )
-from typing import List, Optional
+from typing import List
 from eb_fast_api.snippets.sources import eb_datetime
-
+from datetime import datetime
 
 ### 오늘 날짜 일정만 추가 ###
 
@@ -44,19 +44,24 @@ class NotificationScheduleProvider:
     ):
         self.__add(noti_schedule)
 
-    def get_schedule(self) -> Optional[NotificationSchedule]:
-        if not self.data:
-            return None
-
-        cur_noti_schedule = self.pop()
-        now = eb_datetime.get_datetime_now()
+    def get_schedule(
+        self,
+        now: datetime = eb_datetime.get_datetime_now(),
+    ) -> List[NotificationSchedule]:
+        noti_schedule_list = []
         now_time = eb_datetime.get_only_time(now)
 
-        if now_time == cur_noti_schedule.noti_time:
-            return cur_noti_schedule
-        else:
-            self.__add(cur_noti_schedule)
-            return None
+        while self.data:
+            cur_noti_schedule = self.pop()
+            noti_time = cur_noti_schedule.noti_time
+
+            if now_time == noti_time:
+                noti_schedule_list.append(cur_noti_schedule)
+            elif now_time < noti_time:
+                self.__add(cur_noti_schedule)
+                break
+
+        return noti_schedule_list
 
 
 noti_schedule_provider = NotificationScheduleProvider()

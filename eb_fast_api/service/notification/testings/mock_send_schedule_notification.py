@@ -6,10 +6,6 @@ from typing import Optional
 from eb_fast_api.database.sources.crud.cruds import UserCRUD
 
 
-test_ios_token = "fkefvhXsAUMBiwaUoNZCCE:APA91bGi0oyAwI1Qx4AklaeqHiFawy2v5tH4m_8TRfe56cUcCAjLbLMT2sbcqSglp_Hx1suYoDj84C_E6voCiffgqVliOjNw71GbeO4261PkP4QjU9hnLI0"
-test_android_token = "fkefvhXsAUMBiwaUoNZCCE:APA91bGi0oyAwI1Qx4AklaeqHiFawy2v5tH4m_8TRfe56cUcCAjLbLMT2sbcqSglp_Hx1suYoDj84C_E6voCiffgqVliOjNw71GbeO4261PkP4QjU9hnLI0"
-
-
 def patcher_send_notification():
     def mock_send_notification(
         fcm_token: str,
