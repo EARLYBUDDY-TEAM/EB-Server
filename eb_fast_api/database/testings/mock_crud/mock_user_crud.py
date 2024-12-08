@@ -7,6 +7,27 @@ from eb_fast_api.database.sources.crud.user_crud import UserCRUD
 mock_user_dict = User.mock().to_dict()
 
 
+def patcher_update():
+    def mock_def_update(
+        self,
+        key_email: str,
+        nickName: Optional[str] = None,
+        hashedPassword: Optional[str] = None,
+        refreshToken: Optional[str] = None,
+        fcm_token: Optional[str] = None,
+    ):
+        print("mock user_crud.update !!!")
+        return
+
+    patcher = patch.object(
+        UserCRUD,
+        "update",
+        new=mock_def_update,
+    )
+
+    return patcher
+
+
 def patch_user_crud_read_FAIL():
     def mock_def_user_crud_read_FAIL(
         self,

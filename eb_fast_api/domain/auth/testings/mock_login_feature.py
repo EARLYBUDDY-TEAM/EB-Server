@@ -7,11 +7,12 @@ from eb_fast_api.domain.schema.sources.schemas import TokenInfo
 
 def patch_check_password_SUCCESS():
     mock_user = dict()
-    patch.object(
+    patcher = patch.object(
         login_feature,
         "check_password",
         return_value=mock_user,
-    ).start()
+    )
+    return patcher
 
 
 def patch_check_password_FAIL():
@@ -21,20 +22,22 @@ def patch_check_password_FAIL():
     ):
         raise Exception("유저정보가 없습니다.")
 
-    patch.object(
+    patcher = patch.object(
         login_feature,
         "check_password",
         new=raise_exception,
-    ).start()
+    )
+    return patcher
 
 
 def patch_create_auth_token_SUCCESS():
     mock_token_info = TokenInfo.mock()
-    patch.object(
+    patcher = patch.object(
         login_feature,
         "create_auth_token",
         return_value=mock_token_info,
-    ).start()
+    )
+    return patcher
 
 
 def patch_update_tokens_FAIL():
@@ -45,8 +48,9 @@ def patch_update_tokens_FAIL():
     ):
         raise Exception("토큰 업데이트에 실패했습니다.")
 
-    patch.object(
+    patcher = patch.object(
         login_feature,
         "update_tokens",
         new=raise_exception,
-    ).start()
+    )
+    return patcher

@@ -1,9 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.domain.schema.sources.schemas import TokenInfo, LoginInfo, RegisterInfo
+from eb_fast_api.domain.auth.sources.auth_schema import ChangePasswordInfo
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
-from eb_fast_api.domain.auth.sources.auth_feature import login_feature
-from eb_fast_api.domain.auth.sources.auth_feature import register_feature
+from eb_fast_api.domain.auth.sources.auth_feature import (
+    login_feature,
+    register_feature,
+    change_password_feature,
+)
 
 
 router = APIRouter(prefix="/auth")
@@ -67,4 +71,30 @@ def register(
         raise HTTPException(
             status_code=401,
             detail=str(e),
+        )
+
+
+@router.post("/change_password")
+def change_password(
+    register_info: ChangePasswordInfo,
+    user_crud=Depends(EBDataBase.user.getCRUD),
+):
+    password = register_info.password
+    if not change_password_feature.isValidPassword(password=password):
+        raise HTTPException(
+            status_code=400,
+            detail="비밀번호가 올바르지 않습니다.",
+        )
+
+    try:
+        change_password_feature.update_pwd(
+            email=register_info.email,
+            password=password,
+            user_crud=user_crud,
+        )
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=401,
+            detail="비밀번호 변경에 실패했습니다.",
         )
