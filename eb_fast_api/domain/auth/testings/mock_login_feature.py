@@ -1,5 +1,5 @@
 from unittest.mock import patch
-from eb_fast_api.domain.auth.login.sources import login_feature
+from eb_fast_api.domain.auth.sources.auth_feature import login_feature
 from eb_fast_api.database.sources.crud.user_crud import UserCRUD
 from eb_fast_api.domain.schema.sources.login_info import LoginInfo
 from eb_fast_api.domain.schema.sources.schemas import TokenInfo

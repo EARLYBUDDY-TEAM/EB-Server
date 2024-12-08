@@ -1,4 +1,4 @@
-from eb_fast_api.domain.auth.login.sources import login_feature
+from eb_fast_api.domain.auth.sources.auth_feature import login_feature
 from eb_fast_api.database.testings.mock_crud.mock_user_crud import (
     patch_user_crud_read_SUCCESS,
     patch_user_crud_read_FAIL,
@@ -16,10 +16,9 @@ from eb_fast_api.service.jwt.testings.mock_jwt_service import (
     mock_token,
 )
 from eb_fast_api.service.jwt.sources.jwt_service import jwtService
-from eb_fast_api.database.sources.model.models import User
 
 
-def test_check_password_FAIL_No_User(loginMockUserCRUD):
+def test_check_password_FAIL_No_User(authMockUserCRUD):
     # given
     patcher = patch_user_crud_read_FAIL()
     patcher.start()
@@ -28,7 +27,7 @@ def test_check_password_FAIL_No_User(loginMockUserCRUD):
     # when, then
     try:
         login_feature.check_password(
-            user_crud=loginMockUserCRUD,
+            user_crud=authMockUserCRUD,
             login_info=mock_login_info,
         )
     except Exception as e:
@@ -37,7 +36,7 @@ def test_check_password_FAIL_No_User(loginMockUserCRUD):
         patcher.stop()
 
 
-def test_check_password_FAIL_Wrong_Password(loginMockUserCRUD):
+def test_check_password_FAIL_Wrong_Password(authMockUserCRUD):
     # given
     patcher_user_crud = patch_user_crud_read_SUCCESS()
     patcher_user_crud.start()
@@ -48,7 +47,7 @@ def test_check_password_FAIL_Wrong_Password(loginMockUserCRUD):
     # when, then
     try:
         login_feature.check_password(
-            user_crud=loginMockUserCRUD,
+            user_crud=authMockUserCRUD,
             login_info=mock_login_info,
         )
     except Exception as e:
@@ -58,7 +57,7 @@ def test_check_password_FAIL_Wrong_Password(loginMockUserCRUD):
         patcher_pwdcrypt.stop()
 
 
-def test_check_password_SUCCESS(loginMockUserCRUD):
+def test_check_password_SUCCESS(authMockUserCRUD):
     # given
     patcher_user_crud = patch_user_crud_read_SUCCESS()
     patcher_user_crud.start()
@@ -69,7 +68,7 @@ def test_check_password_SUCCESS(loginMockUserCRUD):
     # when, then
     try:
         expect_user = login_feature.check_password(
-            user_crud=loginMockUserCRUD,
+            user_crud=authMockUserCRUD,
             login_info=mock_login_info,
         )
         assert expect_user == mock_user_dict

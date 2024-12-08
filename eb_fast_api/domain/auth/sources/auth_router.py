@@ -1,14 +1,15 @@
 from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.database.sources.database import EBDataBase
-from eb_fast_api.domain.schema.sources.schemas import TokenInfo, LoginInfo
+from eb_fast_api.domain.schema.sources.schemas import TokenInfo, LoginInfo, RegisterInfo
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
-from eb_fast_api.domain.auth.login.sources import login_feature
+from eb_fast_api.domain.auth.sources.auth_feature import login_feature
+from eb_fast_api.domain.auth.sources.auth_feature import register_feature
 
 
-router = APIRouter(prefix="/auth/login")
+router = APIRouter(prefix="/auth")
 
 
-@router.post("")
+@router.post("/login")
 def login(
     loginInfo: LoginInfo,
     userCRUD=Depends(EBDataBase.user.getCRUD),
@@ -43,4 +44,27 @@ def login(
         raise HTTPException(
             status_code=401,
             detail="토큰 업데이트에 실패했습니다.",
+        )
+
+
+@router.post("/register")
+def register(
+    registerInfo: RegisterInfo,
+    userCRUD=Depends(EBDataBase.user.getCRUD),
+):
+    if not register_feature.isValidRegisterInfo(registerInfo):
+        raise HTTPException(
+            status_code=400,
+            detail="유저 정보가 올바르지 않습니다.",
+        )
+
+    try:
+        register_feature.createUser(
+            registerInfo=registerInfo,
+            userCRUD=userCRUD,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=401,
+            detail=str(e),
         )

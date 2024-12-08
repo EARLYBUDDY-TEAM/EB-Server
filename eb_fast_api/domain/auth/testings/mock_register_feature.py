@@ -2,7 +2,7 @@ from unittest.mock import patch
 from email_validator import validate_email
 from eb_fast_api.domain.schema.sources.schemas import RegisterInfo
 from eb_fast_api.database.sources.crud.user_crud import UserCRUD
-from eb_fast_api.domain.auth.register.sources import register_feature
+from eb_fast_api.domain.auth.sources.auth_feature import register_feature
 
 
 def patch_isValidRegisterInfo(isSuccess: bool):

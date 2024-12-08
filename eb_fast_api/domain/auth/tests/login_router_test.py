@@ -1,5 +1,5 @@
 from eb_fast_api.domain.schema.sources.schemas import LoginInfo
-from eb_fast_api.domain.auth.login.testings import mock_login_feature
+from eb_fast_api.domain.auth.testings import mock_login_feature
 
 
 def test_login_ERROR_check_password(testClient):

@@ -1,5 +1,5 @@
 from eb_fast_api.domain.schema.sources.schemas import RegisterInfo
-from eb_fast_api.domain.auth.register.testings import mock_register_feature
+from eb_fast_api.domain.auth.testings import mock_register_feature
 
 
 def test_register_FAIL_invalid_register_info(testClient):

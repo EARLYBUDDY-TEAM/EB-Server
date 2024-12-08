@@ -14,32 +14,32 @@ from eb_fast_api.service.jwt.tests.conftest import mockJWTService
 
 
 @pytest.fixture(scope="function")
-def loginMockUserCRUD(mockUserCRUD):
+def authMockUserCRUD(mockUserCRUD):
     yield mockUserCRUD
 
 
 @pytest.fixture(scope="function")
-def loginMockScheduleCRUD(mockScheduleCRUD):
+def authMockScheduleCRUD(mockScheduleCRUD):
     yield mockScheduleCRUD
 
 
 @pytest.fixture(scope="function")
-def loginMockPathCRUD(mockPathCRUD):
+def authMockPathCRUD(mockPathCRUD):
     yield mockPathCRUD
 
 
 @pytest.fixture(scope="function")
-def loginMockJWTService(mockJWTService):
+def authMockJWTService(mockJWTService):
     yield mockJWTService
 
 
 @pytest.fixture(scope="function")
-def testClient(loginMockUserCRUD, loginMockJWTService):
+def testClient(authMockUserCRUD, authMockJWTService):
     def getMockUserCRUD():
-        yield loginMockUserCRUD
+        yield authMockUserCRUD
 
     def getMockJWTService():
-        yield loginMockJWTService
+        yield authMockJWTService
 
     app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
     app.dependency_overrides[getJWTService] = getMockJWTService

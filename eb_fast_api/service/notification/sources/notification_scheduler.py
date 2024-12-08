@@ -16,7 +16,6 @@ def add_job_send_schedule_notification(
         lambda: send_schedule_notification(),
         "interval",
         minutes=1,
-        # seconds=10,
     )
 
 
