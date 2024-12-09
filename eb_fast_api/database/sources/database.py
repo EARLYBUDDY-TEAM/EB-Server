@@ -211,10 +211,10 @@ class EBDataBase(Enum):
         session = sessionMaker()
         user_email = EBDataBase.__create_test_user(session=session)
 
-        EBDataBase.__create_dummy_data(
-            session=session,
-            user_email=user_email,
-        )
+        # EBDataBase.__create_dummy_data(
+        #     session=session,
+        #     user_email=user_email,
+        # )
 
         session.commit()
         session.close()

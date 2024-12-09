@@ -8,10 +8,17 @@ from eb_fast_api.database.tests.conftest import (
     mockPlaceCRUD,
     prepareTestDataBase,
     mockPathCRUD,
+    mockEngine,
+    mockUser,
 )
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
 from eb_fast_api.database.sources.database import EBDataBase
+
+
+@pytest.fixture(scope="function")
+def schedule_MockUser(mockUser):
+    yield mockUser
 
 
 @pytest.fixture(scope="function")

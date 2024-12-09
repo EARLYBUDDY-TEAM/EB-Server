@@ -138,3 +138,9 @@ def test_change_password_SUCCESS(testClient):
     assert response.status_code == 200
     patcher_isValidPassword.stop()
     patcher_update_pwd.stop()
+
+
+def test_remove_user_SUCCESS(testClient):
+
+    # given
+    pass

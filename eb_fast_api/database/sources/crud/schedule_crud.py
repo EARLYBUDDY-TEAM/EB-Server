@@ -2,6 +2,7 @@ from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.model.models import Schedule, Base
 from typing import List
 from sqlalchemy import desc, asc
+from sqlalchemy.engine import Engine
 
 
 class ScheduleCRUD(BaseCRUD):
@@ -80,14 +81,15 @@ class ScheduleCRUD(BaseCRUD):
         self.session.flush()
 
     ### Caution !!! Session Close ###
+    @classmethod
     def dropTable(
-        self,
-        userEmail: str,
+        cls,
+        user_email: str,
+        engine: Engine,
     ):
-        self.session.close()
         scheduleTable = Schedule.getTable(
-            email=userEmail,
-            engine=self.engine(),
+            email=user_email,
+            engine=engine,
         )
         Base.metadata.remove(scheduleTable)
-        scheduleTable.drop(bind=self.engine())
+        scheduleTable.drop(bind=engine)

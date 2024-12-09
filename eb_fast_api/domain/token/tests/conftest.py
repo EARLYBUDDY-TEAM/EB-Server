@@ -9,6 +9,7 @@ from eb_fast_api.database.tests.conftest import (
     mockUserCRUD,
     mockScheduleCRUD,
     mockPathCRUD,
+    mockEngine,
 )
 from eb_fast_api.database.sources.crud.cruds import UserCRUD
 

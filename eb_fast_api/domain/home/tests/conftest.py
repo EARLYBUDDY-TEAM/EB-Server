@@ -5,8 +5,15 @@ from eb_fast_api.database.tests.conftest import (
     mockPlaceCRUD,
     mockSession,
     mockPathCRUD,
+    mockEngine,
     prepareTestDataBase,
+    mockUser,
 )
+
+
+@pytest.fixture(scope="function")
+def home_MockUser(mockUser):
+    yield mockUser
 
 
 @pytest.fixture(scope="function")

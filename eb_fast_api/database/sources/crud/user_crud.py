@@ -60,3 +60,10 @@ class UserCRUD(BaseCRUD):
 
         user_own_fcm_token.fcm_token = None
         self.session.flush()
+
+    def delete(self, email: str):
+        self.session.query(User).filter(User.email == email).delete()
+        
+
+
+        self.session.flush()

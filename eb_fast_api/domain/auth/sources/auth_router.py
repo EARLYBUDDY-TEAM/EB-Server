@@ -7,6 +7,7 @@ from eb_fast_api.domain.auth.sources.auth_feature import (
     login_feature,
     register_feature,
     change_password_feature,
+    remove_user_feature,
 )
 
 
@@ -97,4 +98,22 @@ def change_password(
         raise HTTPException(
             status_code=401,
             detail="비밀번호 변경에 실패했습니다.",
+        )
+
+
+@router.post("/remove_user")
+def remove_user(
+    email: str,
+    session=Depends(EBDataBase.get_session),
+):
+    try:
+        remove_user_feature.remove_all_user_data(
+            email=email,
+            session=session,
+        )
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=400,
+            detail="유저 삭제에 실패했습니다.",
         )

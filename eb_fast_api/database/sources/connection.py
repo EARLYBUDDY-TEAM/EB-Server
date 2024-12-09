@@ -13,6 +13,7 @@ def createEngine(
     DB_URL = f"mysql+pymysql://{user}:{pwd}@{host}:{port}/{db}"
     engine = create_engine(
         DB_URL,
+        pool_pre_ping=True,
         # echo=True,
     )
     return engine
