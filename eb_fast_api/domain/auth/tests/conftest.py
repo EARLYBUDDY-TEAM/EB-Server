@@ -12,6 +12,8 @@ from eb_fast_api.database.tests.conftest import (
 )
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
 from eb_fast_api.service.jwt.tests.conftest import mockJWTService
+from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
+from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 
 
 @pytest.fixture(scope="function")
@@ -49,6 +51,7 @@ def testClient(authMockUserCRUD, authMockJWTService):
 
     app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
     app.dependency_overrides[getJWTService] = getMockJWTService
+    app.dependency_overrides[getUserEmail] = mockGetUserEmail
 
     testClient = TestClient(app)
 
@@ -56,4 +59,5 @@ def testClient(authMockUserCRUD, authMockJWTService):
 
     del app.dependency_overrides[EBDataBase.user.getCRUD]
     del app.dependency_overrides[getJWTService]
+    del app.dependency_overrides[getUserEmail]
     del testClient

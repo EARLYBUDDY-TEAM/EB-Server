@@ -10,8 +10,7 @@ from eb_fast_api.database.testings.mock_connection import (
 )
 from eb_fast_api.database.sources.connection import checkConnection
 from eb_fast_api.database.sources.database import EBDataBase
-from eb_fast_api.database.sources.model.models import Base, User
-from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PathCRUD
+from eb_fast_api.database.sources.model.models import Base, User, Schedule, Path
 from sqlalchemy import Engine
 
 
@@ -21,7 +20,7 @@ my_mock_user = User.mock()
 def dropTable(engine: Engine):
     try:
         print("Start Drop Schedule Table")
-        ScheduleCRUD.dropTable(
+        Schedule.dropTable(
             user_email=my_mock_user.email,
             engine=engine,
         )
@@ -31,7 +30,7 @@ def dropTable(engine: Engine):
 
     try:
         print("Start Drop Path Table")
-        PathCRUD.dropTable(
+        Path.dropTable(
             user_email=my_mock_user.email,
             engine=engine,
         )

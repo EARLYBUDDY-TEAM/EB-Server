@@ -5,6 +5,7 @@ from eb_fast_api.domain.auth.testings import (
     mock_register_feature,
     mock_change_password_feature,
 )
+from eb_fast_api.database.testings.mock_crud import mock_user_crud
 
 
 def test_login_ERROR_check_password(testClient):
@@ -141,6 +142,36 @@ def test_change_password_SUCCESS(testClient):
 
 
 def test_remove_user_SUCCESS(testClient):
-
     # given
-    pass
+    patcher_delete = mock_user_crud.patcher_delete_SUCCESS()
+    patcher_delete.start()
+
+    # when
+    path = "/auth/remove_user"
+    headers = {"access_token": "access_token"}
+    response = testClient.post(
+        path,
+        headers=headers,
+    )
+
+    # then
+    assert response.status_code == 200
+    patcher_delete.stop()
+
+
+def test_remove_user_FAIL_delete(testClient):
+    # given
+    patcher_delete = mock_user_crud.patcher_delete_FAIL()
+    patcher_delete.start()
+
+    # when
+    path = "/auth/remove_user"
+    headers = {"access_token": "access_token"}
+    response = testClient.post(
+        path,
+        headers=headers,
+    )
+
+    # then
+    assert response.status_code == 400
+    patcher_delete.stop()

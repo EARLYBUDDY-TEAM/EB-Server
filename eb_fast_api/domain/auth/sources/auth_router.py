@@ -7,8 +7,8 @@ from eb_fast_api.domain.auth.sources.auth_feature import (
     login_feature,
     register_feature,
     change_password_feature,
-    remove_user_feature,
 )
+from eb_fast_api.domain.token.sources.token_feature import getUserEmail
 
 
 router = APIRouter(prefix="/auth")
@@ -103,14 +103,11 @@ def change_password(
 
 @router.post("/remove_user")
 def remove_user(
-    email: str,
-    session=Depends(EBDataBase.get_session),
+    user_email=Depends(getUserEmail),
+    user_crud=Depends(EBDataBase.user.getCRUD),
 ):
     try:
-        remove_user_feature.remove_all_user_data(
-            email=email,
-            session=session,
-        )
+        user_crud.delete(email=user_email)
     except Exception as e:
         print(e)
         raise HTTPException(

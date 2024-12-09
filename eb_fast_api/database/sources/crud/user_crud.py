@@ -1,6 +1,8 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.model.models import User, Schedule, Path
 from typing import Optional, List
+from sqlalchemy import Engine
+from eb_fast_api.database.sources import connection
 
 
 class UserCRUD(BaseCRUD):
@@ -61,9 +63,15 @@ class UserCRUD(BaseCRUD):
         user_own_fcm_token.fcm_token = None
         self.session.flush()
 
-    def delete(self, email: str):
+    ### Caution !!! Session Close ###
+    def delete(
+        self,
+        email: str,
+        engine: Engine = connection.engine,
+    ):
         self.session.query(User).filter(User.email == email).delete()
-        
+        self.session.commit()
+        self.session.close()
 
-
-        self.session.flush()
+        Schedule.dropTable(user_email=email, engine=engine,)
+        Path.dropTable(user_email=email, engine=engine,)

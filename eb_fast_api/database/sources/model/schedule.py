@@ -4,9 +4,9 @@ from sqlalchemy.schema import Table, MetaData
 from typing import Optional, Self
 from datetime import datetime
 from eb_fast_api.database.sources.model.base_model import Base
-from eb_fast_api.database.sources.connection import engine
+from eb_fast_api.database.sources import connection
 from uuid import uuid4
-from eb_fast_api.snippets.testings.mock_eb_datetime import mock_now 
+from eb_fast_api.snippets.testings.mock_eb_datetime import mock_now
 
 
 class Schedule:
@@ -71,7 +71,7 @@ class Schedule:
     def getTable(
         cls,
         email: str,
-        engine: Engine = engine,
+        engine: Engine = connection.engine,
     ) -> Table:
         scheduleTableName = Schedule.getTableName(email)
         scheduleMetaData = MetaData()
@@ -96,6 +96,20 @@ class Schedule:
                 return cls.__table__.name
 
         return MixinSchedule
+
+    ### Caution !!! Must Use After Session Close !!! ###
+    @classmethod
+    def dropTable(
+        cls,
+        user_email: str,
+        engine: Engine = connection.engine,
+    ):
+        scheduleTable = Schedule.getTable(
+            email=user_email,
+            engine=engine,
+        )
+        Base.metadata.remove(scheduleTable)
+        scheduleTable.drop(bind=engine)
 
     def to_dict(self, id: Optional[str] = None) -> dict:
         return {

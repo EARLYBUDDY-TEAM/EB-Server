@@ -1,7 +1,6 @@
 from typing import Optional
-from sqlalchemy.engine import Engine
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
-from eb_fast_api.database.sources.model.models import Path, Base
+from eb_fast_api.database.sources.model.models import Path
 
 
 class PathCRUD(BaseCRUD):
@@ -66,18 +65,3 @@ class PathCRUD(BaseCRUD):
         stmt = path_table.delete().where(path_table.c.id == path_id)
         self.session.execute(stmt)
         self.session.flush()
-
-    ### Caution !!! Session Close ###
-    @classmethod
-    def dropTable(
-        cls,
-        user_email: str,
-        engine: Engine,
-    ):
-        path_table = Path.getTable(
-            email=user_email,
-            engine=engine,
-        )
-        Base.metadata.remove(path_table)
-        path_table.drop(bind=engine)
-

@@ -7,6 +7,38 @@ from eb_fast_api.database.sources.crud.user_crud import UserCRUD
 mock_user_dict = User.mock().to_dict()
 
 
+def patcher_delete_SUCCESS():
+    def mock_def_delete(
+        self,
+        email: str,
+    ):
+        return
+
+    patcher = patch.object(
+        UserCRUD,
+        "delete",
+        new=mock_def_delete,
+    )
+
+    return patcher
+
+
+def patcher_delete_FAIL():
+    def mock_def_delete(
+        self,
+        email: str,
+    ):
+        raise Exception("mock delete FAIL")
+
+    patcher = patch.object(
+        UserCRUD,
+        "delete",
+        new=mock_def_delete,
+    )
+
+    return patcher
+
+
 def patcher_update():
     def mock_def_update(
         self,

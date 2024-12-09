@@ -1,6 +1,5 @@
 from eb_fast_api.database.sources.model.models import User, Schedule, Path
 from sqlalchemy import inspect
-from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PathCRUD
 
 
 def test_user_read_and_create(
@@ -45,19 +44,19 @@ def test_user_read_and_create(
 
     # delete schedule, path table
     finally:
-        ScheduleCRUD.dropTable(
+        Schedule.dropTable(
             engine=mockEngine,
             user_email=first_user.email,
         )
-        PathCRUD.dropTable(
+        Path.dropTable(
             engine=mockEngine,
             user_email=first_user.email,
         )
-        ScheduleCRUD.dropTable(
+        Schedule.dropTable(
             engine=mockEngine,
             user_email=second_user.email,
         )
-        PathCRUD.dropTable(
+        Path.dropTable(
             engine=mockEngine,
             user_email=second_user.email,
         )
@@ -103,19 +102,19 @@ def test_user_update_two_user(
 
     # delete schedule, path table
     finally:
-        ScheduleCRUD.dropTable(
+        Schedule.dropTable(
             engine=mockEngine,
             user_email=first_user.email,
         )
-        PathCRUD.dropTable(
+        Path.dropTable(
             engine=mockEngine,
             user_email=first_user.email,
         )
-        ScheduleCRUD.dropTable(
+        Schedule.dropTable(
             engine=mockEngine,
             user_email=second_user.email,
         )
-        PathCRUD.dropTable(
+        Path.dropTable(
             engine=mockEngine,
             user_email=second_user.email,
         )
@@ -169,19 +168,19 @@ def test_user_get_all_user(
 
     # delete schedule, path table
     finally:
-        ScheduleCRUD.dropTable(
+        Schedule.dropTable(
             engine=mockEngine,
             user_email=first_user.email,
         )
-        PathCRUD.dropTable(
+        Path.dropTable(
             engine=mockEngine,
             user_email=first_user.email,
         )
-        ScheduleCRUD.dropTable(
+        Schedule.dropTable(
             engine=mockEngine,
             user_email=second_user.email,
         )
-        PathCRUD.dropTable(
+        Path.dropTable(
             engine=mockEngine,
             user_email=second_user.email,
         )
@@ -191,13 +190,24 @@ def test_user_delete(
     mockUser,
     mockUserCRUD,
     mockSession,
+    mockEngine,
 ):
     # given
     userCount1 = mockSession.query(User).count()
+    scheduleTableName = Schedule.getTableName(email=mockUser.email)
+    assert True == inspect(mockEngine).has_table(table_name=scheduleTableName)
+    pathTableName = Path.getTableName(email=mockUser.email)
+    assert True == inspect(mockEngine).has_table(table_name=pathTableName)
 
     # when
-    mockUserCRUD.delete(email=mockUser.email)
+    mockUserCRUD.delete(
+        email=mockUser.email,
+        engine=mockEngine,
+    )
 
     # then
     userCount0 = mockSession.query(User).count()
     assert userCount1 - userCount0 == 1
+
+    assert False == inspect(mockEngine).has_table(table_name=scheduleTableName)
+    assert False == inspect(mockEngine).has_table(table_name=pathTableName)
