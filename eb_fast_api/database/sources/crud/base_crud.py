@@ -4,12 +4,15 @@ from sqlalchemy import Engine
 
 class BaseCRUD:
     session: Session
+    engine: Engine
 
-    def __init__(self, session: Session):
+    def __init__(
+        self,
+        session: Session,
+        engine: Engine,
+    ):
         self.session = session
-
-    def engine(self) -> Engine:
-        return self.session.get_bind()
+        self.engine = engine
 
     def rollback(self):
         self.session.rollback()

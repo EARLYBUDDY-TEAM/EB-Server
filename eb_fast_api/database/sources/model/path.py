@@ -58,6 +58,7 @@ class Path:
 
         class MixinPath(Path, Base):
             __tablename__ = tableName
+            __table_args__ = {"extend_existing": True}
 
             @classmethod
             def getTableName(cls) -> str:

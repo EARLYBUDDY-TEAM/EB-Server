@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import Engine
 from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo, PathInfo
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.domain.schedule.sources.schedule_feature.create.create_schedule import (
@@ -9,11 +10,15 @@ from typing import Optional
 
 def update_path(
     session: Session,
+    engine: Engine,
     user_email: str,
     path_id: str,
     path_info: Optional[PathInfo],
 ):
-    path_crud = EBDataBase.path.createCRUD(session=session)
+    path_crud = EBDataBase.path.createCRUD(
+        session=session,
+        engine=engine,
+    )
     if path_info == None:
         path_crud.delete(
             user_email=user_email,
@@ -40,11 +45,15 @@ def update_path(
 
 def update_my_schedule(
     session: Session,
+    engine: Engine,
     user_email: str,
     schedule_info: ScheduleInfo,
 ) -> str:
     to_update_schedule = schedule_info.toSchedule()
-    schedule_crud = EBDataBase.schedule.createCRUD(session=session)
+    schedule_crud = EBDataBase.schedule.createCRUD(
+        session=session,
+        engine=engine,
+    )
     schedule_crud.update(
         userEmail=user_email,
         to_update_schedule=to_update_schedule,
@@ -54,30 +63,35 @@ def update_my_schedule(
 
 def update_schedule(
     session: Session,
-    userEmail: str,
-    scheduleInfo: ScheduleInfo,
-    pathInfo: Optional[PathInfo],
+    engine: Engine,
+    user_email: str,
+    schedule_info: ScheduleInfo,
+    path_info: Optional[PathInfo],
 ):
     create_place(
         session=session,
-        place_info=scheduleInfo.startPlaceInfo,
+        engine=engine,
+        place_info=schedule_info.startPlaceInfo,
     )
     create_place(
         session=session,
-        place_info=scheduleInfo.endPlaceInfo,
+        engine=engine,
+        place_info=schedule_info.endPlaceInfo,
     )
 
     schedule_id = update_my_schedule(
         session=session,
-        user_email=userEmail,
-        schedule_info=scheduleInfo,
+        engine=engine,
+        user_email=user_email,
+        schedule_info=schedule_info,
     )
 
     update_path(
         session=session,
-        user_email=userEmail,
+        engine=engine,
+        user_email=user_email,
         path_id=schedule_id,
-        path_info=pathInfo,
+        path_info=path_info,
     )
 
     session.commit()

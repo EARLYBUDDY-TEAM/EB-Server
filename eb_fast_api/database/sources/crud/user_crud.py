@@ -1,16 +1,17 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.model.models import User, Schedule, Path
 from typing import Optional, List
-from sqlalchemy import Engine
-from eb_fast_api.database.sources import connection
 
 
 class UserCRUD(BaseCRUD):
-    def create(self, user: User):
+    def create(
+        self,
+        user: User,
+    ):
         mixinSchedule = Schedule.createMixinSchedule(email=user.email)
-        mixinSchedule.__table__.create(bind=self.engine())
+        mixinSchedule.__table__.create(bind=self.engine)
         mixinPath = Path.createMixinPath(email=user.email)
-        mixinPath.__table__.create(bind=self.engine())
+        mixinPath.__table__.create(bind=self.engine)
 
         self.__delete_exist_fcm_token(fcm_token=user.fcm_token)
         self.session.add(user)
@@ -67,11 +68,16 @@ class UserCRUD(BaseCRUD):
     def delete(
         self,
         email: str,
-        engine: Engine = connection.engine,
     ):
         self.session.query(User).filter(User.email == email).delete()
         self.session.commit()
         self.session.close()
 
-        Schedule.dropTable(user_email=email, engine=engine,)
-        Path.dropTable(user_email=email, engine=engine,)
+        Schedule.dropTable(
+            user_email=email,
+            engine=self.engine,
+        )
+        Path.dropTable(
+            user_email=email,
+            engine=self.engine,
+        )

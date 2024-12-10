@@ -11,6 +11,7 @@ from uuid import uuid4
 def test_read_all_schedule(
     home_MockUser,
     home_MockSession,
+    home_MockEngine,
     home_MockScheduleCRUD,
 ):
     schedule1 = Schedule.mock(title="mock1")
@@ -33,6 +34,7 @@ def test_read_all_schedule(
     fetched_schedule_dict_list = home_feature.read_all_schedule(
         session=home_MockSession,
         userEmail=home_MockUser.email,
+        engine=home_MockEngine,
     )
 
     # then
@@ -41,6 +43,7 @@ def test_read_all_schedule(
 
 def test_get_placeinfo_from_id_When_PlaceID_is_None(
     home_MockSession,
+    home_MockEngine,
 ):
     # given
     placeID = None
@@ -48,6 +51,7 @@ def test_get_placeinfo_from_id_When_PlaceID_is_None(
     # when
     placeInfo = home_feature.get_placeinfo_from_id(
         session=home_MockSession,
+        engine=home_MockEngine,
         placeID=placeID,
     )
 
@@ -57,6 +61,7 @@ def test_get_placeinfo_from_id_When_PlaceID_is_None(
 
 def test_get_placeinfo_from_id_When_No_Place_Data(
     home_MockSession,
+    home_MockEngine,
 ):
     # given
     placeID = "placeID"
@@ -64,6 +69,7 @@ def test_get_placeinfo_from_id_When_No_Place_Data(
     # when
     placeInfo = home_feature.get_placeinfo_from_id(
         session=home_MockSession,
+        engine=home_MockEngine,
         placeID=placeID,
     )
 
@@ -74,6 +80,7 @@ def test_get_placeinfo_from_id_When_No_Place_Data(
 def test_get_placeinfo_from_id_SUCCESS(
     home_MockPlaceCRUD,
     home_MockSession,
+    home_MockEngine,
 ):
     # given
     placeID = "placeID"
@@ -83,6 +90,7 @@ def test_get_placeinfo_from_id_SUCCESS(
     # when
     placeInfo = home_feature.get_placeinfo_from_id(
         session=home_MockSession,
+        engine=home_MockEngine,
         placeID=placeID,
     )
 
@@ -93,6 +101,7 @@ def test_get_placeinfo_from_id_SUCCESS(
 
 def test_get_schedule_info_from_dict(
     home_MockSession,
+    home_MockEngine,
 ):
     # given
     schedule_id = str(uuid4())
@@ -103,6 +112,7 @@ def test_get_schedule_info_from_dict(
     # when
     scheduleInfo = home_feature.get_schedule_info_from_dict(
         session=home_MockSession,
+        engine=home_MockEngine,
         schedule_dict=mockSchedule.to_dict(),
     )
 
@@ -125,6 +135,7 @@ def test_get_schedule_info_from_dict(
 def test_get_path_info(
     home_MockUser,
     home_MockSession,
+    home_MockEngine,
     home_MockPathCRUD,
 ):
     path_info = PathInfo.mock()
@@ -137,6 +148,7 @@ def test_get_path_info(
         session=home_MockSession,
         user_email=home_MockUser.email,
         schedule_id=schedule_id,
+        engine=home_MockEngine,
     )
 
     # then

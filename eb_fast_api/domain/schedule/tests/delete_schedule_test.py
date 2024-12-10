@@ -11,6 +11,7 @@ def test_delete_schedule(
     schedule_MockSession,
     schedule_MockScheduleCRUD,
     schedule_MockPathCRUD,
+    schedule_MockEngine,
 ):
     path_info = PathInfo.mock()
     schedule_id = str(uuid4())
@@ -28,6 +29,7 @@ def test_delete_schedule(
     # when
     delete_schedule(
         session=schedule_MockSession,
+        engine=schedule_MockEngine,
         user_email=schedule_MockUser.email,
         schedule_id=schedule_id,
     )

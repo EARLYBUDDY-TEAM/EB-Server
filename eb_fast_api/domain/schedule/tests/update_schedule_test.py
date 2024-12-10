@@ -11,6 +11,7 @@ from uuid import uuid4
 def test_update_schedule(
     schedule_MockUser,
     schedule_MockSession,
+    schedule_MockEngine,
     schedule_MockScheduleCRUD,
 ):
     # create schedule
@@ -37,6 +38,7 @@ def test_update_schedule(
     to_update.endPlaceInfo.id = "test_end_id"
 
     update_my_schedule(
+        engine=schedule_MockEngine,
         session=schedule_MockSession,
         user_email=schedule_MockUser.email,
         schedule_info=to_update,

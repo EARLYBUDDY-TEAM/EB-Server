@@ -35,8 +35,6 @@ def test_user_read_and_create(
         assert user_own_fcm_token_count == 1
 
         # assert dict check..
-
-        mockEngine = mockSession.get_bind()
         scheduleTableName = Schedule.getTableName(email=first_user.email)
         assert True == inspect(mockEngine).has_table(table_name=scheduleTableName)
         routeTableName = Path.getTableName(email=first_user.email)
@@ -200,10 +198,7 @@ def test_user_delete(
     assert True == inspect(mockEngine).has_table(table_name=pathTableName)
 
     # when
-    mockUserCRUD.delete(
-        email=mockUser.email,
-        engine=mockEngine,
-    )
+    mockUserCRUD.delete(email=mockUser.email)
 
     # then
     userCount0 = mockSession.query(User).count()

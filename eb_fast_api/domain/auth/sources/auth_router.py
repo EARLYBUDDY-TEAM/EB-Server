@@ -57,12 +57,20 @@ def register(
     registerInfo: RegisterInfo,
     userCRUD=Depends(EBDataBase.user.getCRUD),
 ):
-    if not register_feature.isValidRegisterInfo(registerInfo):
+    tmpUser = userCRUD.read(registerInfo.email)
+    if tmpUser:
+        raise HTTPException(
+            status_code=402,
+            detail="이미 존재하는 사용자입니다.",
+        )
+
+    if not register_feature.isValidRegisterInfo(
+        registerInfo=registerInfo,
+    ):
         raise HTTPException(
             status_code=400,
             detail="유저 정보가 올바르지 않습니다.",
         )
-
     try:
         register_feature.createUser(
             registerInfo=registerInfo,
@@ -101,7 +109,7 @@ def change_password(
         )
 
 
-@router.post("/remove_user")
+@router.delete("/remove_user")
 def remove_user(
     user_email=Depends(getUserEmail),
     user_crud=Depends(EBDataBase.user.getCRUD),

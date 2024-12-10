@@ -73,38 +73,42 @@ def mockSession(mockEngine):
 
 
 @pytest.fixture(scope="function")
-def mockPlaceCRUD(mockSession):
+def mockPlaceCRUD(mockSession, mockEngine):
     db = EBDataBase.place
     yield from getMockCRUD(
         mockSession=mockSession,
         db=db,
+        mockEngine=mockEngine,
     )
 
 
 @pytest.fixture(scope="function")
-def mockUserCRUD(mockSession):
+def mockUserCRUD(mockSession, mockEngine):
     db = EBDataBase.user
     yield from getMockCRUD(
         mockSession=mockSession,
         db=db,
+        mockEngine=mockEngine,
     )
 
 
 @pytest.fixture(scope="function")
-def mockScheduleCRUD(mockSession):
+def mockScheduleCRUD(mockSession, mockEngine):
     db = EBDataBase.schedule
     yield from getMockCRUD(
         mockSession=mockSession,
         db=db,
+        mockEngine=mockEngine,
     )
 
 
 @pytest.fixture(scope="function")
-def mockPathCRUD(mockSession):
+def mockPathCRUD(mockSession, mockEngine):
     db = EBDataBase.path
     yield from getMockCRUD(
         mockSession=mockSession,
         db=db,
+        mockEngine=mockEngine,
     )
 
 

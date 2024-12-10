@@ -22,6 +22,11 @@ def home_MockSession(mockSession):
 
 
 @pytest.fixture(scope="function")
+def home_MockEngine(mockEngine):
+    yield mockEngine
+
+
+@pytest.fixture(scope="function")
 def home_MockPathCRUD(mockPathCRUD):
     yield mockPathCRUD
 

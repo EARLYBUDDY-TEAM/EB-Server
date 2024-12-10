@@ -7,10 +7,6 @@ def createUser(
     registerInfo: RegisterInfo,
     userCRUD: UserCRUD,
 ):
-    tmpUser = userCRUD.read(registerInfo.email)
-    if tmpUser:
-        raise Exception("이미 존재하는 사용자입니다.")
-
     user = registerInfo.toUser()
     userCRUD.create(user)
     userCRUD.commit()

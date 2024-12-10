@@ -27,6 +27,11 @@ def schedule_MockSession(mockSession):
 
 
 @pytest.fixture(scope="function")
+def schedule_MockEngine(mockEngine):
+    yield mockEngine
+
+
+@pytest.fixture(scope="function")
 def schedule_MockScheduleCRUD(mockScheduleCRUD):
     yield mockScheduleCRUD
 
@@ -51,11 +56,16 @@ def testClient():
     def mock_def_session():
         yield mockSession
 
+    def mock_def_engine():
+        yield mockEngine
+
     app.dependency_overrides[getUserEmail] = mockGetUserEmail
     app.dependency_overrides[EBDataBase.get_session] = mock_def_session
+    app.dependency_overrides[EBDataBase.get_engine] = mock_def_engine
     testClient = TestClient(app)
 
     yield testClient
 
     del app.dependency_overrides[getUserEmail]
     del app.dependency_overrides[EBDataBase.get_session]
+    del app.dependency_overrides[EBDataBase.get_engine]

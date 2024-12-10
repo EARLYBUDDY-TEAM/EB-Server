@@ -1,5 +1,6 @@
 from unittest.mock import patch
 from sqlalchemy.orm import Session
+from sqlalchemy import Engine
 from typing import Optional
 
 from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo, PathInfo
@@ -9,7 +10,7 @@ from eb_fast_api.service.notification.sources.notification_provider import (
 )
 
 
-def mock_create_notification_schedule_SUCCESS():
+def patcher_create_notification_schedule_SUCCESS():
     def mock_def(
         user_email: str,
         schedule_info: ScheduleInfo,
@@ -18,14 +19,16 @@ def mock_create_notification_schedule_SUCCESS():
         print("mock_create_notification_schedule_SUCCESS !!!")
         return
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.cns,
         "create_notification_schedule",
         new=mock_def,
-    ).start()
+    )
+
+    return patcher
 
 
-def mock_create_notification_schedule_FAIL():
+def patcher_create_notification_schedule_FAIL():
     def mock_def(
         user_email: str,
         schedule_info: ScheduleInfo,
@@ -34,14 +37,16 @@ def mock_create_notification_schedule_FAIL():
         print("mock_create_notification_schedule_FAIL !!!")
         raise Exception()
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.cns,
         "create_notification_schedule",
         new=mock_def,
-    ).start()
+    )
+
+    return patcher
 
 
-def mock_update_notification_schedule_SUCCESS():
+def patcher_update_notification_schedule_SUCCESS():
     def mock_def(
         user_email: str,
         schedule_info: ScheduleInfo,
@@ -49,14 +54,16 @@ def mock_update_notification_schedule_SUCCESS():
     ):
         return
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.uns,
         "update_notification_schedule",
         new=mock_def,
-    ).start()
+    )
+
+    return patcher
 
 
-def mock_update_notification_schedule_FAIL():
+def patcher_update_notification_schedule_FAIL():
     def mock_def(
         user_email: str,
         schedule_info: ScheduleInfo,
@@ -64,135 +71,159 @@ def mock_update_notification_schedule_FAIL():
     ):
         raise Exception()
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.uns,
         "update_notification_schedule",
         new=mock_def,
-    ).start()
+    )
+
+    return patcher
 
 
-def mock_delete_notification_schedule_SUCCESS():
+def patcher_delete_notification_schedule_SUCCESS():
     def mock_def(
         schedule_id: str,
         noti_schedule_provider: NotificationScheduleProvider,
     ):
         return
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.dns,
         "delete_notification_schedule",
         new=mock_def,
-    ).start()
+    )
+
+    return patcher
 
 
-def mock_delete_notification_schedule_FAIL():
+def patcher_delete_notification_schedule_FAIL():
     def mock_def(
         schedule_id: str,
         noti_schedule_provider: NotificationScheduleProvider,
     ):
         raise Exception()
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.dns,
         "delete_notification_schedule",
         new=mock_def,
-    ).start()
+    )
+
+    return patcher
 
 
-def mock_create_schedule_SUCCESS():
+def patcher_create_schedule_SUCCESS():
     def mock_def_create_schedule_SUCCESS(
         session: Session,
-        userEmail: str,
-        scheduleInfo: ScheduleInfo,
-        pathInfo: Optional[PathInfo],
+        engine: Engine,
+        user_email: str,
+        schedule_info: ScheduleInfo,
+        path_info: Optional[PathInfo],
     ):
         print("mock_create_schedule_SUCCESS !!!")
         return
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.cs,
         "create_schedule",
         new=mock_def_create_schedule_SUCCESS,
-    ).start()
+    )
+
+    return patcher
 
 
-def mock_create_schedule_FAIL():
+def patcher_create_schedule_FAIL():
     def mock_def_create_schedule_FAIL(
         session: Session,
-        userEmail: str,
-        scheduleInfo: ScheduleInfo,
-        pathInfo: Optional[PathInfo],
+        engine: Engine,
+        user_email: str,
+        schedule_info: ScheduleInfo,
+        path_info: Optional[PathInfo],
     ):
         print("mock_create_schedule_FAIL !!!")
         raise Exception()
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.cs,
         "create_schedule",
         new=mock_def_create_schedule_FAIL,
-    ).start()
+    )
+
+    return patcher
 
 
-def mock_update_schedule_SUCCESS():
+def patcher_update_schedule_SUCCESS():
     def mock_def_update_schedule_SUCCESS(
         session: Session,
-        userEmail: str,
-        scheduleInfo: ScheduleInfo,
-        pathInfo: Optional[PathInfo],
+        engine: Engine,
+        user_email: str,
+        schedule_info: ScheduleInfo,
+        path_info: Optional[PathInfo],
     ):
         print("mock_def_update_schedule_SUCCESS !!!")
         return
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.us,
         "update_schedule",
         new=mock_def_update_schedule_SUCCESS,
-    ).start()
+    )
+
+    return patcher
 
 
-def mock_update_schedule_FAIL():
+def patcher_update_schedule_FAIL():
     def mock_def_update_schedule_FAIL(
         session: Session,
-        userEmail: str,
-        scheduleInfo: ScheduleInfo,
-        pathInfo: Optional[PathInfo],
+        engine: Engine,
+        user_email: str,
+        schedule_info: ScheduleInfo,
+        path_info: Optional[PathInfo],
     ):
         print("mock_def_update_schedule_FAIL !!!")
         raise Exception()
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.us,
         "update_schedule",
         new=mock_def_update_schedule_FAIL,
-    ).start()
+    )
+
+    return patcher
 
 
-def mock_delete_schedule_SUCCESS():
+def patcher_delete_schedule_SUCCESS():
     def mock_def_delete_schedule_SUCCESS(
         session: Session,
+        engine: Engine,
         user_email: str,
         schedule_id: str,
     ):
         return
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.ds,
         "delete_schedule",
         new=mock_def_delete_schedule_SUCCESS,
-    ).start()
+    )
+
+    return patcher
 
 
-def mock_delete_schedule_FAIL():
+def patcher_delete_schedule_FAIL():
     def mock_def_delete_schedule_FAIL(
         session: Session,
+        engine: Engine,
         user_email: str,
         schedule_id: str,
     ):
         raise Exception("mock_delete_schedule_FAIL")
         return
 
-    patch.object(
+    patcher = patch.object(
         schedule_router.ds,
         "delete_schedule",
         new=mock_def_delete_schedule_FAIL,
-    ).start()
+    )
+
+    return patcher

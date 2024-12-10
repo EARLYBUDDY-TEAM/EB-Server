@@ -36,15 +36,17 @@ def create_schedule(
     pathInfo: Optional[PathInfo] = None,
     userEmail=Depends(getUserEmail),
     session=Depends(EBDataBase.get_session),
+    engine=Depends(EBDataBase.get_engine),
 ):
     scheduleInfo.time = scheduleInfo.time.replace(microsecond=0, tzinfo=None)
 
     try:
         cs.create_schedule(
             session=session,
-            userEmail=userEmail,
-            scheduleInfo=scheduleInfo,
-            pathInfo=pathInfo,
+            engine=engine,
+            user_email=userEmail,
+            schedule_info=scheduleInfo,
+            path_info=pathInfo,
         )
     except Exception as e:
         logger.debug(f"schedule_router, create_schedule: {e}")
@@ -74,15 +76,17 @@ def update_schedule(
     pathInfo: Optional[PathInfo] = None,
     userEmail=Depends(getUserEmail),
     session=Depends(EBDataBase.get_session),
+    engine=Depends(EBDataBase.get_engine),
 ):
     scheduleInfo.time = scheduleInfo.time.replace(microsecond=0, tzinfo=None)
 
     try:
         us.update_schedule(
             session=session,
-            userEmail=userEmail,
-            scheduleInfo=scheduleInfo,
-            pathInfo=pathInfo,
+            engine=engine,
+            user_email=userEmail,
+            schedule_info=scheduleInfo,
+            path_info=pathInfo,
         )
     except Exception as e:
         logger.debug(f"schedule_router, update_schedule: {e}")
@@ -111,10 +115,12 @@ def delete_schedule(
     schedule_id: str,
     user_email=Depends(getUserEmail),
     session=Depends(EBDataBase.get_session),
+    engine=Depends(EBDataBase.get_engine),
 ):
     try:
         ds.delete_schedule(
             session=session,
+            engine=engine,
             user_email=user_email,
             schedule_id=schedule_id,
         )

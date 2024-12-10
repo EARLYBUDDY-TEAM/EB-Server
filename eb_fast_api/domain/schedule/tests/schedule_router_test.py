@@ -5,26 +5,17 @@ from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo
 from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
 from eb_fast_api.domain.token.sources.token_feature import getUserEmail
-from eb_fast_api.domain.schedule.testings.mock_schedule_feature import (
-    mock_create_schedule_SUCCESS,
-    mock_create_schedule_FAIL,
-    mock_update_schedule_SUCCESS,
-    mock_update_schedule_FAIL,
-    mock_delete_schedule_SUCCESS,
-    mock_delete_schedule_FAIL,
-    mock_create_notification_schedule_SUCCESS,
-    mock_create_notification_schedule_FAIL,
-    mock_update_notification_schedule_SUCCESS,
-    mock_update_notification_schedule_FAIL,
-    mock_delete_notification_schedule_SUCCESS,
-    mock_delete_notification_schedule_FAIL,
-)
+from eb_fast_api.domain.schedule.testings import mock_schedule_feature as msf
 
 
 def test_create_schedule_SUCCESS(testClient):
     # given
-    mock_create_schedule_SUCCESS()
-    mock_create_notification_schedule_SUCCESS()
+    patcher_create_schedule_SUCCESS = msf.patcher_create_schedule_SUCCESS()
+    patcher_create_notification_schedule_SUCCESS = (
+        msf.patcher_create_notification_schedule_SUCCESS()
+    )
+    patcher_create_schedule_SUCCESS.start()
+    patcher_create_notification_schedule_SUCCESS.start()
 
     headers = {"access_token": "access_token"}
     scheduleInfo = ScheduleInfo.mock()
@@ -43,11 +34,15 @@ def test_create_schedule_SUCCESS(testClient):
 
     # then
     assert response.status_code == 200
+    patcher_create_schedule_SUCCESS.stop()
+    patcher_create_notification_schedule_SUCCESS.stop()
 
 
 def test_create_schedule_FAIL_create_schedule(testClient):
     # given
-    mock_create_schedule_FAIL()
+    patcher_create_schedule_FAIL = msf.patcher_create_schedule_FAIL()
+    patcher_create_schedule_FAIL.start()
+
     headers = {"access_token": "access_token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
@@ -65,12 +60,18 @@ def test_create_schedule_FAIL_create_schedule(testClient):
 
     # then
     assert response.status_code == 400
+    patcher_create_schedule_FAIL.stop()
 
 
 def test_create_schedule_FAIL_create_notification_schedule(testClient):
     # given
-    mock_create_schedule_SUCCESS()
-    mock_create_notification_schedule_FAIL()
+    patcher_create_schedule_SUCCESS = msf.patcher_create_schedule_SUCCESS()
+    patcher_create_notification_schedule_FAIL = (
+        msf.patcher_create_notification_schedule_FAIL()
+    )
+    patcher_create_schedule_SUCCESS.start()
+    patcher_create_notification_schedule_FAIL.start()
+
     headers = {"access_token": "access_token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
@@ -88,11 +89,15 @@ def test_create_schedule_FAIL_create_notification_schedule(testClient):
 
     # then
     assert response.status_code == 401
+    patcher_create_schedule_SUCCESS.stop()
+    patcher_create_notification_schedule_FAIL.stop()
 
 
 def test_update_schedule_SUCCESS(testClient):
     # given
-    mock_update_schedule_SUCCESS()
+    patcher_update_schedule_SUCCESS = msf.patcher_update_schedule_SUCCESS()
+    patcher_update_schedule_SUCCESS.start()
+
     headers = {"access_token": "access_token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
@@ -110,11 +115,14 @@ def test_update_schedule_SUCCESS(testClient):
 
     # then
     assert response.status_code == 200
+    patcher_update_schedule_SUCCESS.stop()
 
 
 def test_update_schedule_FAIL(testClient):
     # given
-    mock_update_schedule_FAIL()
+    patcher_update_schedule_FAIL = msf.patcher_update_schedule_FAIL()
+    patcher_update_schedule_FAIL.start()
+
     headers = {"access_token": "access_token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
@@ -132,12 +140,18 @@ def test_update_schedule_FAIL(testClient):
 
     # then
     assert response.status_code == 400
+    patcher_update_schedule_FAIL.stop()
 
 
 def test_update_schedule_FAIL_update_notification_schedule(testClient):
     # given
-    mock_update_schedule_SUCCESS()
-    mock_update_notification_schedule_FAIL()
+    patcher_update_schedule_SUCCESS = msf.patcher_update_schedule_SUCCESS()
+    patcher_update_notification_schedule_FAIL = (
+        msf.patcher_update_notification_schedule_FAIL()
+    )
+    patcher_update_schedule_SUCCESS.start()
+    patcher_update_notification_schedule_FAIL.start()
+
     headers = {"access_token": "access_token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
@@ -155,12 +169,15 @@ def test_update_schedule_FAIL_update_notification_schedule(testClient):
 
     # then
     assert response.status_code == 401
+    patcher_update_schedule_SUCCESS.stop()
+    patcher_update_notification_schedule_FAIL.stop()
 
 
 def test_delete_schedule_SUCCESS(
     schedule_MockSession,
 ):
-    mock_delete_schedule_SUCCESS()
+    patcher_delete_schedule_SUCCESS = msf.patcher_delete_schedule_SUCCESS()
+    patcher_delete_schedule_SUCCESS.start()
 
     def mock_def_session():
         yield schedule_MockSession
@@ -180,12 +197,14 @@ def test_delete_schedule_SUCCESS(
 
     # then
     assert response.status_code == 200
+    patcher_delete_schedule_SUCCESS.stop()
 
 
 def test_delete_schedule_card_FAIL(
     schedule_MockSession,
 ):
-    mock_delete_schedule_FAIL()
+    patcher_delete_schedule_FAIL = msf.patcher_delete_schedule_FAIL()
+    patcher_delete_schedule_FAIL.start()
 
     def mock_def_session():
         yield schedule_MockSession
@@ -205,13 +224,18 @@ def test_delete_schedule_card_FAIL(
 
     # then
     assert response.status_code == 400
+    patcher_delete_schedule_FAIL.stop()
 
 
 def test_delete_schedule_card_FAIL_delete_notification_schedule(
     schedule_MockSession,
 ):
-    mock_delete_schedule_SUCCESS()
-    mock_delete_notification_schedule_FAIL()
+    patcher_delete_schedule_SUCCESS = msf.patcher_delete_schedule_SUCCESS()
+    patcher_delete_notification_schedule_FAIL = (
+        msf.patcher_delete_notification_schedule_FAIL()
+    )
+    patcher_delete_schedule_SUCCESS.start()
+    patcher_delete_notification_schedule_FAIL.start()
 
     def mock_def_session():
         yield schedule_MockSession
@@ -231,3 +255,5 @@ def test_delete_schedule_card_FAIL_delete_notification_schedule(
 
     # then
     assert response.status_code == 401
+    patcher_delete_schedule_SUCCESS.stop()
+    patcher_delete_notification_schedule_FAIL.stop()

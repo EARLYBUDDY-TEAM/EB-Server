@@ -33,20 +33,39 @@ class EBDataBase(Enum):
     path = "path"
 
     # session 파라미터 타입지정했는데 왜 오류????
-    def createCRUD(self, session=sessionMaker()):
+    def createCRUD(
+        self,
+        engine=engine,
+        session=sessionMaker(),
+    ):
         match self:
             case EBDataBase.user:
-                return UserCRUD(session)
+                return UserCRUD(
+                    engine=engine,
+                    session=session,
+                )
             case EBDataBase.schedule:
-                return ScheduleCRUD(session)
+                return ScheduleCRUD(
+                    engine=engine,
+                    session=session,
+                )
             case EBDataBase.place:
-                return PlaceCRUD(session)
+                return PlaceCRUD(
+                    engine=engine,
+                    session=session,
+                )
             case EBDataBase.path:
-                return PathCRUD(session)
+                return PathCRUD(
+                    engine=engine,
+                    session=session,
+                )
 
     def getCRUD(self):
         session = sessionMaker()
-        crud = self.createCRUD(session)
+        crud = self.createCRUD(
+            engine=engine,
+            session=session,
+        )
         try:
             yield crud
         finally:
@@ -56,6 +75,14 @@ class EBDataBase(Enum):
     @classmethod
     def create_session(cls) -> Session:
         return sessionMaker()
+
+    @classmethod
+    def create_engine(cls) -> Engine:
+        return engine
+
+    @classmethod
+    def get_engine(cls):
+        yield engine
 
     @classmethod
     def get_session(cls):
@@ -206,6 +233,8 @@ class EBDataBase(Enum):
         cls,
         engine: Engine = engine,
     ):
+        print("EBDataBase.initialize !!!")
+
         EBDataBase.__create_meta_data(engine=engine)
 
         session = sessionMaker()
