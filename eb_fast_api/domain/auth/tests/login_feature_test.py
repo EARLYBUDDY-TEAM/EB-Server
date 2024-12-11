@@ -1,7 +1,6 @@
 from eb_fast_api.domain.auth.sources.auth_feature import login_feature
 from eb_fast_api.database.testings.mock_crud.mock_user_crud import (
-    patch_user_crud_read_SUCCESS,
-    patch_user_crud_read_FAIL,
+    patch_user_crud_read,
     mock_user_dict,
 )
 from eb_fast_api.domain.schema.sources.login_info import LoginInfo
@@ -20,7 +19,7 @@ from eb_fast_api.service.jwt.sources.jwt_service import jwtService
 
 def test_check_password_FAIL_No_User(authMockUserCRUD):
     # given
-    patcher = patch_user_crud_read_FAIL()
+    patcher = patch_user_crud_read(return_value=None)
     patcher.start()
     mock_login_info = LoginInfo.mock()
 
@@ -38,7 +37,7 @@ def test_check_password_FAIL_No_User(authMockUserCRUD):
 
 def test_check_password_FAIL_Wrong_Password(authMockUserCRUD):
     # given
-    patcher_user_crud = patch_user_crud_read_SUCCESS()
+    patcher_user_crud = patch_user_crud_read(return_value=mock_user_dict)
     patcher_user_crud.start()
     patcher_pwdcrypt = patch_pwdcrypt_check_FAIL()
     patcher_pwdcrypt.start()
@@ -59,7 +58,7 @@ def test_check_password_FAIL_Wrong_Password(authMockUserCRUD):
 
 def test_check_password_SUCCESS(authMockUserCRUD):
     # given
-    patcher_user_crud = patch_user_crud_read_SUCCESS()
+    patcher_user_crud = patch_user_crud_read(return_value=mock_user_dict)
     patcher_user_crud.start()
     patcher_pwdcrypt = patch_pwdcrypt_check_SUCCESS()
     patcher_pwdcrypt.start()

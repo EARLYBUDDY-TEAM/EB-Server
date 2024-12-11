@@ -16,16 +16,10 @@ def patch_check_password_SUCCESS():
 
 
 def patch_check_password_FAIL():
-    def raise_exception(
-        user_crud: UserCRUD,
-        login_info: LoginInfo,
-    ):
-        raise Exception("유저정보가 없습니다.")
-
     patcher = patch.object(
         login_feature,
         "check_password",
-        new=raise_exception,
+        side_effect=Exception("유저정보가 없습니다."),
     )
     return patcher
 
@@ -41,16 +35,9 @@ def patch_create_auth_token_SUCCESS():
 
 
 def patch_update_tokens_FAIL():
-    def raise_exception(
-        user_crud: UserCRUD,
-        token_info: TokenInfo,
-        login_info: LoginInfo,
-    ):
-        raise Exception("토큰 업데이트에 실패했습니다.")
-
     patcher = patch.object(
         login_feature,
         "update_tokens",
-        new=raise_exception,
+        side_effect=Exception("토큰 업데이트에 실패했습니다."),
     )
     return patcher

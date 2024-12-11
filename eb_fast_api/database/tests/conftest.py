@@ -7,6 +7,7 @@ from eb_fast_api.database.testings.mock_database import (
 from eb_fast_api.database.testings.mock_connection import (
     createdMockEngine,
     mockSessionMaker,
+    def_create_mock_engine,
 )
 from eb_fast_api.database.sources.connection import checkConnection
 from eb_fast_api.database.sources.database import EBDataBase
@@ -17,12 +18,12 @@ from sqlalchemy import Engine
 my_mock_user = User.mock()
 
 
-def dropTable(engine: Engine):
+def dropTable():
     try:
         print("Start Drop Schedule Table")
         Schedule.dropTable(
             user_email=my_mock_user.email,
-            engine=engine,
+            engine=def_create_mock_engine(),
         )
         print("Success Drop Schedule Table")
     except:
@@ -32,7 +33,7 @@ def dropTable(engine: Engine):
         print("Start Drop Path Table")
         Path.dropTable(
             user_email=my_mock_user.email,
-            engine=engine,
+            engine=def_create_mock_engine(),
         )
         print("Success Drop Path Table")
     except:
@@ -60,6 +61,13 @@ def mockEngine(prepareTestDataBase):
 
 
 @pytest.fixture(scope="function")
+def mockDefCreateEngine(prepareTestDataBase):
+    print("Create Def Create Engine !!!")
+
+    yield def_create_mock_engine
+
+
+@pytest.fixture(scope="function")
 def mockSession(mockEngine):
     session = mockSessionMaker()
     print("Create Session !!!")
@@ -69,7 +77,7 @@ def mockSession(mockEngine):
     session.close()
     print("Close Session !!!")
 
-    dropTable(engine=mockEngine)
+    dropTable()
 
 
 @pytest.fixture(scope="function")
@@ -117,6 +125,6 @@ def mockUser(
     mockUserCRUD,
     mockEngine,
 ):
-    dropTable(engine=mockEngine)
+    dropTable()
     mockUserCRUD.create(user=my_mock_user)
     yield my_mock_user

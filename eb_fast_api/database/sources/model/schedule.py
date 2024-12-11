@@ -103,7 +103,7 @@ class Schedule:
     def dropTable(
         cls,
         user_email: str,
-        engine: Engine = connection.engine,
+        engine: Engine = connection.createEngine(),
     ):
         scheduleTable = Schedule.getTable(
             email=user_email,

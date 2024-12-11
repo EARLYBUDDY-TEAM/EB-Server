@@ -1,6 +1,6 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
 from eb_fast_api.database.sources.model.models import User, Schedule, Path
-from typing import Optional, List
+from typing import Optional, List, Callable
 
 
 class UserCRUD(BaseCRUD):
@@ -68,6 +68,7 @@ class UserCRUD(BaseCRUD):
     def delete(
         self,
         email: str,
+        def_create_engine: Callable,
     ):
         self.session.query(User).filter(User.email == email).delete()
         self.session.commit()
@@ -75,9 +76,9 @@ class UserCRUD(BaseCRUD):
 
         Schedule.dropTable(
             user_email=email,
-            engine=self.engine,
+            engine=def_create_engine(),
         )
         Path.dropTable(
             user_email=email,
-            engine=self.engine,
+            engine=def_create_engine(),
         )

@@ -71,7 +71,7 @@ class Path:
     def dropTable(
         cls,
         user_email: str,
-        engine: Engine = connection.engine,
+        engine: Engine = connection.createEngine(),
     ):
         path_table = Path.getTable(
             email=user_email,

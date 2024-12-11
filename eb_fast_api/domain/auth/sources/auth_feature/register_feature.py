@@ -3,6 +3,14 @@ from eb_fast_api.domain.schema.sources.schemas import RegisterInfo
 from eb_fast_api.database.sources.crud.user_crud import UserCRUD
 
 
+def is_exist_user(
+    userCRUD: UserCRUD,
+    email: str,
+) -> bool:
+    tmpUser = userCRUD.read(email=email)
+    return tmpUser != None
+
+
 def createUser(
     registerInfo: RegisterInfo,
     userCRUD: UserCRUD,

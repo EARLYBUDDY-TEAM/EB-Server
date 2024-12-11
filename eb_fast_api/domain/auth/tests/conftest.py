@@ -9,6 +9,7 @@ from eb_fast_api.database.tests.conftest import (
     mockScheduleCRUD,
     mockPathCRUD,
     mockEngine,
+    mockDefCreateEngine,
 )
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
 from eb_fast_api.service.jwt.tests.conftest import mockJWTService
@@ -42,14 +43,23 @@ def authMockSession(mockSession):
 
 
 @pytest.fixture(scope="function")
-def testClient(authMockUserCRUD, authMockJWTService):
+def authMockDefCreateEngine(mockDefCreateEngine):
+    yield mockDefCreateEngine
+
+
+@pytest.fixture(scope="function")
+def testClient(authMockUserCRUD, authMockJWTService, authMockDefCreateEngine):
     def getMockUserCRUD():
         yield authMockUserCRUD
 
     def getMockJWTService():
         yield authMockJWTService
 
+    def getMockDefCreateEngine():
+        yield authMockDefCreateEngine
+
     app.dependency_overrides[EBDataBase.user.getCRUD] = getMockUserCRUD
+    app.dependency_overrides[EBDataBase.get_def_create_engine] = getMockDefCreateEngine
     app.dependency_overrides[getJWTService] = getMockJWTService
     app.dependency_overrides[getUserEmail] = mockGetUserEmail
 
@@ -58,6 +68,7 @@ def testClient(authMockUserCRUD, authMockJWTService):
     yield testClient
 
     del app.dependency_overrides[EBDataBase.user.getCRUD]
+    del app.dependency_overrides[EBDataBase.get_def_create_engine]
     del app.dependency_overrides[getJWTService]
     del app.dependency_overrides[getUserEmail]
     del testClient

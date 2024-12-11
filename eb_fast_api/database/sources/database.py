@@ -8,6 +8,7 @@ from eb_fast_api.database.sources.connection import (
     engine,
     sessionMaker,
     checkConnection,
+    createEngine,
 )
 from eb_fast_api.database.sources.model.models import Base, User, Schedule, Place, Path
 from eb_fast_api.database.sources.crud.cruds import (
@@ -19,6 +20,7 @@ from eb_fast_api.database.sources.crud.cruds import (
 from eb_fast_api.env.sources.env import ENV_TEST_USER
 from eb_fast_api.snippets.sources import pwdcrypt, eb_datetime
 from eb_fast_api.database.sources import dummy
+from typing import Callable
 
 
 test_ios_token = "fkefvhXsAUMBiwaUoNZCCE:APA91bGi0oyAwI1Qx4AklaeqHiFawy2v5tH4m_8TRfe56cUcCAjLbLMT2sbcqSglp_Hx1suYoDj84C_E6voCiffgqVliOjNw71GbeO4261PkP4QjU9hnLI0"
@@ -75,6 +77,14 @@ class EBDataBase(Enum):
     @classmethod
     def create_session(cls) -> Session:
         return sessionMaker()
+
+    @classmethod
+    def create_def_create_engine(cls) -> Callable:
+        return createEngine
+
+    @classmethod
+    def get_def_create_engine(cls):
+        yield createEngine
 
     @classmethod
     def create_engine(cls) -> Engine:
