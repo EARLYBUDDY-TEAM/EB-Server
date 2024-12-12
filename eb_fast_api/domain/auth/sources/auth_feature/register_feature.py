@@ -3,14 +3,18 @@ from eb_fast_api.domain.schema.sources.schemas import RegisterInfo
 from eb_fast_api.database.sources.crud.user_crud import UserCRUD
 
 
+def is_exist_user(
+    userCRUD: UserCRUD,
+    email: str,
+) -> bool:
+    tmpUser = userCRUD.read(email=email)
+    return tmpUser != None
+
+
 def createUser(
     registerInfo: RegisterInfo,
     userCRUD: UserCRUD,
 ):
-    tmpUser = userCRUD.read(registerInfo.email)
-    if tmpUser:
-        raise Exception("이미 존재하는 사용자입니다.")
-
     user = registerInfo.toUser()
     userCRUD.create(user)
     userCRUD.commit()

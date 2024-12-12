@@ -1,5 +1,5 @@
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
-from eb_fast_api.database.sources.model.models import Schedule, Base
+from eb_fast_api.database.sources.model.models import Schedule
 from typing import List
 from sqlalchemy import desc, asc
 
@@ -12,7 +12,7 @@ class ScheduleCRUD(BaseCRUD):
     ):
         scheduleTable = Schedule.getTable(
             email=userEmail,
-            engine=self.engine(),
+            engine=self.engine,
         )
 
         stmt = scheduleTable.insert().values(schedule.to_dict())
@@ -26,7 +26,7 @@ class ScheduleCRUD(BaseCRUD):
     ) -> dict:
         scheduleTable = Schedule.getTable(
             email=user_email,
-            engine=self.engine(),
+            engine=self.engine,
         )
         schedule_row = (
             self.session.query(scheduleTable)
@@ -42,7 +42,7 @@ class ScheduleCRUD(BaseCRUD):
     ) -> List[dict]:
         scheduleTable = Schedule.getTable(
             email=userEmail,
-            engine=self.engine(),
+            engine=self.engine,
         )
         scheduleRowList = (
             self.session.query(scheduleTable).order_by(asc(scheduleTable.c.time)).all()
@@ -56,7 +56,7 @@ class ScheduleCRUD(BaseCRUD):
     ):
         scheduleTable = Schedule.getTable(
             email=userEmail,
-            engine=self.engine(),
+            engine=self.engine,
         )
         stmt = scheduleTable.delete().where(scheduleTable.c.id == scheduleID)
         self.session.execute(stmt)
@@ -69,7 +69,7 @@ class ScheduleCRUD(BaseCRUD):
     ):
         scheduleTable = Schedule.getTable(
             email=userEmail,
-            engine=self.engine(),
+            engine=self.engine,
         )
         stmt = (
             scheduleTable.update()
@@ -78,16 +78,3 @@ class ScheduleCRUD(BaseCRUD):
         )
         self.session.execute(stmt)
         self.session.flush()
-
-    ### Caution !!! Session Close ###
-    def dropTable(
-        self,
-        userEmail: str,
-    ):
-        self.session.close()
-        scheduleTable = Schedule.getTable(
-            email=userEmail,
-            engine=self.engine(),
-        )
-        Base.metadata.remove(scheduleTable)
-        scheduleTable.drop(bind=self.engine())

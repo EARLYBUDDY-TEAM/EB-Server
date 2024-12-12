@@ -1,7 +1,8 @@
 from typing import Optional
-
 from eb_fast_api.database.sources.crud.base_crud import BaseCRUD
-from eb_fast_api.database.sources.model.models import Path, Base
+from eb_fast_api.database.sources.model.models import Path
+from sqlalchemy import Engine
+from eb_fast_api.database.sources import connection
 
 
 class PathCRUD(BaseCRUD):
@@ -12,7 +13,7 @@ class PathCRUD(BaseCRUD):
     ):
         path_table = Path.getTable(
             email=user_email,
-            engine=self.engine(),
+            engine=self.engine,
         )
 
         stmt = path_table.insert().values(path.to_dict())
@@ -26,7 +27,7 @@ class PathCRUD(BaseCRUD):
     ):
         path_table = Path.getTable(
             email=user_email,
-            engine=self.engine(),
+            engine=self.engine,
         )
 
         stmt = (
@@ -45,7 +46,7 @@ class PathCRUD(BaseCRUD):
         try:
             path_table = Path.getTable(
                 email=user_email,
-                engine=self.engine(),
+                engine=self.engine,
             )
             route_row = (
                 self.session.query(path_table).filter(path_table.c.id == path_id).one()
@@ -61,21 +62,8 @@ class PathCRUD(BaseCRUD):
     ):
         path_table = Path.getTable(
             email=user_email,
-            engine=self.engine(),
+            engine=self.engine,
         )
         stmt = path_table.delete().where(path_table.c.id == path_id)
         self.session.execute(stmt)
         self.session.flush()
-
-    ### Caution !!! Session Close ###
-    def dropTable(
-        self,
-        user_email: str,
-    ):
-        self.session.close()
-        path_table = Path.getTable(
-            email=user_email,
-            engine=self.engine(),
-        )
-        Base.metadata.remove(path_table)
-        path_table.drop(bind=self.engine())

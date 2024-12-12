@@ -1,11 +1,10 @@
 from unittest.mock import patch
 from typing import List
 from sqlalchemy.orm import Session
+from sqlalchemy import Engine
 
 from eb_fast_api.database.sources.model.models import Schedule
 from eb_fast_api.domain.home.sources.home_schema import SchedulePathInfo
-from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo
-from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, PlaceCRUD
 from uuid import uuid4
 
 
@@ -20,6 +19,7 @@ def mock_read_all_schedule():
     def mock_def_read_all_schedule(
         userEmail: str,
         session: Session,
+        engine: Engine,
     ) -> List[Schedule]:
         return mockScheduleList
 
@@ -32,6 +32,7 @@ def mock_read_all_schedule():
 def mock_schedule_dict_to_schedule_path_info():
     def mock_def_schedule_dict_to_schedule_path_info(
         session: Session,
+        engine: Engine,
         user_email: str,
         schedule_dict: dict,
     ) -> SchedulePathInfo:

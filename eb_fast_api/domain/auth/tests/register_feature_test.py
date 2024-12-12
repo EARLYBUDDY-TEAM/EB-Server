@@ -1,4 +1,4 @@
-from eb_fast_api.domain.auth.register.sources import register_feature
+from eb_fast_api.domain.auth.sources.auth_feature import register_feature
 
 
 def test_isValidEmail_SUCCESS():
@@ -11,11 +11,7 @@ def test_isValidEmail_SUCCESS():
 
 
 def test_isValidEmail_FAIL():
-    failEmailList = [
-        "",
-        "abc@"
-        "abc@abc"
-    ]
+    failEmailList = ["", "abc@" "abc@abc"]
 
     for email in failEmailList:
         if register_feature.isValidEmail(email):

@@ -5,10 +5,12 @@ from fastapi import FastAPI, Request, Response
 from eb_fast_api.service.notification.sources.notification_scheduler import (
     initialize_notification_scheduler,
 )
+from eb_fast_api.snippets.sources.logger import logger
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.debug("lifespan start")
     initialize_notification_scheduler()
     yield
 
@@ -16,8 +18,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-from eb_fast_api.domain.auth.register.sources import register_routers
-from eb_fast_api.domain.auth.login.sources import login_router
+from eb_fast_api.domain.auth.sources import auth_router
 from eb_fast_api.domain.map.place.sources import place_router
 from eb_fast_api.domain.map.route.sources import route_router
 from eb_fast_api.domain.schedule.sources import schedule_router
@@ -26,8 +27,7 @@ from eb_fast_api.domain.home.sources import home_router
 from eb_fast_api.domain.realtime.sources import realtime_router
 
 
-app.include_router(register_routers.router)
-app.include_router(login_router.router)
+app.include_router(auth_router.router)
 app.include_router(place_router.router)
 app.include_router(route_router.router)
 app.include_router(schedule_router.router)
@@ -67,6 +67,6 @@ def read_root():
 
 if __name__ == "__main__":
     from eb_fast_api.database.sources.database import EBDataBase
-    
+
     EBDataBase.initialize()
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, log_level="debug")

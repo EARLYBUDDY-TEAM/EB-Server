@@ -3,7 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.schema import Table, MetaData
 from typing import Optional, Self
 from eb_fast_api.database.sources.model.base_model import Base
-from eb_fast_api.database.sources.connection import engine
+from eb_fast_api.database.sources import connection
 from uuid import uuid4
 
 
@@ -39,7 +39,7 @@ class Path:
     def getTable(
         cls,
         email: str,
-        engine: Engine = engine,
+        engine: Engine = connection.engine,
     ) -> Table:
         pathTableName = Path.getTableName(email)
         pathMetaData = MetaData()
@@ -58,12 +58,27 @@ class Path:
 
         class MixinPath(Path, Base):
             __tablename__ = tableName
+            __table_args__ = {"extend_existing": True}
 
             @classmethod
             def getTableName(cls) -> str:
                 return cls.__table__.name
 
         return MixinPath
+
+    ### Caution !!! Must Use After Session Close !!! ###
+    @classmethod
+    def dropTable(
+        cls,
+        user_email: str,
+        engine: Engine = connection.createEngine(),
+    ):
+        path_table = Path.getTable(
+            email=user_email,
+            engine=engine,
+        )
+        Base.metadata.remove(path_table)
+        path_table.drop(bind=engine)
 
     def to_dict(self) -> dict:
         return {

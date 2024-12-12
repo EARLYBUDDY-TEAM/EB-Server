@@ -1,5 +1,6 @@
 from unittest.mock import patch
 from sqlalchemy.orm import Session
+from sqlalchemy import Engine
 from eb_fast_api.database.sources.database import EBDataBase
 
 
@@ -27,10 +28,14 @@ def mock_commit():
 
 
 def getMockCRUD(
+    mockEngine: Engine,
     mockSession: Session,
     db: EBDataBase,
 ):
-    mockCRUD = db.createCRUD(session=mockSession)
+    mockCRUD = db.createCRUD(
+        session=mockSession,
+        engine=mockEngine,
+    )
     print(f"Create {db.value.capitalize()}CRUD !!!")
 
     yield mockCRUD

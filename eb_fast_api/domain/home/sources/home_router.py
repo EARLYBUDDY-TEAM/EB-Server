@@ -16,10 +16,12 @@ router = APIRouter(prefix="/home")
 def get_all_schedules(
     userEmail=Depends(getUserEmail),
     session=Depends(EBDataBase.get_session),
+    engine=Depends(EBDataBase.get_engine),
 ) -> SchedulePathInfoList:
     schedule_dict_list = home_feature.read_all_schedule(
         session=session,
         userEmail=userEmail,
+        engine=engine,
     )
 
     all_schedules: List[SchedulePathInfo] = [
@@ -27,6 +29,7 @@ def get_all_schedules(
             session=session,
             user_email=userEmail,
             schedule_dict=schedule_dict,
+            engine=engine,
         )
         for schedule_dict in schedule_dict_list
     ]

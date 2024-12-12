@@ -110,10 +110,17 @@ def get_all_user(
 def empty_and_add_all_user_notification(
     provider=noti_schedule_provider,
     session=EBDataBase.create_session(),
+    engine=EBDataBase.create_engine(),
 ):
-    user_crud = EBDataBase.user.createCRUD(session)
-    schedule_crud = EBDataBase.schedule.createCRUD(session)
-    all_users = get_all_user(user_crud)
+    user_crud = EBDataBase.user.createCRUD(
+        session=session,
+        engine=engine,
+    )
+    schedule_crud = EBDataBase.schedule.createCRUD(
+        session=session,
+        engine=engine,
+    )
+    all_users = get_all_user(user_crud=user_crud)
 
     provider.data = []
     for user in all_users:

@@ -17,15 +17,19 @@ from eb_fast_api.domain.home.sources.home_schema import (
 )
 
 
-def test_get_all_schedules(home_MockSession):
+def test_get_all_schedules(home_MockSession, home_MockEngine):
     def mock_def_session():
         yield home_MockSession
+
+    def mock_def_engine():
+        yield home_MockEngine
 
     # given
     mock_read_all_schedule()
     mock_schedule_dict_to_schedule_path_info()
     app.dependency_overrides[getUserEmail] = mockGetUserEmail
     app.dependency_overrides[EBDataBase.get_session] = mock_def_session
+    app.dependency_overrides[EBDataBase.get_engine] = mock_def_engine
     testClient = TestClient(app)
     headers = {"access_token": "access_token"}
 
@@ -44,3 +48,4 @@ def test_get_all_schedules(home_MockSession):
 
     del app.dependency_overrides[getUserEmail]
     del app.dependency_overrides[EBDataBase.get_session]
+    del app.dependency_overrides[EBDataBase.get_engine]
