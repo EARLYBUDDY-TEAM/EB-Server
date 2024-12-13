@@ -1,25 +1,32 @@
-from eb_fast_api.service.notification.sources.notification_provider import (
+from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
     NotificationScheduleProvider,
 )
-from eb_fast_api.service.notification.sources.notification_schema import (
+from eb_fast_api.service.notification.sources.schema.notification_schedule import (
     NotificationSchedule,
 )
-import heapq
 from eb_fast_api.snippets.sources import eb_datetime
+from eb_fast_api.snippets.testings import mock_eb_datetime as med
 from datetime import timedelta
 
 
 def test_notification_schedule_provider_add_delete():
     # given
+    mock_now = eb_datetime.get_datetime_now()
+    patcher = med.patcher_get_datetime_now(mock_now)
+    patcher.start()
+
     noti_schedule_provider = NotificationScheduleProvider()
     noti_schedule = NotificationSchedule.mock()
+    now = eb_datetime.get_datetime_now()
 
     # when, then
-    noti_schedule_provider.add_schedule(noti_schedule=noti_schedule)
+    noti_schedule_provider.add_schedule(noti_schedule=noti_schedule, now=mock_now)
     assert noti_schedule_provider.data[0] == noti_schedule
 
-    noti_schedule_provider.delete_schedule(id=noti_schedule.id)
+    noti_schedule_provider.delete_schedule(schedule_id=noti_schedule.schedule_id)
     assert len(noti_schedule_provider.data) == 0
+
+    patcher.stop()
 
 
 def test_notification_schedule_provider_get_schedule():
@@ -40,7 +47,7 @@ def test_notification_schedule_provider_get_schedule():
     ]
     noti_schedule_provider = NotificationScheduleProvider()
     for noti_schedule in noti_schedule_list:
-        noti_schedule_provider.add_schedule(noti_schedule=noti_schedule)
+        noti_schedule_provider.add_schedule(noti_schedule=noti_schedule, now=now)
 
     # when
     noti_schedule_list = noti_schedule_provider.get_schedule(now=now)

@@ -5,7 +5,7 @@ from eb_fast_api.service.notification.sources.feature.empty_and_add_notification
     get_all_user,
 )
 from eb_fast_api.database.sources.model.models import Schedule
-from eb_fast_api.service.notification.sources.notification_provider import (
+from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
     NotificationScheduleProvider,
 )
 from eb_fast_api.database.sources.database import EBDataBase

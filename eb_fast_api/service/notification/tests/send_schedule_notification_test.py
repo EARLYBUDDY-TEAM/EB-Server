@@ -1,60 +1,48 @@
 from eb_fast_api.service.notification.sources.feature.send_schedule_notification import (
-    get_fcm_token,
     send_schedule_notification,
 )
-from unittest.mock import patch
-from eb_fast_api.database.sources.crud.cruds import UserCRUD
-from eb_fast_api.database.sources.database import EBDataBase
-from eb_fast_api.service.notification.sources.notification_schema import (
+from eb_fast_api.service.notification.sources.schema.notification_schedule import (
     NotificationSchedule,
 )
-from eb_fast_api.service.notification.sources.notification_provider import (
+from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
     NotificationScheduleProvider,
 )
 from eb_fast_api.service.notification.testings import (
-    mock_send_schedule_notification as mns,
+    mock_fcm_feature as mff,
 )
 from eb_fast_api.service.notification.testings import mock_notification_provider as mnp
-
-
-def test_get_fcm_token():
-    # given
-    expected_fcm_token = "expected_fcm_token"
-    mock_user_dict = {"fcm_token": expected_fcm_token}
-
-    # when, then
-    with patch.object(
-        UserCRUD,
-        "read",
-        return_value=mock_user_dict,
-    ):
-        user_crud = EBDataBase.user.createCRUD()
-        fcm_token = get_fcm_token(
-            user_email="",
-            user_crud=user_crud,
-        )
-
-        assert fcm_token == expected_fcm_token
+from eb_fast_api.snippets.sources import eb_datetime
+from eb_fast_api.snippets.testings import mock_eb_datetime as med
+from datetime import datetime
 
 
 def test_send_schedule_notification():
     # given
-    patcher_get_fcm_token = mns.patcher_get_fcm_token(return_value="")
-    patcher_send_notification = mns.patcher_send_notification()
+    mock_now = eb_datetime.get_datetime_now()
+    patcher_get_datetime_now = med.patcher_get_datetime_now(mock_now)
+    patcher_get_fcm_token = mff.patcher_get_fcm_token(return_value="")
+    patcher_send_notification = mff.patcher_send_notification()
 
     mock_noti_schedule = NotificationSchedule.mock()
     mock_provider = NotificationScheduleProvider()
-    mock_provider.add_schedule(mock_noti_schedule)
+    mock_provider.add_schedule(
+        noti_schedule=mock_noti_schedule,
+        now=mock_now,
+    )
     patcher_get_schedule = mnp.patcher_get_schedule()
 
     patcher_get_fcm_token.start()
     patcher_send_notification.start()
     patcher_get_schedule.start()
+    patcher_get_datetime_now.start()
 
     assert len(mock_provider.data) == 1
 
     # when
-    send_schedule_notification(provider=mock_provider)
+    send_schedule_notification(
+        provider=mock_provider,
+        now=mock_now,
+    )
 
     # then
     assert len(mock_provider.data) == 0
@@ -62,3 +50,4 @@ def test_send_schedule_notification():
     patcher_get_fcm_token.stop()
     patcher_send_notification.stop()
     patcher_get_schedule.stop()
+    patcher_get_datetime_now.stop()

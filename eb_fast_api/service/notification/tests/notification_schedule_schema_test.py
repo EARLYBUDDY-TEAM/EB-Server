@@ -1,4 +1,4 @@
-from eb_fast_api.service.notification.sources.notification_schema import (
+from eb_fast_api.service.notification.sources.schema.notification_schedule import (
     NotificationSchedule,
 )
 from datetime import timedelta

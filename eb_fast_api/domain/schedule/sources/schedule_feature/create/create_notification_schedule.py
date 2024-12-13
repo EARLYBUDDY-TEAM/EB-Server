@@ -1,8 +1,8 @@
 from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo
-from eb_fast_api.service.notification.sources.notification_schema import (
+from eb_fast_api.service.notification.sources.schema.notification_schedule import (
     NotificationSchedule,
 )
-from eb_fast_api.service.notification.sources.notification_provider import (
+from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
     NotificationScheduleProvider,
 )
 

@@ -5,7 +5,7 @@ from typing import Optional
 
 from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo, PathInfo
 from eb_fast_api.domain.schedule.sources import schedule_router
-from eb_fast_api.service.notification.sources.notification_provider import (
+from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
     NotificationScheduleProvider,
 )
 

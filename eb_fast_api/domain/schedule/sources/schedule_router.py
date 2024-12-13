@@ -21,7 +21,7 @@ from eb_fast_api.domain.schedule.sources.schedule_feature.delete import (
 from eb_fast_api.domain.schedule.sources.schedule_feature.delete import (
     delete_notification_schedule as dns,
 )
-from eb_fast_api.service.notification.sources.notification_provider import (
+from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
     noti_schedule_provider,
 )
 from eb_fast_api.snippets.sources.logger import logger

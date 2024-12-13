@@ -4,8 +4,9 @@ from typing import Optional, Self
 from uuid import uuid4
 
 
+### 오늘 날짜 일정만 추가 ###
 class NotificationSchedule:
-    id: str
+    schedule_id: str
     user_email: str
     schedule_name: str
     schedule_remain_time: int
@@ -13,13 +14,13 @@ class NotificationSchedule:
 
     def __init__(
         self,
-        id: str,
+        schedule_id: str,
         user_email: str,
         schedule_name: str,
         schedule_remain_time: int,
         noti_time: datetime,
     ):
-        self.id = id
+        self.schedule_id = schedule_id
         self.user_email = user_email
         self.schedule_name = schedule_name
         self.schedule_remain_time = schedule_remain_time
@@ -43,7 +44,7 @@ class NotificationSchedule:
 
         return NotificationSchedule(
             user_email=user_email,
-            id=schedule_id,
+            schedule_id=schedule_id,
             schedule_name=schedule_title,
             schedule_remain_time=notify_schedule,
             noti_time=noti_time,
@@ -75,7 +76,7 @@ class NotificationSchedule:
         if other == None:
             return False
 
-        return self.id == other.id
+        return self.schedule_id == other.schedule_id
 
     @classmethod
     def mock(
@@ -83,7 +84,7 @@ class NotificationSchedule:
         schedule_remain_time: int = 0,
         schedule_time: datetime = eb_datetime.get_datetime_now(),
     ) -> Self:
-        id = str(uuid4())
+        schedule_id = str(uuid4())
         user_email = "test@test.com"
         schedule_name = "schedule_name"
         schedule_remain_time = schedule_remain_time
@@ -92,14 +93,9 @@ class NotificationSchedule:
         )
 
         return NotificationSchedule(
-            id=id,
+            schedule_id=schedule_id,
             user_email=user_email,
             schedule_name=schedule_name,
             schedule_remain_time=schedule_remain_time,
             noti_time=noti_time,
         )
-
-
-class NotificationTransport:
-    noti_start_time: datetime
-    id: str

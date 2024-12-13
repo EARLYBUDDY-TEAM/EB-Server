@@ -1,8 +1,8 @@
-from eb_fast_api.service.notification.sources.notification_provider import (
+from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
     NotificationScheduleProvider,
     noti_schedule_provider,
 )
-from eb_fast_api.service.notification.sources.notification_schema import (
+from eb_fast_api.service.notification.sources.schema.notification_schedule import (
     NotificationSchedule,
 )
 from eb_fast_api.database.sources.crud.cruds import ScheduleCRUD, UserCRUD
@@ -94,6 +94,7 @@ def add_today_schedule_notification(
         count += 1
         noti_schedule_provider.add_schedule(
             noti_schedule=noti_schedule,
+            now=now,
         )
     else:
         logger.debug("add_today_schedule_notification")
