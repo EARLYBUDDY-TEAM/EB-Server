@@ -1,8 +1,13 @@
 from httpx import AsyncClient, Response
 from eb_fast_api.env.sources.env import ENV_API
 from eb_fast_api.snippets.sources import dictionary, eb_datetime
+from eb_fast_api.service.realtime.sources.error.subway_realtime_error import (
+    GetSeoulSubwayRealtimeInfoError,
+    FilterSubwayRealtimeDataError,
+)
 from eb_fast_api.service.realtime.sources.realtime_service_schema import RealTimeInfo
 from datetime import datetime
+from typing import List
 
 
 SubwayID = {
@@ -88,6 +93,31 @@ def filter_subway_realtime_data(
             realTimeInfo.arrival_sec2 = arrival_sec
 
     return realTimeInfo
+
+
+async def request(
+    station_name: str,
+    line_name: str,
+    direction: int,
+) -> List[RealTimeInfo]:
+    try:
+        response_json = await get_seoul_subway_realtime_info(
+            station_name=station_name,
+        )
+    except Exception as e:
+        print(e)
+        raise GetSeoulSubwayRealtimeInfoError()
+
+    try:
+        real_time_info = filter_subway_realtime_data(
+            data=response_json,
+            line_name=line_name,
+            direction=direction,
+        )
+        return [real_time_info]
+    except Exception as e:
+        print(e)
+        raise FilterSubwayRealtimeDataError()
 
 
 """

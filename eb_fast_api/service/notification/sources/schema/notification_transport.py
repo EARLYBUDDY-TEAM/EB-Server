@@ -4,6 +4,19 @@ from eb_fast_api.snippets.sources import eb_datetime
 from eb_fast_api.snippets.sources import dictionary
 
 
+class ArrivalInfo:
+    transport_number: str
+    arrival_minute: int
+
+    def __init__(
+        self,
+        transport_number: str,
+        arrival_minute: int,
+    ):
+        self.transport_number = transport_number
+        self.arrival_minute = arrival_minute
+
+
 class RequestRealTimeInfo:
     station_name: str
     dup: dict  # {버스번호 : 버스 번호판}, {transport_number : transport_plate}
@@ -96,7 +109,7 @@ class NotificationTransport:
     noti_start_time: datetime  # only time
     noti_end_time: datetime  # only time
     request_real_time_info: RequestRealTimeInfo
-    
+
     def __init__(
         self,
         schedule_id: str,

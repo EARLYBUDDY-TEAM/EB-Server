@@ -11,7 +11,7 @@ from eb_fast_api.service.notification.sources.provider.notification_transport_pr
 from datetime import datetime
 from eb_fast_api.snippets.sources.logger import logger
 from eb_fast_api.database.sources.database import EBDataBase
-from eb_fast_api.service.notification.sources.feature.transport import (
+from eb_fast_api.service.notification.sources.feature.transport.content import (
     notification_transport_content as ntc,
 )
 
