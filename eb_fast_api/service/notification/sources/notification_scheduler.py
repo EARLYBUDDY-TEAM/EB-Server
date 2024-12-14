@@ -5,7 +5,7 @@ from eb_fast_api.service.notification.sources.feature.send_schedule_notification
 from eb_fast_api.service.notification.sources.feature.empty_and_add_notification import (
     empty_and_add_all_user_notification,
 )
-from eb_fast_api.service.notification.sources.feature.send_transport_notification import (
+from eb_fast_api.service.notification.sources.feature.transport.send_transport_notification import (
     send_transport_notification,
 )
 from apscheduler.triggers.cron import CronTrigger

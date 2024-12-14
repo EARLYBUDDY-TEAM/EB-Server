@@ -15,7 +15,7 @@ def send_schedule_notification(
     logger.debug(f"START send_schedule_notification, now : {now}")
     logger.debug(f"schedule provider data count : {len(provider.data)}")
 
-    noti_schedule_list = provider.get_schedule(now=now)
+    noti_schedule_list = provider.get_notification(now=now)
     user_crud = EBDataBase.user.createCRUD()
     for noti_schedule in noti_schedule_list:
         title = noti_schedule.schedule_name

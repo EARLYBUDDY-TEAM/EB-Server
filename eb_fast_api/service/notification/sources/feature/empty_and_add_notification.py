@@ -92,7 +92,7 @@ def add_today_schedule_notification(
             continue
 
         count += 1
-        noti_schedule_provider.add_schedule(
+        noti_schedule_provider.add_notification(
             noti_schedule=noti_schedule,
             now=now,
         )

@@ -1,8 +1,9 @@
 import httpx, pytest
 from unittest.mock import patch
 from datetime import datetime, timedelta
-from eb_fast_api.domain.realtime.sources.realtime_feature import subway_realtime_feature
-from eb_fast_api.domain.realtime.testings.mock_subway_realtime_info import (
+from eb_fast_api.service.realtime.sources import subway_realtime_service as sas
+from eb_fast_api.service.realtime.sources.realtime_service_schema import RealTimeInfo
+from eb_fast_api.service.realtime.testings.mock_subway_realtime_info import (
     mockSubwayRealtimeJson,
     mockSubwayId,
     mockUpOrdKey1,
@@ -10,7 +11,6 @@ from eb_fast_api.domain.realtime.testings.mock_subway_realtime_info import (
     mockBarvlDt,
     mockRecptnDt,
 )
-from eb_fast_api.domain.realtime.sources.realtime_schema import RealTimeInfo
 
 
 @pytest.mark.asyncio
@@ -19,18 +19,20 @@ async def test_get_seoul_subway_realtime_info():
     status_code = 200
     json = {"test": "test"}
 
-    with patch(
-        "eb_fast_api.domain.realtime.sources.realtime_feature.subway_realtime_feature.AsyncClient.get"
+    fake_get_return_value = httpx.Response(
+        status_code,
+        json=json,
+        request=httpx.Request("GET", "test_url"),
+    )
+
+    with patch.object(
+        sas.AsyncClient,
+        "get",
+        return_value=fake_get_return_value,
     ) as fake_get:
-        fake_get.return_value = httpx.Response(
-            status_code,
-            json=json,
-            request=httpx.Request("GET", "test_url"),
-        )
-        fake_get.start()
 
         # when
-        response = await subway_realtime_feature.get_seoul_subway_realtime_info(
+        response = await sas.get_seoul_subway_realtime_info(
             station_name="서울",
         )
 
@@ -41,7 +43,7 @@ async def test_get_seoul_subway_realtime_info():
 
 def test_filter_subway_realtime_data():
     # given
-    mock_subway_name = subway_realtime_feature.SubwayID[mockSubwayId]
+    mock_subway_name = sas.SubwayID[mockSubwayId]
     subway_direction = 0
     diff_seconds = 30
     mock_now = datetime.strptime(mockRecptnDt, "%Y-%m-%d %H:%M:%S") + timedelta(
@@ -49,16 +51,15 @@ def test_filter_subway_realtime_data():
     )
 
     # when
-    with patch(
-        "eb_fast_api.domain.realtime.sources.realtime_feature.subway_realtime_feature.get_date_time_now"
+    with patch.object(
+        sas,
+        "get_date_time_now",
+        return_value=mock_now,
     ) as fake_get_date_time_now:
-        fake_get_date_time_now.return_value = mock_now
-        result_subway_realtime_info = (
-            subway_realtime_feature.filter_subway_realtime_data(
-                data=mockSubwayRealtimeJson,
-                line_name=mock_subway_name,
-                direction=subway_direction,
-            )
+        result_subway_realtime_info = sas.filter_subway_realtime_data(
+            data=mockSubwayRealtimeJson,
+            line_name=mock_subway_name,
+            direction=subway_direction,
         )
 
         # then

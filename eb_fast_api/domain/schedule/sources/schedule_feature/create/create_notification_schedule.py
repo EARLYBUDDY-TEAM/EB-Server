@@ -5,6 +5,7 @@ from eb_fast_api.service.notification.sources.schema.notification_schedule impor
 from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
     NotificationScheduleProvider,
 )
+from eb_fast_api.snippets.sources import eb_datetime
 
 
 def create_notification_schedule(
@@ -27,6 +28,7 @@ def create_notification_schedule(
     if noti_schedule == None:
         return
 
-    noti_schedule_provider.add_schedule(
+    noti_schedule_provider.add_notification(
         noti_schedule=noti_schedule,
+        now=eb_datetime.get_datetime_now(),
     )

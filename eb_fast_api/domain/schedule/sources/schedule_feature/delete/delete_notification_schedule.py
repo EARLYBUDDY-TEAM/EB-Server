@@ -7,6 +7,6 @@ def delete_notification_schedule(
     schedule_id: str,
     noti_schedule_provider: NotificationScheduleProvider,
 ):
-    noti_schedule_provider.delete_schedule(
+    noti_schedule_provider.delete_notification(
         id=schedule_id,
     )

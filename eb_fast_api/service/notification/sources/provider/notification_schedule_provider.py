@@ -6,7 +6,7 @@ from eb_fast_api.service.notification.sources.provider.notification_provider imp
 
 
 class NotificationScheduleProvider(NotificationProvider):
-    def add_schedule(
+    def add_notification(
         self,
         noti_schedule,
         now,
@@ -17,7 +17,7 @@ class NotificationScheduleProvider(NotificationProvider):
 
         self.add(noti_schedule)
 
-    def get_schedule(
+    def get_notification(
         self,
         now: datetime,
     ):

@@ -1,6 +1,9 @@
 from eb_fast_api.service.notification.sources.feature import fcm_feature as ff
 from eb_fast_api.service.notification.sources.schema.notification_transport import (
     NotificationTransportContent,
+    RequestArrivalInfo,
+    BusRequestArrivalInfo,
+    SubwayRequestArrivalInfo,
 )
 from eb_fast_api.service.notification.sources.provider.notification_transport_provider import (
     noti_transport_provider,
@@ -9,6 +12,20 @@ from datetime import datetime
 from eb_fast_api.snippets.sources.logger import logger
 from eb_fast_api.database.sources.database import EBDataBase
 from typing import Optional
+
+
+# def get_bus_arrival_info(
+#     bu: BusRealTimeInfo,
+# ):
+#     pass
+
+
+# # def get_arrival_info(
+# #     request_real_time_info: RequestRealTimeInfo,
+# # ):
+# #     if isinstance(request_real_time_info, RequestRealTimeInfoBus):
+
+# #     pass
 
 
 def make_transport_notification_body(
@@ -24,7 +41,7 @@ def send_transport_notification(
 ):
     logger.debug(f"START send_transport_notification, now : {now}")
     logger.debug(f"transport provider data count : {len(provider.data)}")
-    noti_transport_list = provider.get_schedule(now=now)
+    noti_transport_list = provider.get_notification(now=now)
     user_crud = EBDataBase.user.createCRUD()
 
     for noti_transport in noti_transport_list:
@@ -32,6 +49,7 @@ def send_transport_notification(
 
         body = make_transport_notification_body(noti_content=noti_content)
         if body == None:
+            provider.add(noti_schedule=noti_transport, now=now)
             continue
 
         title = noti_content.schedule_name

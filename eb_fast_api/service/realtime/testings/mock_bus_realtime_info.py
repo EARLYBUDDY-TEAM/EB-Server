@@ -1,6 +1,7 @@
-from eb_fast_api.domain.realtime.sources.realtime_schema import RealTimeInfo
+from eb_fast_api.service.realtime.sources.realtime_service_schema import RealTimeInfo
 
-mock_real_time_json_to_real_time_info_dict = {
+
+mock_realtime_json_to_realtime_info_dict = {
     "routeId": "755",
     "updownFlag": "2",
     "arrival2": {
@@ -32,13 +33,13 @@ mock_real_time_json_to_real_time_info_dict = {
     "routeNm": "101",
 }
 
-mock_decode_real_time_info_list_dict = {
+mock_decode_realtime_info_list_dict = {
     "result": {
-        "real": [mock_real_time_json_to_real_time_info_dict] * 5,
+        "real": [mock_realtime_json_to_realtime_info_dict] * 5,
     }
 }
 
-expected_real_time_info = RealTimeInfo(
+expected_realtime_info = RealTimeInfo(
     transport_number="101",
     arrival_sec1=130,
     arrival_sec2=696,

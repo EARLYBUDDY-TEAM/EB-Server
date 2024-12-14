@@ -1,7 +1,7 @@
 from eb_fast_api.service.notification.sources.schema.notification_transport import (
     NotificationTransport,
-    SubwayRealTimeInfo,
-    BusRealTimeInfo,
+    SubwayRequestArrivalInfo,
+    BusRequestArrivalInfo,
 )
 from typing import Optional
 from datetime import datetime, timedelta
@@ -19,7 +19,7 @@ def create_mock_walk():
 
 
 def create_mock_bus(
-    bus: BusRealTimeInfo,
+    bus: BusRequestArrivalInfo,
 ):
     return {
         "type": 2,
@@ -29,7 +29,7 @@ def create_mock_bus(
 
 
 def create_mock_subway_path(
-    subway: SubwayRealTimeInfo,
+    subway: SubwayRequestArrivalInfo,
 ):
     return {
         "type": 1,
@@ -45,7 +45,7 @@ def create_mock_subpath_list():
 
 def test_get_request_real_time_info_subway():
     # given
-    expect_subway_realtimeinfo = SubwayRealTimeInfo.mock()
+    expect_subway_realtimeinfo = SubwayRequestArrivalInfo.mock()
     subway_path_dict = create_mock_subway_path(expect_subway_realtimeinfo)
     mock_subpath_list = [
         create_mock_walk(),
@@ -64,7 +64,7 @@ def test_get_request_real_time_info_subway():
 
 def test_get_request_real_time_info_bus():
     # given
-    expect_bus_realtimeinfo = BusRealTimeInfo.mock()
+    expect_bus_realtimeinfo = BusRequestArrivalInfo.mock()
     bus_path_dict = create_mock_bus(expect_bus_realtimeinfo)
     mock_subpath_list = [
         create_mock_walk(),
@@ -83,7 +83,7 @@ def test_get_request_real_time_info_bus():
 
 def test_get_request_real_time_info_subway_is_none():
     # given
-    expect_subway_realtimeinfo = SubwayRealTimeInfo.mock()
+    expect_subway_realtimeinfo = SubwayRequestArrivalInfo.mock()
     subway_path_dict = create_mock_subway_path(expect_subway_realtimeinfo)
     subway_path_dict["transports"] = []
     mock_subpath_list = [

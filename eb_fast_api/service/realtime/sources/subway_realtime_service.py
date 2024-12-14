@@ -1,7 +1,7 @@
 from httpx import AsyncClient, Response
 from eb_fast_api.env.sources.env import ENV_API
 from eb_fast_api.snippets.sources import dictionary, eb_datetime
-from eb_fast_api.domain.realtime.sources.realtime_schema import RealTimeInfo
+from eb_fast_api.service.realtime.sources.realtime_service_schema import RealTimeInfo
 from datetime import datetime
 
 
@@ -24,6 +24,10 @@ SubwayID = {
 }
 
 
+def get_date_time_now() -> datetime:
+    return eb_datetime.get_datetime_now()
+
+
 async def get_seoul_subway_realtime_info(
     station_name: str,
 ) -> Response:
@@ -32,10 +36,6 @@ async def get_seoul_subway_realtime_info(
     async with AsyncClient() as client:
         response = await client.get(url=url)
         return response
-
-
-def get_date_time_now() -> datetime:
-    return eb_datetime.get_datetime_now()
 
 
 def filter_subway_realtime_data(

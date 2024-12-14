@@ -4,11 +4,11 @@ from eb_fast_api.snippets.sources import eb_datetime
 from eb_fast_api.snippets.sources import dictionary
 
 
-class RequestRealTimeInfo:
+class RequestArrivalInfo:
     station_name: str
 
 
-class BusRealTimeInfo(RequestRealTimeInfo):
+class BusRequestArrivalInfo(RequestArrivalInfo):
     station_id: int
 
     def __init__(
@@ -33,7 +33,7 @@ class BusRealTimeInfo(RequestRealTimeInfo):
         return self.station_id == other.station_id
 
 
-class SubwayRealTimeInfo(RequestRealTimeInfo):
+class SubwayRequestArrivalInfo(RequestArrivalInfo):
     line_name: str
     direction: int
 
@@ -95,7 +95,7 @@ class NotificationTransport:
     noti_content: NotificationTransportContent
     noti_start_time: datetime  # only time
     noti_end_time: datetime  # only time
-    request_real_time_info: RequestRealTimeInfo
+    request_real_time_info: RequestArrivalInfo
 
     def __init__(
         self,
@@ -104,7 +104,7 @@ class NotificationTransport:
         noti_content: NotificationTransportContent,
         noti_start_time: datetime,
         noti_end_time: datetime,
-        request_real_time_info: RequestRealTimeInfo,
+        request_real_time_info: RequestArrivalInfo,
     ):
         self.schedule_id = schedule_id
         self.user_email = user_email
@@ -126,18 +126,18 @@ class NotificationTransport:
     def get_request_real_time_info(
         cls,
         subpath_list: List[dict],
-    ) -> Optional[RequestRealTimeInfo]:
+    ) -> Optional[RequestArrivalInfo]:
         for subpath in subpath_list:
             try:
                 type = subpath["type"]
                 if type == 1:
-                    return SubwayRealTimeInfo(
+                    return SubwayRequestArrivalInfo(
                         station_name=subpath["startName"],
                         line_name=subpath["transports"][0]["subwayType"],
                         direction=subpath["way_code"],
                     )
                 elif type == 2:
-                    return BusRealTimeInfo(
+                    return BusRequestArrivalInfo(
                         station_id=subpath["start_station_id"],
                         station_name=subpath["startName"],
                     )
@@ -189,7 +189,7 @@ class NotificationTransport:
     def create_request_real_time_info(
         cls,
         path_dict: dict,
-    ) -> Optional[RequestRealTimeInfo]:
+    ) -> Optional[RequestArrivalInfo]:
         subpath_list = dictionary.safeDict(["subPaths"], path_dict)
         if subpath_list == None:
             return None
@@ -234,7 +234,7 @@ class NotificationTransport:
         if request_real_time_info == None:
             return None
 
-        isBus = isinstance(request_real_time_info, BusRealTimeInfo)
+        isBus = isinstance(request_real_time_info, BusRequestArrivalInfo)
         transport_type = "버스" if isBus else "지하철"
 
         noti_content = NotificationTransportContent(
@@ -261,5 +261,5 @@ class NotificationTransport:
             noti_content=NotificationTransportContent.mock(),
             noti_start_time=datetime.now(),
             noti_end_time=datetime.now(),
-            request_real_time_info=SubwayRealTimeInfo.mock(),
+            request_real_time_info=SubwayRequestArrivalInfo.mock(),
         )

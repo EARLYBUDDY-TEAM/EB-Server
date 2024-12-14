@@ -27,14 +27,14 @@ class NotificationProvider(ABC):
                 break
         heapq.heapify(self.data)
 
-    def delete_schedule(
+    def delete_notification(
         self,
         schedule_id,
     ):
         self.remove(schedule_id=schedule_id)
 
     @abstractmethod
-    def add_schedule(
+    def add_notification(
         self,
         noti_schedule,
         now,
@@ -42,7 +42,7 @@ class NotificationProvider(ABC):
         pass
 
     @abstractmethod
-    def get_schedule(
+    def get_notification(
         self,
         now: datetime,
     ):

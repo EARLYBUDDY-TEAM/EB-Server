@@ -11,19 +11,18 @@ from datetime import timedelta
 
 def test_notification_schedule_provider_add_delete():
     # given
-    mock_now = eb_datetime.get_datetime_now()
-    patcher = med.patcher_get_datetime_now(mock_now)
+    now = eb_datetime.get_datetime_now()
+    patcher = med.patcher_get_datetime_now(now)
     patcher.start()
 
     noti_schedule_provider = NotificationScheduleProvider()
-    noti_schedule = NotificationSchedule.mock()
-    now = eb_datetime.get_datetime_now()
+    noti_schedule = NotificationSchedule.mock(schedule_time=now)
 
     # when, then
-    noti_schedule_provider.add_schedule(noti_schedule=noti_schedule, now=mock_now)
+    noti_schedule_provider.add_notification(noti_schedule=noti_schedule, now=now)
     assert noti_schedule_provider.data[0] == noti_schedule
 
-    noti_schedule_provider.delete_schedule(schedule_id=noti_schedule.schedule_id)
+    noti_schedule_provider.delete_notification(schedule_id=noti_schedule.schedule_id)
     assert len(noti_schedule_provider.data) == 0
 
     patcher.stop()
@@ -47,10 +46,10 @@ def test_notification_schedule_provider_get_schedule():
     ]
     noti_schedule_provider = NotificationScheduleProvider()
     for noti_schedule in noti_schedule_list:
-        noti_schedule_provider.add_schedule(noti_schedule=noti_schedule, now=now)
+        noti_schedule_provider.add_notification(noti_schedule=noti_schedule, now=now)
 
     # when
-    noti_schedule_list = noti_schedule_provider.get_schedule(now=now)
+    noti_schedule_list = noti_schedule_provider.get_notification(now=now)
 
     # then
     assert len(noti_schedule_list) == 1
