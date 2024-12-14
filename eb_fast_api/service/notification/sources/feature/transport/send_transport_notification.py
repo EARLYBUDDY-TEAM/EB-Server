@@ -1,9 +1,9 @@
 from eb_fast_api.service.notification.sources.feature import fcm_feature as ff
 from eb_fast_api.service.notification.sources.schema.notification_transport import (
     NotificationTransportContent,
-    RequestArrivalInfo,
-    BusRequestArrivalInfo,
-    SubwayRequestArrivalInfo,
+    RequestRealTimeInfo,
+    BusRequestRealTimeInfo,
+    SubwayRequestRealTimeInfo,
 )
 from eb_fast_api.service.notification.sources.provider.notification_transport_provider import (
     noti_transport_provider,
@@ -11,31 +11,12 @@ from eb_fast_api.service.notification.sources.provider.notification_transport_pr
 from datetime import datetime
 from eb_fast_api.snippets.sources.logger import logger
 from eb_fast_api.database.sources.database import EBDataBase
-from typing import Optional
+from eb_fast_api.service.notification.sources.feature.transport import (
+    notification_transport_content as ntc,
+)
 
 
-# def get_bus_arrival_info(
-#     bu: BusRealTimeInfo,
-# ):
-#     pass
-
-
-# # def get_arrival_info(
-# #     request_real_time_info: RequestRealTimeInfo,
-# # ):
-# #     if isinstance(request_real_time_info, RequestRealTimeInfoBus):
-
-# #     pass
-
-
-def make_transport_notification_body(
-    noti_content: NotificationTransportContent,
-) -> Optional[str]:
-    # {버스 or 지하철} {202번} {역 or 정류장} 도착까지 {30}분 남았습니다.
-    return f"{noti_content.transport_type} {noti_content.station_name} 도착까지 {noti_content.arrival_before}분 남았습니다."
-
-
-def send_transport_notification(
+async def send_transport_notification(
     now: datetime,
     provider=noti_transport_provider,
 ):
@@ -47,7 +28,7 @@ def send_transport_notification(
     for noti_transport in noti_transport_list:
         noti_content = noti_transport.noti_content
 
-        body = make_transport_notification_body(noti_content=noti_content)
+        body = ntc.make_body(noti_content=noti_content)
         if body == None:
             provider.add(noti_schedule=noti_transport, now=now)
             continue

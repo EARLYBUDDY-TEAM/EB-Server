@@ -1,5 +1,5 @@
 from unittest.mock import patch
-from eb_fast_api.service.realtime.sources import subway_realtime_service as sas
+from eb_fast_api.service.realtime.sources.service import subway_realtime_service as sas
 
 
 def patcher_filter_subway_realtime_data(

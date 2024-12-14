@@ -3,6 +3,10 @@ from typing import List, Optional
 from eb_fast_api.service.realtime.sources.realtime_service_schema import RealTimeInfo
 from eb_fast_api.env.sources.env import ENV_API
 from eb_fast_api.snippets.sources import dictionary
+from eb_fast_api.service.realtime.sources.error.bus_realtime_error import (
+    GetBusStationRealtimeInfoError,
+    DecodeRealtimeInfoListError,
+)
 
 
 async def get_bus_station_realtime_info(
@@ -65,3 +69,23 @@ def decode_realtime_info_list(
     arrival_info_list.sort(key=lambda x: x.arrival_sec1 or float("inf"))
 
     return arrival_info_list
+
+
+async def request(
+    station_id: int,
+) -> List[RealTimeInfo]:
+    try:
+        response = await get_bus_station_realtime_info(
+            station_id=station_id,
+        )
+    except Exception as e:
+        print(e)
+        raise GetBusStationRealtimeInfoError()
+
+    try:
+        response_json = response.json()
+        real_time_info_list = decode_realtime_info_list(json=response_json)
+        return real_time_info_list
+    except Exception as e:
+        print(e)
+        raise DecodeRealtimeInfoListError()

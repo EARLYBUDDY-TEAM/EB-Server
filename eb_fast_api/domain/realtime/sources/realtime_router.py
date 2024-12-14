@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from eb_fast_api.service.realtime.sources import bus_realtime_service as bas
-from eb_fast_api.service.realtime.sources import subway_realtime_service as sas
+from eb_fast_api.service.realtime.sources.service import bus_realtime_service as bas
+from eb_fast_api.service.realtime.sources.service import subway_realtime_service as sas
 from eb_fast_api.domain.realtime.sources.realtime_schema import RealTimeInfoList
 from eb_fast_api.domain.realtime.sources import realtime_feature
 
@@ -13,25 +13,24 @@ async def get_bus_realtime_info(
     station_id: int,
 ) -> RealTimeInfoList:
     try:
-        response_json = await realtime_feature.get_bus_station_realtime_json(
-            station_id=station_id,
-        )
+        result = await bas.request(station_id=station_id)
+        return RealTimeInfoList(real_time_info_list=result)
     except Exception as e:
-        print(e)
-        raise HTTPException(
-            status_code=500,
-            detail="오디세이 서버 오류",
-        )
-
-    try:
-        real_time_info_list = bas.decode_realtime_info_list(json=response_json)
-        return RealTimeInfoList(real_time_info_list=real_time_info_list)
-    except Exception as e:
-        print(e)
-        raise HTTPException(
-            status_code=501,
-            detail="디코딩 오류",
-        )
+        if isinstance(e, bas.GetBusStationRealtimeInfoError):
+            raise HTTPException(
+                status_code=500,
+                detail="오디세이 서버 오류",
+            )
+        elif isinstance(e, bas.DecodeRealtimeInfoListError):
+            raise HTTPException(
+                status_code=501,
+                detail="디코딩 오류",
+            )
+        else:
+            raise HTTPException(
+                status_code=502,
+                detail="알 수 없는 오류",
+            )
 
 
 @router.get("/get_subway_realtime_info")

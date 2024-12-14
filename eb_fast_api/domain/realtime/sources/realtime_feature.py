@@ -1,5 +1,5 @@
-from eb_fast_api.service.realtime.sources import bus_realtime_service as bas
-from eb_fast_api.service.realtime.sources import subway_realtime_service as sas
+from eb_fast_api.service.realtime.sources.service import bus_realtime_service as bas
+from eb_fast_api.service.realtime.sources.service import subway_realtime_service as sas
 
 
 async def get_bus_station_realtime_json(

@@ -4,20 +4,23 @@ from eb_fast_api.snippets.sources import eb_datetime
 from eb_fast_api.snippets.sources import dictionary
 
 
-class RequestArrivalInfo:
+class RequestRealTimeInfo:
     station_name: str
+    dup: dict  # {버스번호 : 버스 번호판}, {transport_number : transport_plate}
 
 
-class BusRequestArrivalInfo(RequestArrivalInfo):
+class BusRequestRealTimeInfo(RequestRealTimeInfo):
     station_id: int
 
     def __init__(
         self,
         station_id: int,
         station_name: str,
+        dup: dict = dict(),
     ):
         self.station_id = station_id
         self.station_name = station_name
+        self.dup = dup
 
     @classmethod
     def mock(cls) -> Self:
@@ -33,7 +36,7 @@ class BusRequestArrivalInfo(RequestArrivalInfo):
         return self.station_id == other.station_id
 
 
-class SubwayRequestArrivalInfo(RequestArrivalInfo):
+class SubwayRequestRealTimeInfo(RequestRealTimeInfo):
     line_name: str
     direction: int
 
@@ -42,10 +45,12 @@ class SubwayRequestArrivalInfo(RequestArrivalInfo):
         station_name: str,
         line_name: str,
         direction: int,
+        dup: dict = dict(),
     ):
         self.station_name = station_name
         self.line_name = line_name
         self.direction = direction
+        self.dup = dup
 
     @classmethod
     def mock(cls) -> Self:
@@ -53,6 +58,7 @@ class SubwayRequestArrivalInfo(RequestArrivalInfo):
             station_name="station_name",
             line_name="line_name",
             direction=1,
+            dup=dict(),
         )
 
     def __eq__(self, other):
@@ -66,12 +72,6 @@ class SubwayRequestArrivalInfo(RequestArrivalInfo):
         return flag1 and flag2 and flag3
 
 
-# title
-# {스케줄 이름, schedule_name}
-
-
-# body
-# {버스 or 지하철, transport_type} {202번} {역 or 정류장, station_name} 도착까지 {30, noti_arrival_before}분 남았습니다.
 class NotificationTransportContent:
     schedule_name: str
     arrival_before: int
@@ -95,8 +95,8 @@ class NotificationTransport:
     noti_content: NotificationTransportContent
     noti_start_time: datetime  # only time
     noti_end_time: datetime  # only time
-    request_real_time_info: RequestArrivalInfo
-
+    request_real_time_info: RequestRealTimeInfo
+    
     def __init__(
         self,
         schedule_id: str,
@@ -104,7 +104,7 @@ class NotificationTransport:
         noti_content: NotificationTransportContent,
         noti_start_time: datetime,
         noti_end_time: datetime,
-        request_real_time_info: RequestArrivalInfo,
+        request_real_time_info: RequestRealTimeInfo,
     ):
         self.schedule_id = schedule_id
         self.user_email = user_email
@@ -126,18 +126,18 @@ class NotificationTransport:
     def get_request_real_time_info(
         cls,
         subpath_list: List[dict],
-    ) -> Optional[RequestArrivalInfo]:
+    ) -> Optional[RequestRealTimeInfo]:
         for subpath in subpath_list:
             try:
                 type = subpath["type"]
                 if type == 1:
-                    return SubwayRequestArrivalInfo(
+                    return SubwayRequestRealTimeInfo(
                         station_name=subpath["startName"],
                         line_name=subpath["transports"][0]["subwayType"],
                         direction=subpath["way_code"],
                     )
                 elif type == 2:
-                    return BusRequestArrivalInfo(
+                    return BusRequestRealTimeInfo(
                         station_id=subpath["start_station_id"],
                         station_name=subpath["startName"],
                     )
@@ -189,7 +189,7 @@ class NotificationTransport:
     def create_request_real_time_info(
         cls,
         path_dict: dict,
-    ) -> Optional[RequestArrivalInfo]:
+    ) -> Optional[RequestRealTimeInfo]:
         subpath_list = dictionary.safeDict(["subPaths"], path_dict)
         if subpath_list == None:
             return None
@@ -234,7 +234,7 @@ class NotificationTransport:
         if request_real_time_info == None:
             return None
 
-        isBus = isinstance(request_real_time_info, BusRequestArrivalInfo)
+        isBus = isinstance(request_real_time_info, BusRequestRealTimeInfo)
         transport_type = "버스" if isBus else "지하철"
 
         noti_content = NotificationTransportContent(
@@ -261,5 +261,5 @@ class NotificationTransport:
             noti_content=NotificationTransportContent.mock(),
             noti_start_time=datetime.now(),
             noti_end_time=datetime.now(),
-            request_real_time_info=SubwayRequestArrivalInfo.mock(),
+            request_real_time_info=SubwayRequestRealTimeInfo.mock(),
         )
