@@ -9,9 +9,9 @@ def get_datetime_now() -> datetime:
     return datetime.now(KST).replace(tzinfo=None, microsecond=0)
 
 
-def get_only_time(dt: datetime) -> datetime:
+def get_only_time(dt: datetime):
     return dt.time().replace(second=0, microsecond=0)
 
 
-def get_now_time() -> datetime:
+def get_now_time() -> datetime.time:
     return get_only_time(get_datetime_now())

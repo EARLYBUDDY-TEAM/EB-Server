@@ -1,4 +1,4 @@
-from eb_fast_api.service.notification.sources.feature.send_schedule_notification import (
+from eb_fast_api.service.notification.sources.feature.schedule.send_schedule_notification import (
     send_schedule_notification,
 )
 from eb_fast_api.service.notification.sources.schema.notification_schedule import (
@@ -28,7 +28,7 @@ def test_send_schedule_notification():
     mock_noti_schedule = NotificationSchedule.mock(schedule_time=now)
     mock_provider = NotificationScheduleProvider()
     mock_provider.add_notification(
-        noti_schedule=mock_noti_schedule,
+        noti_schema=mock_noti_schedule,
         now=now,
     )
     patcher_get_notification = mnsp.patcher_get_notification()

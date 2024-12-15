@@ -12,9 +12,9 @@ class NotificationProvider(ABC):
 
     def add(
         self,
-        noti_schedule,
+        noti_schema,
     ):
-        heapq.heappush(self.data, noti_schedule)
+        heapq.heappush(self.data, noti_schema)
 
     def pop(self):
         return heapq.heappop(self.data)
@@ -36,7 +36,7 @@ class NotificationProvider(ABC):
     @abstractmethod
     def add_notification(
         self,
-        noti_schedule,
+        noti_schema,
         now,
     ):
         pass

@@ -29,6 +29,6 @@ def create_notification_schedule(
         return
 
     noti_schedule_provider.add_notification(
-        noti_schedule=noti_schedule,
+        noti_schema=noti_schedule,
         now=eb_datetime.get_datetime_now(),
     )

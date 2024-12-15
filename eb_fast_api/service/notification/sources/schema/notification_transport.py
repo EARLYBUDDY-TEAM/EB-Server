@@ -4,22 +4,24 @@ from eb_fast_api.snippets.sources import eb_datetime
 from eb_fast_api.snippets.sources import dictionary
 
 
-class ArrivalInfo:
-    transport_number: str
-    arrival_minute: int
-
-    def __init__(
-        self,
-        transport_number: str,
-        arrival_minute: int,
-    ):
-        self.transport_number = transport_number
-        self.arrival_minute = arrival_minute
-
-
 class RequestRealTimeInfo:
     station_name: str
     dup: dict  # {버스번호 : 버스 번호판}, {transport_number : transport_plate}
+
+    def __init__(
+        self,
+        station_name: str,
+        dup: dict = dict(),
+    ):
+        self.station_name = station_name
+        self.dup = dup
+
+    @classmethod
+    def mock(cls) -> Self:
+        return cls(
+            station_name="station_name",
+            dup=dict(),
+        )
 
 
 class BusRequestRealTimeInfo(RequestRealTimeInfo):
@@ -91,6 +93,18 @@ class NotificationTransportContent:
     transport_type: str
     station_name: str
 
+    def __init__(
+        self,
+        schedule_name: str,
+        arrival_before: int,
+        transport_type: str,
+        station_name: str,
+    ):
+        self.schedule_name = schedule_name
+        self.arrival_before = arrival_before
+        self.transport_type = transport_type
+        self.station_name = station_name
+
     @classmethod
     def mock(cls) -> Self:
         return cls(
@@ -108,7 +122,7 @@ class NotificationTransport:
     noti_content: NotificationTransportContent
     noti_start_time: datetime  # only time
     noti_end_time: datetime  # only time
-    request_real_time_info: RequestRealTimeInfo
+    request_realtime_info: RequestRealTimeInfo
 
     def __init__(
         self,
@@ -117,14 +131,14 @@ class NotificationTransport:
         noti_content: NotificationTransportContent,
         noti_start_time: datetime,
         noti_end_time: datetime,
-        request_real_time_info: RequestRealTimeInfo,
+        request_realtime_info: RequestRealTimeInfo,
     ):
         self.schedule_id = schedule_id
         self.user_email = user_email
         self.noti_content = noti_content
         self.noti_start_time = noti_start_time
         self.noti_end_time = noti_end_time
-        self.request_real_time_info = request_real_time_info
+        self.request_realtime_info = request_realtime_info
 
     def __lt__(self, other):
         return self.noti_start_time < other.noti_start_time
@@ -263,16 +277,27 @@ class NotificationTransport:
             noti_content=noti_content,
             noti_start_time=noti_start_time,
             noti_end_time=noti_end_time,
-            request_real_time_info=request_real_time_info,
+            request_realtime_info=request_real_time_info,
         )
 
     @classmethod
-    def mock(cls) -> Self:
+    def mock_subway(cls) -> Self:
         return NotificationTransport(
             schedule_id="schedule_id",
             user_email="user_email",
             noti_content=NotificationTransportContent.mock(),
-            noti_start_time=datetime.now(),
-            noti_end_time=datetime.now(),
-            request_real_time_info=SubwayRequestRealTimeInfo.mock(),
+            noti_start_time=datetime.now().time(),
+            noti_end_time=datetime.now().time(),
+            request_realtime_info=SubwayRequestRealTimeInfo.mock(),
+        )
+
+    @classmethod
+    def mock_bus(cls) -> Self:
+        return NotificationTransport(
+            schedule_id="schedule_id",
+            user_email="user_email",
+            noti_content=NotificationTransportContent.mock(),
+            noti_start_time=datetime.now().time(),
+            noti_end_time=datetime.now().time(),
+            request_realtime_info=BusRequestRealTimeInfo.mock(),
         )

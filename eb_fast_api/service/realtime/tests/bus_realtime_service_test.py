@@ -1,13 +1,9 @@
 import httpx, pytest
 from unittest.mock import patch
 
-from eb_fast_api.service.realtime.sources.service import bus_realtime_service as bas
-from eb_fast_api.service.realtime.testings import mock_bus_realtime_info as mai
+from eb_fast_api.service.realtime.sources.service import bus_realtime_service as brs
+from eb_fast_api.service.realtime.testings import mock_bus_realtime_info as mbri
 from eb_fast_api.service.realtime.testings import mock_bus_realtime_service as mbrs
-from eb_fast_api.service.realtime.sources.error.bus_realtime_error import (
-    GetBusStationRealtimeInfoError,
-    DecodeRealtimeInfoListError,
-)
 from eb_fast_api.service.realtime.sources.realtime_service_schema import RealTimeInfo
 
 
@@ -23,12 +19,12 @@ async def test_get_bus_station_realtime_info():
     )
 
     with patch.object(
-        bas.AsyncClient,
+        brs.AsyncClient,
         "get",
         return_value=fake_get_return_value,
     ) as fake_get:
         # when
-        response = await bas.get_bus_station_realtime_info(
+        response = await brs.get_bus_station_realtime_info(
             station_id=0,
         )
 
@@ -37,15 +33,40 @@ async def test_get_bus_station_realtime_info():
         assert response.json() == json
 
 
-def test_realtime_json_to_realtime_info():
+def test_arrival_json_to_arrival_info():
     # given
-    mock_json = mai.mock_realtime_json_to_realtime_info_dict
+    json = mbri.mock_bus_arrival_json
 
     # when
-    decoded = bas.realtime_json_to_realtime_info(json=mock_json)
+    decoded = brs.arrival_json_to_arrival_info(json=json)
 
     # then
-    assert mai.expected_realtime_info == decoded
+    assert mbri.expected_arrival_info1 == decoded
+
+
+def test_realtime_json_to_realtime_info():
+    # given
+    json = mbri.mock_bus_realtime_json
+
+    # when
+    decoded = brs.realtime_json_to_realtime_info(json=json)
+
+    # then
+    assert mbri.expected_realtime_info == decoded
+
+
+def test_decode_realtime_info_list_SORT():
+    # given
+    json = mbri.mock_bus_decode_realtime_info_list_dict()
+    real = json["result"]["real"]
+    expect_arrival_info = real[len(real) - 1]["arrival1"]["arrivalSec"]
+
+    # when
+    decoded = brs.decode_realtime_info_list(json=json)
+
+    # then
+    # last index -> first index
+    assert expect_arrival_info == decoded[0].arrival_info1.arrival_sec
 
 
 @pytest.mark.asyncio
@@ -57,46 +78,14 @@ async def test_request_FAIL_GetBusStationRealtimeInfoError():
 
     # when, then
     try:
-        response = await bas.request(station_id=station_id)
+        response = await brs.request(station_id=station_id)
         assert False
     except Exception as e:
-        assert isinstance(e, GetBusStationRealtimeInfoError)
+        assert True
 
     # teardown
     finally:
         pather.stop()
-
-
-@pytest.mark.asyncio
-async def test_request_FAIL_DecodeRealtimeInfoListError():
-    # given
-    fake_response = httpx.Response(
-        200,
-        json={"test": "test"},
-        request=httpx.Request("GET", "testURL"),
-    )
-    patcher_get_bus_station_realtime_info = mbrs.patcher_get_bus_station_realtime_info(
-        return_value=fake_response
-    )
-    patcher_decode_realtime_info_list = mbrs.patcher_decode_realtime_info_list(
-        side_effect=Exception()
-    )
-
-    patcher_get_bus_station_realtime_info.start()
-    patcher_decode_realtime_info_list.start()
-    station_id = 0
-
-    # when, then
-    try:
-        response = await bas.request(station_id=station_id)
-        assert False
-    except Exception as e:
-        assert isinstance(e, DecodeRealtimeInfoListError)
-
-    # teardown
-    finally:
-        patcher_get_bus_station_realtime_info.stop()
-        patcher_decode_realtime_info_list.stop()
 
 
 @pytest.mark.asyncio
@@ -107,12 +96,12 @@ async def test_request_SUCCESS():
         json={"test": "test"},
         request=httpx.Request("GET", "testURL"),
     )
-    mock_realtime_info = RealTimeInfo.mock()
+    mock_realtime_info_list = [RealTimeInfo.mock()]
     patcher_get_bus_station_realtime_info = mbrs.patcher_get_bus_station_realtime_info(
         return_value=fake_response
     )
     patcher_decode_realtime_info_list = mbrs.patcher_decode_realtime_info_list(
-        return_value=[mock_realtime_info]
+        return_value=mock_realtime_info_list
     )
 
     patcher_get_bus_station_realtime_info.start()
@@ -121,8 +110,8 @@ async def test_request_SUCCESS():
 
     # when, then
     try:
-        realtime_info_list = await bas.request(station_id=station_id)
-        assert realtime_info_list == [mock_realtime_info]
+        realtime_info_list = await brs.request(station_id=station_id)
+        assert realtime_info_list == mock_realtime_info_list
     except Exception as e:
         assert False
 

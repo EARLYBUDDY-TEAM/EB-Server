@@ -1,8 +1,5 @@
-from eb_fast_api.service.notification.sources.feature.empty_and_add_notification import (
-    bisect_left_schedule,
-    bisect_right_schedule,
-    add_today_schedule_notification,
-    get_all_user,
+from eb_fast_api.service.notification.sources.feature.schedule import (
+    empty_and_add_notification as eaan,
 )
 from eb_fast_api.database.sources.model.models import Schedule
 from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
@@ -81,7 +78,7 @@ class TestEmptyNotification(TestCase):
         self.create_sorted_schedule_dict_list()
 
         # when
-        left_index = bisect_left_schedule(
+        left_index = eaan.bisect_left_schedule(
             schedule_dict_list=self.schedule_dict_list,
             today_date=self.now.date(),
         )
@@ -94,7 +91,7 @@ class TestEmptyNotification(TestCase):
         self.create_sorted_schedule_dict_list()
 
         # when
-        right_index = bisect_right_schedule(
+        right_index = eaan.bisect_right_schedule(
             schedule_dict_list=self.schedule_dict_list,
             today_date=self.now.date(),
         )
@@ -112,7 +109,7 @@ class TestEmptyNotification(TestCase):
         patcher.start()
 
         # when
-        add_today_schedule_notification(
+        eaan.add_today_schedule_notification(
             user_email="",
             schedule_crud=schedule_crud,
             noti_schedule_provider=self.provider,
@@ -134,7 +131,7 @@ class TestEmptyNotification(TestCase):
         patcher.start()
 
         # when
-        add_today_schedule_notification(
+        eaan.add_today_schedule_notification(
             user_email="",
             schedule_crud=schedule_crud,
             noti_schedule_provider=self.provider,
@@ -154,7 +151,7 @@ class TestEmptyNotification(TestCase):
         patcher.start()
 
         # when, then
-        all_user = get_all_user(user_crud=user_crud)
+        all_user = eaan.get_all_user(user_crud=user_crud)
         assert all_user == return_value
 
         # teardown

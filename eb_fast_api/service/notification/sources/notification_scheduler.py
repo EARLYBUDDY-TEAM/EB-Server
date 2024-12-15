@@ -1,8 +1,8 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from eb_fast_api.service.notification.sources.feature.send_schedule_notification import (
+from eb_fast_api.service.notification.sources.feature.schedule.send_schedule_notification import (
     send_schedule_notification,
 )
-from eb_fast_api.service.notification.sources.feature.empty_and_add_notification import (
+from eb_fast_api.service.notification.sources.feature.schedule.empty_and_add_notification import (
     empty_and_add_all_user_notification,
 )
 from eb_fast_api.service.notification.sources.feature.transport.send_transport_notification import (

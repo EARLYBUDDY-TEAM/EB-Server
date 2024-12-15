@@ -8,14 +8,14 @@ from eb_fast_api.service.notification.sources.provider.notification_provider imp
 class NotificationTransportProvider(NotificationProvider):
     def add_notification(
         self,
-        noti_schedule,
+        noti_schema,
         now,
     ):
         now_time = eb_datetime.get_only_time(now)
-        if noti_schedule.noti_end_time < now_time:
+        if noti_schema.noti_end_time < now_time:
             return
 
-        self.add(noti_schedule)
+        self.add(noti_schema)
 
     def get_notification(
         self,
