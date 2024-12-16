@@ -4,7 +4,7 @@ from eb_fast_api.domain.schedule.sources import schedule_router
 
 def patcher_create_notification_schedule_SUCCESS():
     patcher = patch.object(
-        schedule_router.cns,
+        schedule_router.cn,
         "create_notification_schedule",
         return_value=None,
     )
@@ -14,7 +14,7 @@ def patcher_create_notification_schedule_SUCCESS():
 
 def patcher_create_notification_schedule_FAIL():
     patcher = patch.object(
-        schedule_router.cns,
+        schedule_router.cn,
         "create_notification_schedule",
         side_effect=Exception("mock_create_notification_schedule_FAIL"),
     )
@@ -24,7 +24,7 @@ def patcher_create_notification_schedule_FAIL():
 
 def patcher_update_notification_schedule_SUCCESS():
     patcher = patch.object(
-        schedule_router.uns,
+        schedule_router.un,
         "update_notification_schedule",
         return_value=None,
     )
@@ -34,7 +34,7 @@ def patcher_update_notification_schedule_SUCCESS():
 
 def patcher_update_notification_schedule_FAIL():
     patcher = patch.object(
-        schedule_router.uns,
+        schedule_router.un,
         "update_notification_schedule",
         side_effect=Exception("patcher_update_notification_schedule_FAIL"),
     )
@@ -44,7 +44,7 @@ def patcher_update_notification_schedule_FAIL():
 
 def patcher_delete_notification_schedule_SUCCESS():
     patcher = patch.object(
-        schedule_router.dns,
+        schedule_router.dn,
         "delete_notification_schedule",
         return_value=None,
     )
@@ -54,7 +54,7 @@ def patcher_delete_notification_schedule_SUCCESS():
 
 def patcher_delete_notification_schedule_FAIL():
     patcher = patch.object(
-        schedule_router.dns,
+        schedule_router.dn,
         "delete_notification_schedule",
         side_effect=Exception("patcher_delete_notification_schedule_FAIL"),
     )

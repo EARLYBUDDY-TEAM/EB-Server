@@ -7,24 +7,28 @@ from eb_fast_api.domain.schedule.sources.schedule_feature.create import (
     create_schedule as cs,
 )
 from eb_fast_api.domain.schedule.sources.schedule_feature.create import (
-    create_notification_schedule as cns,
+    create_notification as cn,
 )
 from eb_fast_api.domain.schedule.sources.schedule_feature.update import (
     update_schedule as us,
 )
 from eb_fast_api.domain.schedule.sources.schedule_feature.update import (
-    update_notification_schedule as uns,
+    update_notification as un,
 )
 from eb_fast_api.domain.schedule.sources.schedule_feature.delete import (
     delete_schedule as ds,
 )
 from eb_fast_api.domain.schedule.sources.schedule_feature.delete import (
-    delete_notification_schedule as dns,
+    delete_notification as dn,
 )
 from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
     noti_schedule_provider,
 )
+from eb_fast_api.service.notification.sources.provider.notification_transport_provider import (
+    noti_transport_provider,
+)
 from eb_fast_api.snippets.sources.logger import logger
+from eb_fast_api.snippets.sources import eb_datetime
 
 
 router = APIRouter(prefix="/schedule")
@@ -56,17 +60,34 @@ def create_schedule(
             detail="서버 스케줄 생성 에러",
         )
 
+    now = eb_datetime.get_datetime_now()
     try:
-        cns.create_notification_schedule(
+        cn.create_notification_schedule(
             user_email=userEmail,
             schedule_info=scheduleInfo,
             noti_schedule_provider=noti_schedule_provider,
+            now=now,
         )
     except Exception as e:
         logger.debug(f"schedule_router, create_notification_schedule: {e}")
         raise HTTPException(
             status_code=401,
             detail="스케줄 알림 생성 에러",
+        )
+
+    try:
+        cn.create_notification_transport(
+            user_email=userEmail,
+            schedule_info=scheduleInfo,
+            path_info=pathInfo,
+            noti_transport_provider=noti_transport_provider,
+            now=now,
+        )
+    except Exception as e:
+        logger.debug(f"schedule_router, create_notification_transport: {e}")
+        raise HTTPException(
+            status_code=402,
+            detail="배차 알림 생성 에러",
         )
 
 
@@ -96,17 +117,34 @@ def update_schedule(
             detail="서버 스케줄 수정 에러",
         )
 
+    now = eb_datetime.get_datetime_now()
     try:
-        uns.update_notification_schedule(
+        un.update_notification_schedule(
             user_email=userEmail,
             schedule_info=scheduleInfo,
             noti_schedule_provider=noti_schedule_provider,
+            now=now,
         )
     except Exception as e:
         logger.debug(f"schedule_router, update_notification_schedule: {e}")
         raise HTTPException(
             status_code=401,
             detail="스케줄 알림 수정 에러",
+        )
+
+    try:
+        un.update_notification_transport(
+            user_email=userEmail,
+            schedule_info=scheduleInfo,
+            path_info=pathInfo,
+            noti_transport_provider=noti_transport_provider,
+            now=now,
+        )
+    except Exception as e:
+        logger.debug(f"schedule_router, update_notification_transport: {e}")
+        raise HTTPException(
+            status_code=402,
+            detail="배차 알림 수정 에러",
         )
 
 
@@ -132,7 +170,7 @@ def delete_schedule(
         )
 
     try:
-        dns.delete_notification_schedule(
+        dn.delete_notification_schedule(
             schedule_id=schedule_id,
             noti_schedule_provider=noti_schedule_provider,
         )
@@ -141,4 +179,16 @@ def delete_schedule(
         raise HTTPException(
             status_code=401,
             detail="스케줄 알림 삭제 에러",
+        )
+
+    try:
+        dn.delete_notification_transport(
+            schedule_id=schedule_id,
+            noti_transport_provider=noti_transport_provider,
+        )
+    except Exception as e:
+        logger.debug(f"schedule_router, delete_notification_transport: {e}")
+        raise HTTPException(
+            status_code=402,
+            detail="배차 알림 삭제 에러",
         )
