@@ -8,21 +8,23 @@ from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.service.notification.sources.feature.transport import (
     notification_transport_content as ntc,
 )
+from eb_fast_api.snippets.sources import eb_datetime
 
 
 async def send_transport_notification(
-    now: datetime,
     provider=noti_transport_provider,
 ):
+    now = eb_datetime.get_datetime_now()
     logger.debug(f"START send_transport_notification, now : {now}")
     logger.debug(f"transport provider data count : {len(provider.data)}")
+
     noti_transport_list = provider.get_notification(now=now)
     user_crud = EBDataBase.user.createCRUD()
 
     for noti_transport in noti_transport_list:
         noti_content = noti_transport.noti_content
 
-        body = ntc.make_body(noti_content=noti_content)
+        body = await ntc.make_body(noti_content=noti_content)
         if body == None:
             provider.add(noti_schema=noti_transport, now=now)
             continue

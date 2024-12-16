@@ -4,13 +4,13 @@ from eb_fast_api.service.notification.sources.provider.notification_schedule_pro
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.snippets.sources.logger import logger
 from eb_fast_api.service.notification.sources.feature.common import fcm_feature as ff
-from datetime import datetime
+from eb_fast_api.snippets.sources import eb_datetime
 
 
 def send_schedule_notification(
-    now: datetime,
     provider=noti_schedule_provider,
 ):
+    now = eb_datetime.get_datetime_now()
     logger.debug(f"START send_schedule_notification, now : {now}")
     logger.debug(f"schedule provider data count : {len(provider.data)}")
 
