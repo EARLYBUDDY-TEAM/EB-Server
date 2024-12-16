@@ -8,7 +8,9 @@ tmp_datetime = datetime.fromisoformat(datetime_str)
 mock_now = tmp_datetime.replace(microsecond=0, tzinfo=None)
 
 
-def patcher_get_datetime_now(return_value: datetime = mock_now):
+def patcher_get_datetime_now(
+    return_value: datetime = mock_now,
+):
     def mock_get_datetime_now():
         return return_value.replace(
             tzinfo=None,

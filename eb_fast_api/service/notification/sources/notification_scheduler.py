@@ -2,7 +2,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from eb_fast_api.service.notification.sources.feature.schedule.send_schedule_notification import (
     send_schedule_notification,
 )
-from eb_fast_api.service.notification.sources.feature.schedule.empty_and_add_notification import (
+from eb_fast_api.service.notification.sources.feature.common.empty_and_add.empty_and_add_notification import (
     empty_and_add_all_user_notification,
 )
 from eb_fast_api.service.notification.sources.feature.transport.send_transport_notification import (
@@ -62,10 +62,10 @@ def initialize_notification_scheduler():
         scheduler=scheduler,
     )
 
-    # add_job_send_transport_notification(
-    #     now=now,
-    #     scheduler=scheduler,
-    # )
+    add_job_send_transport_notification(
+        now=now,
+        scheduler=scheduler,
+    )
 
     add_job_empty_notification(scheduler)
     scheduler.start()

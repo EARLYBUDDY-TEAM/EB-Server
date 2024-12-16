@@ -1,28 +1,23 @@
-from eb_fast_api.service.notification.sources.feature.schedule import (
-    empty_and_add_notification as eaan,
+from eb_fast_api.service.notification.sources.feature.common.empty_and_add import (
+    bisect_schedule as bs,
 )
 from eb_fast_api.database.sources.model.models import Schedule
-from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
-    NotificationScheduleProvider,
-)
-from eb_fast_api.database.sources.database import EBDataBase
-from eb_fast_api.database.testings.mock_crud import mock_schedule_crud as msc
-from eb_fast_api.database.testings.mock_crud import mock_user_crud as muc
 from datetime import timedelta
 from unittest import TestCase
 from eb_fast_api.snippets.testings import mock_eb_datetime as med
 
 
-class TestEmptyNotification(TestCase):
+class TestBisectSchedule(TestCase):
     schedule_dict_list = []
-    provider = NotificationScheduleProvider()
-
     now = med.mock_now
 
     @classmethod
     def setUpClass(cls):
-        cls.patcher_get_datetime_now = med.patcher_get_datetime_now()
+        cls.patcher_get_datetime_now = med.patcher_get_datetime_now(
+            return_value=med.mock_now,
+        )
         cls.patcher_get_datetime_now.start()
+        cls.now = med.mock_now
 
     @classmethod
     def tearDownClass(cls):
@@ -31,7 +26,6 @@ class TestEmptyNotification(TestCase):
 
     def tearDown(self):
         self.schedule_dict_list = []
-        self.provider.data = []
 
     def create_sorted_schedule_dict_list(self):
         tmp_schedule_list = []
@@ -78,7 +72,7 @@ class TestEmptyNotification(TestCase):
         self.create_sorted_schedule_dict_list()
 
         # when
-        left_index = eaan.bisect_left_schedule(
+        left_index = bs.get_left_index(
             schedule_dict_list=self.schedule_dict_list,
             today_date=self.now.date(),
         )
@@ -91,68 +85,10 @@ class TestEmptyNotification(TestCase):
         self.create_sorted_schedule_dict_list()
 
         # when
-        right_index = eaan.bisect_right_schedule(
+        right_index = bs.get_right_index(
             schedule_dict_list=self.schedule_dict_list,
             today_date=self.now.date(),
         )
 
         # then
         assert right_index == 10
-
-    def test_add_today_schedule_notification_exist_today_schedule(self):
-        # given
-        schedule_crud = EBDataBase.schedule.createCRUD()
-        self.create_sorted_schedule_dict_list()
-        patcher = msc.patcher_schedule_crud_read_all(
-            return_value=self.schedule_dict_list,
-        )
-        patcher.start()
-
-        # when
-        eaan.add_today_schedule_notification(
-            user_email="",
-            schedule_crud=schedule_crud,
-            noti_schedule_provider=self.provider,
-        )
-
-        # then
-        assert len(self.provider.data) == 5
-
-        # teardown
-        patcher.stop()
-
-    def test_empty_notification_not_exist_today_schedule(self):
-        # given
-        schedule_crud = EBDataBase.schedule.createCRUD()
-        self.create_sorted_schedule_dict_list_not_exist_today()
-        patcher = msc.patcher_schedule_crud_read_all(
-            return_value=self.schedule_dict_list,
-        )
-        patcher.start()
-
-        # when
-        eaan.add_today_schedule_notification(
-            user_email="",
-            schedule_crud=schedule_crud,
-            noti_schedule_provider=self.provider,
-        )
-
-        # then
-        assert len(self.provider.data) == 0
-
-        # teardown
-        patcher.stop()
-
-    def test_get_all_user(self):
-        # given
-        user_crud = EBDataBase.user.createCRUD()
-        return_value = [{"test": "test"}]
-        patcher = muc.patcher_read_all(return_value=return_value)
-        patcher.start()
-
-        # when, then
-        all_user = eaan.get_all_user(user_crud=user_crud)
-        assert all_user == return_value
-
-        # teardown
-        patcher.stop()

@@ -1,5 +1,5 @@
 from unittest.mock import patch
-from eb_fast_api.service.notification.sources.feature import fcm_feature as ff
+from eb_fast_api.service.notification.sources.feature.common import fcm_feature as ff
 from typing import Optional
 from eb_fast_api.database.sources.crud.cruds import UserCRUD
 

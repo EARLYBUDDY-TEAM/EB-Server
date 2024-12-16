@@ -38,7 +38,7 @@ class NotificationProvider(ABC):
         self,
         noti_schema,
         now,
-    ):
+    ) -> bool:
         pass
 
     @abstractmethod

@@ -175,26 +175,12 @@ class NotificationTransport:
                 return None
 
     @classmethod
-    def is_property_optional(
-        cls,
-        notify_transport: Optional[int],
-        notify_transport_range: Optional[int],
-        path_dict: Optional[dict],
-    ) -> bool:
-        return (
-            notify_transport == None
-            or notify_transport_range == None
-            or path_dict == None
-        )
-
-    @classmethod
     def cal_noti_start_end_time(
         cls,
         schedule_time: datetime,
         notify_transport_range: Optional[int],
+        now: datetime,
     ) -> Optional[tuple]:
-        now = eb_datetime.get_datetime_now()
-
         if now.date() != schedule_time.date():
             print("not today")
             return None
@@ -234,20 +220,15 @@ class NotificationTransport:
         schedule_id: str,
         schedule_name: str,
         schedule_time: datetime,
-        notify_transport: Optional[int],
-        notify_transport_range: Optional[int],
-        path_dict: Optional[dict],
+        notify_transport: int,
+        notify_transport_range: int,
+        path_dict: dict,
+        now: datetime,
     ) -> Optional[Self]:
-        if cls.is_property_optional(
-            notify_transport=notify_transport,
-            notify_transport_range=notify_transport_range,
-            path_dict=path_dict,
-        ):
-            return None
-
         noti_start_end_time = cls.cal_noti_start_end_time(
             schedule_time=schedule_time,
             notify_transport_range=notify_transport_range,
+            now=now,
         )
 
         if noti_start_end_time == None:

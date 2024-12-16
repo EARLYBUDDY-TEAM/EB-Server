@@ -10,12 +10,13 @@ class NotificationTransportProvider(NotificationProvider):
         self,
         noti_schema,
         now,
-    ):
+    ) -> bool:
         now_time = eb_datetime.get_only_time(now)
         if noti_schema.noti_end_time < now_time:
-            return
+            return False
 
         self.add(noti_schema)
+        return True
 
     def get_notification(
         self,

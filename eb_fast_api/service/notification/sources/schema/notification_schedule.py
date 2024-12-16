@@ -34,10 +34,12 @@ class NotificationSchedule:
         schedule_title: str,
         notify_schedule: int,
         schedule_time: datetime,
+        now: datetime,
     ) -> Optional[Self]:
         noti_time = NotificationSchedule.cal_noti_time(
             schedule_time=schedule_time,
             notify_schedule=notify_schedule,
+            now=now,
         )
         if noti_time == None:
             return None
@@ -55,9 +57,9 @@ class NotificationSchedule:
         cls,
         schedule_time: datetime,
         notify_schedule: int,
+        now: datetime,
     ) -> Optional[datetime]:
         noti_time = schedule_time - timedelta(minutes=notify_schedule)
-        now = eb_datetime.get_datetime_now()
 
         if noti_time.date() != now.date():
             return None

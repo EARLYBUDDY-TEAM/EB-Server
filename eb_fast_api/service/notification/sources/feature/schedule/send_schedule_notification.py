@@ -3,7 +3,7 @@ from eb_fast_api.service.notification.sources.provider.notification_schedule_pro
 )
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.snippets.sources.logger import logger
-from eb_fast_api.service.notification.sources.feature import fcm_feature as ff
+from eb_fast_api.service.notification.sources.feature.common import fcm_feature as ff
 from datetime import datetime
 
 

@@ -1,4 +1,4 @@
-from eb_fast_api.service.notification.sources.feature import fcm_feature as ff
+from eb_fast_api.service.notification.sources.feature.common import fcm_feature as ff
 from eb_fast_api.service.notification.sources.provider.notification_transport_provider import (
     noti_transport_provider,
 )

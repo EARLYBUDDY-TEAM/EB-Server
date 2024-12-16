@@ -13,6 +13,7 @@ def test_cal_noti_time():
     noti_time = NotificationSchedule.cal_noti_time(
         schedule_time=now,
         notify_schedule=0,
+        now=now,
     )
 
     # then
@@ -22,12 +23,14 @@ def test_cal_noti_time():
 
 def test_cal_noti_time_return_None():
     # given
-    now = eb_datetime.get_datetime_now() - timedelta(minutes=1)
+    now = eb_datetime.get_datetime_now()
+    schedule_time = now - timedelta(minutes=1)
 
     # when
     noti_time = NotificationSchedule.cal_noti_time(
-        schedule_time=now,
+        schedule_time=schedule_time,
         notify_schedule=0,
+        now=now,
     )
 
     # then

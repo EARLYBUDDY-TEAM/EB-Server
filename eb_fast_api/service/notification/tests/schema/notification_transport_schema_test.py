@@ -101,22 +101,6 @@ def test_get_request_real_time_info_subway_is_none():
     assert request_real_time_info == None
 
 
-def test_is_property_optional():
-    # given
-    notify_transport: Optional[int] = 0
-    notify_transport_range: Optional[int] = 0
-    path_dict: Optional[dict] = None
-
-    # when, then
-    is_optional = NotificationTransport.is_property_optional(
-        notify_transport=notify_transport,
-        notify_transport_range=notify_transport_range,
-        path_dict=path_dict,
-    )
-
-    assert is_optional == True
-
-
 def test_cal_noti_start_end_time_FAIL_not_today():
     # given
     mock_now = med.mock_now
@@ -129,6 +113,7 @@ def test_cal_noti_start_end_time_FAIL_not_today():
     noti_start_end_time = NotificationTransport.cal_noti_start_end_time(
         schedule_time=schedule_time,
         notify_transport_range=notify_transport_range,
+        now=mock_now,
     )
 
     assert noti_start_end_time == None
@@ -147,6 +132,7 @@ def test_cal_noti_start_end_time_FAIL_out_of_schedule_time():
     noti_start_end_time = NotificationTransport.cal_noti_start_end_time(
         schedule_time=schedule_time,
         notify_transport_range=notify_transport_range,
+        now=mock_now,
     )
 
     assert noti_start_end_time == None
@@ -165,6 +151,7 @@ def test_cal_noti_start_end_time():
     noti_start_end_time = NotificationTransport.cal_noti_start_end_time(
         schedule_time=schedule_time,
         notify_transport_range=notify_transport_range,
+        now=mock_now,
     )
 
     expect_noti_start_time = schedule_time - timedelta(minutes=notify_transport_range)

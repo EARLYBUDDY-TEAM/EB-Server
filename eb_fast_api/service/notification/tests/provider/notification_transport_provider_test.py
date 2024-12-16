@@ -48,16 +48,18 @@ def test_add_notification():
     assert len(noti_transport_provider.data) == 0
 
     # when
-    noti_transport_provider.add_notification(
+    add_result1 = noti_transport_provider.add_notification(
         noti_schema=noti_transport1,
         now=mock_now,
     )
-    noti_transport_provider.add_notification(
+    add_result2 = noti_transport_provider.add_notification(
         noti_schema=noti_transport2,
         now=mock_now,
     )
 
     # then
+    assert add_result1 is False
+    assert add_result2 is True
     assert len(noti_transport_provider.data) == 1
     assert noti_transport_provider.data[0] == noti_transport2
 

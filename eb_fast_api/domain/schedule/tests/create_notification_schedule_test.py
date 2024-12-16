@@ -17,13 +17,14 @@ def test_create_notification_schedule():
     # given
     user_email = "test@test.com"
     notify_schedule = 0
+    now = eb_datetime.get_datetime_now()
     schedule_info1 = ScheduleInfo.mock(id=str(uuid4()))
     schedule_info1.notify_schedule = notify_schedule
-    schedule_info1.time = eb_datetime.get_datetime_now()
+    schedule_info1.time = now
 
     schedule_info2 = ScheduleInfo.mock(id=str(uuid4()))
     schedule_info2.notify_schedule = notify_schedule
-    schedule_info2.time = eb_datetime.get_datetime_now() - timedelta(days=1)
+    schedule_info2.time = now - timedelta(days=1)
 
     noti_schedule_provider = NotificationScheduleProvider()
     expected_noti_schedule = NotificationSchedule.init(
@@ -32,6 +33,7 @@ def test_create_notification_schedule():
         schedule_title=schedule_info1.title,
         notify_schedule=schedule_info1.notify_schedule,
         schedule_time=schedule_info1.time,
+        now=now,
     )
 
     # when

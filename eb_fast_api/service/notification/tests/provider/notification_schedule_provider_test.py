@@ -19,7 +19,8 @@ def test_notification_schedule_provider_add_delete():
     noti_schedule = NotificationSchedule.mock(schedule_time=now)
 
     # when, then
-    noti_schedule_provider.add_notification(noti_schema=noti_schedule, now=now)
+    add_result = noti_schedule_provider.add_notification(noti_schema=noti_schedule, now=now)
+    assert add_result is True
     assert noti_schedule_provider.data[0] == noti_schedule
 
     noti_schedule_provider.delete_notification(schedule_id=noti_schedule.schedule_id)

@@ -17,12 +17,14 @@ def create_notification_schedule(
     if notify_schedule == None:
         return
 
+    now = eb_datetime.get_datetime_now()
     noti_schedule = NotificationSchedule.init(
         user_email=user_email,
         schedule_id=schedule_info.id,
         schedule_title=schedule_info.title,
         notify_schedule=notify_schedule,
         schedule_time=schedule_info.time,
+        now=now,
     )
 
     if noti_schedule == None:
@@ -30,5 +32,5 @@ def create_notification_schedule(
 
     noti_schedule_provider.add_notification(
         noti_schema=noti_schedule,
-        now=eb_datetime.get_datetime_now(),
+        now=now,
     )
