@@ -1,13 +1,18 @@
 from typing import Optional, TypeVar, List
 
 
-K = TypeVar('K')
-V = TypeVar('V')
+K = TypeVar("K")
+V = TypeVar("V")
 
 
 # get method 사용하기
-def safeDict(keyList: List[K], fromDict: dict) -> Optional[V]:
+def safeDict(
+    keyList: List[K],
+    fromDict: Optional[dict],
+) -> Optional[V]:
     try:
+        if fromDict is None:
+            return None
         if not keyList:
             return None
         tmpValue = fromDict[keyList[0]]

@@ -96,7 +96,11 @@ def test_create_schedule_FAIL_create_notification_schedule(testClient):
 def test_update_schedule_SUCCESS(testClient):
     # given
     patcher_update_schedule_SUCCESS = msf.patcher_update_schedule_SUCCESS()
+    patcher_update_notification_schedule_SUCCESS = (
+        msf.patcher_update_notification_schedule_SUCCESS()
+    )
     patcher_update_schedule_SUCCESS.start()
+    patcher_update_notification_schedule_SUCCESS.start()
 
     headers = {"access_token": "access_token"}
     scheduleInfo = ScheduleInfo.mock()
@@ -116,6 +120,7 @@ def test_update_schedule_SUCCESS(testClient):
     # then
     assert response.status_code == 200
     patcher_update_schedule_SUCCESS.stop()
+    patcher_update_notification_schedule_SUCCESS.stop()
 
 
 def test_update_schedule_FAIL(testClient):
@@ -178,6 +183,10 @@ def test_delete_schedule_SUCCESS(
 ):
     patcher_delete_schedule_SUCCESS = msf.patcher_delete_schedule_SUCCESS()
     patcher_delete_schedule_SUCCESS.start()
+    patcher_delete_notification_schedule_SUCCESS = (
+        msf.patcher_delete_notification_schedule_SUCCESS()
+    )
+    patcher_delete_notification_schedule_SUCCESS.start()
 
     def mock_def_session():
         yield schedule_MockSession
@@ -198,6 +207,7 @@ def test_delete_schedule_SUCCESS(
     # then
     assert response.status_code == 200
     patcher_delete_schedule_SUCCESS.stop()
+    patcher_delete_notification_schedule_SUCCESS.stop()
 
 
 def test_delete_schedule_card_FAIL(

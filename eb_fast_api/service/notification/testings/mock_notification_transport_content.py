@@ -1,14 +1,16 @@
 from unittest.mock import patch
-from eb_fast_api.domain.realtime.sources import realtime_feature
+from eb_fast_api.service.notification.sources.feature.transport import (
+    notification_transport_content as ntc,
+)
 
 
-def patcher_get_bus_station_realtime_json(
+def patcher_make_subway_notification_body(
     return_value=None,
     side_effect=None,
 ):
     patcher = patch.object(
-        realtime_feature,
-        "get_bus_station_realtime_json",
+        ntc,
+        "make_subway_notification_body",
         return_value=return_value,
         side_effect=side_effect,
     )
@@ -16,13 +18,13 @@ def patcher_get_bus_station_realtime_json(
     return patcher
 
 
-def patcher_get_seoul_subway_realtime_json(
+def patcher_make_bus_notification_body(
     return_value=None,
     side_effect=None,
 ):
     patcher = patch.object(
-        realtime_feature,
-        "get_seoul_subway_realtime_json",
+        ntc,
+        "make_bus_notification_body",
         return_value=return_value,
         side_effect=side_effect,
     )

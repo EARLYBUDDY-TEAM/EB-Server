@@ -1,30 +1,28 @@
 from unittest.mock import patch
-from eb_fast_api.domain.realtime.sources import realtime_feature
+from eb_fast_api.service.realtime.sources.service import subway_realtime_service as sas
 
 
-def patcher_get_bus_station_realtime_json(
+def patcher_filter_subway_realtime_data(
     return_value=None,
     side_effect=None,
 ):
     patcher = patch.object(
-        realtime_feature,
-        "get_bus_station_realtime_json",
+        sas,
+        "filter_subway_realtime_data",
         return_value=return_value,
         side_effect=side_effect,
     )
-
     return patcher
 
 
-def patcher_get_seoul_subway_realtime_json(
+def patcher_request(
     return_value=None,
     side_effect=None,
 ):
     patcher = patch.object(
-        realtime_feature,
-        "get_seoul_subway_realtime_json",
+        sas,
+        "request",
         return_value=return_value,
         side_effect=side_effect,
     )
-
     return patcher
