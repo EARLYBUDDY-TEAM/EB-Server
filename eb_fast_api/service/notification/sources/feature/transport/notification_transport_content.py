@@ -57,10 +57,10 @@ async def make_bus_notification_body(
     station_name: str,
 ) -> Optional[str]:
     station_id = bus_request_real_time_info.station_id
-    real_time_info_list = await brs.request(station_id=station_id)
+    realtime_info_list = await brs.request(station_id=station_id)
 
     bus_arrival_info = ntch.get_arrival_info(
-        real_time_info_list=real_time_info_list,
+        realtime_info_list=realtime_info_list,
         request_real_time_info=bus_request_real_time_info,
         arrival_before=arrival_before,
     )

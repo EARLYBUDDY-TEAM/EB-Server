@@ -2,7 +2,6 @@ from eb_fast_api.service.notification.sources.feature.common import fcm_feature 
 from eb_fast_api.service.notification.sources.provider.notification_transport_provider import (
     noti_transport_provider,
 )
-from datetime import datetime
 from eb_fast_api.snippets.sources.logger import logger
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.service.notification.sources.feature.transport import (
@@ -22,11 +21,13 @@ async def send_transport_notification(
     user_crud = EBDataBase.user.createCRUD()
 
     for noti_transport in noti_transport_list:
-        noti_content = noti_transport.noti_content
+        provider.add_notification(
+            noti_schema=noti_transport,
+            now=now,
+        )
 
-        body = await ntc.make_body(noti_content=noti_content)
+        body = await ntc.make_body(noti_transport=noti_transport)
         if body == None:
-            provider.add(noti_schema=noti_transport, now=now)
             continue
 
         user_email = noti_transport.user_email
@@ -35,7 +36,7 @@ async def send_transport_notification(
             user_email=user_email,
         )
 
-        title = noti_content.schedule_name
+        title = noti_transport.noti_content.schedule_name
 
         logger.debug("send_transport_notification")
         logger.debug(f"title : {title}")

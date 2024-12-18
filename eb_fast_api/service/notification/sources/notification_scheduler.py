@@ -56,9 +56,9 @@ def initialize_notification_scheduler():
     empty_and_add_all_user_notification()
 
     scheduler = BackgroundScheduler()
-    add_job_send_schedule_notification(
-        scheduler=scheduler,
-    )
+    # add_job_send_schedule_notification(
+    #     scheduler=scheduler,
+    # )
 
     add_job_send_transport_notification(
         scheduler=scheduler,

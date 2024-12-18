@@ -32,7 +32,11 @@ def get_arrival_info(
     arrival_before: int,
 ) -> Optional[tuple]:
     for realtime_info in realtime_info_list:
-        arrival_minute = realtime_info.arrival_info1.arrival_sec // 60
+        arrival_sec = realtime_info.arrival_info1.arrival_sec
+        if arrival_sec is None:
+            continue
+
+        arrival_minute = arrival_sec // 60
 
         if arrival_before < arrival_minute:
             continue

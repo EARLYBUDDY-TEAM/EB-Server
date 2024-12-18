@@ -157,9 +157,13 @@ def add_notification_to_provider(
         ):
             if add_notification_transport_to_provider(
                 user_email=user_email,
-                schedule_dict=schedule_dict,
+                schedule_id=schedule_id,
+                schedule_name=schedule_title,
+                schedule_time=schedule_time,
+                notify_transport=notify_transport,
+                notify_transport_range=notify_transport_range,
+                path_dict=path_dict,
                 noti_transport_provider=noti_transport_provider,
-                path_crud=path_crud,
                 now=now,
             ):
                 transport_noti_count += 1
