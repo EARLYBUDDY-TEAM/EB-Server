@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo, PathInfo
-from eb_fast_api.domain.token.sources.token_feature import getUserEmail
+from eb_fast_api.domain.token.eb_token.sources.eb_token_feature import getUserEmail
 from eb_fast_api.database.sources.database import EBDataBase
 from typing import Optional
 from eb_fast_api.domain.schedule.sources.schedule_feature.create import (

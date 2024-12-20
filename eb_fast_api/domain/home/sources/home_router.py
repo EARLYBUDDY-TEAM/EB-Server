@@ -5,7 +5,7 @@ from eb_fast_api.domain.home.sources.home_schema import (
     SchedulePathInfo,
     SchedulePathInfoList,
 )
-from eb_fast_api.domain.token.sources.token_feature import getUserEmail
+from eb_fast_api.domain.token.eb_token.sources.eb_token_feature import getUserEmail
 from eb_fast_api.database.sources.database import EBDataBase
 
 

@@ -2,8 +2,10 @@ from fastapi.testclient import TestClient
 from typing import List
 
 from eb_fast_api.main import app
-from eb_fast_api.domain.token.sources.token_feature import getUserEmail
-from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
+from eb_fast_api.domain.token.eb_token.sources.eb_token_feature import getUserEmail
+from eb_fast_api.domain.token.eb_token.testings.mock_eb_token_feature import (
+    mockGetUserEmail,
+)
 from eb_fast_api.domain.home.testings.mock_home_feature import (
     mock_read_all_schedule,
     mock_schedule_dict_to_schedule_path_info,

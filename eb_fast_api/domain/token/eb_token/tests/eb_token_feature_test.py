@@ -1,6 +1,6 @@
 import pytest
 from fastapi import HTTPException
-from eb_fast_api.domain.token.sources.token_feature import verifyToken
+from eb_fast_api.domain.token.eb_token.sources.eb_token_feature import verifyToken
 
 
 def test_verifyToken_SUCCESS(realJWTService):

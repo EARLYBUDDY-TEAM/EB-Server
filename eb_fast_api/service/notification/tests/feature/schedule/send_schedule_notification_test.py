@@ -43,7 +43,6 @@ def test_send_schedule_notification():
     # when
     send_schedule_notification(
         provider=mock_provider,
-        now=now,
     )
 
     # then

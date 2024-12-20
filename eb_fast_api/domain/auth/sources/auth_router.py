@@ -10,7 +10,7 @@ from eb_fast_api.domain.auth.sources.auth_feature import (
     register_feature,
     change_password_feature,
 )
-from eb_fast_api.domain.token.sources.token_feature import getUserEmail
+from eb_fast_api.domain.token.eb_token.sources.eb_token_feature import getUserEmail
 
 
 router = APIRouter(prefix="/auth")
