@@ -35,6 +35,8 @@ async def send_transport_notification(
             user_crud=user_crud,
             user_email=user_email,
         )
+        if fcm_token == None:
+            continue
 
         title = noti_transport.noti_content.schedule_name
 
@@ -46,6 +48,7 @@ async def send_transport_notification(
             fcm_token=fcm_token,
             title=title,
             body=body,
+            topic="transport",
         )
     else:
         del user_crud
