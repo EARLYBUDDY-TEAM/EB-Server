@@ -22,7 +22,8 @@ from eb_fast_api.domain.auth.sources import auth_router
 from eb_fast_api.domain.map.place.sources import place_router
 from eb_fast_api.domain.map.route.sources import route_router
 from eb_fast_api.domain.schedule.sources import schedule_router
-from eb_fast_api.domain.token.sources import token_router
+from eb_fast_api.domain.token.eb_token.sources import eb_token_router
+from eb_fast_api.domain.token.fcm_token.sources import fcm_token_router
 from eb_fast_api.domain.home.sources import home_router
 from eb_fast_api.domain.realtime.sources import realtime_router
 
@@ -31,7 +32,8 @@ app.include_router(auth_router.router)
 app.include_router(place_router.router)
 app.include_router(route_router.router)
 app.include_router(schedule_router.router)
-app.include_router(token_router.router)
+app.include_router(eb_token_router.router)
+app.include_router(fcm_token_router.router)
 app.include_router(home_router.router)
 app.include_router(realtime_router.router)
 

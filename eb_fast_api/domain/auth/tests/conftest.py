@@ -13,8 +13,10 @@ from eb_fast_api.database.tests.conftest import (
 )
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
 from eb_fast_api.service.jwt.tests.conftest import mockJWTService
-from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
-from eb_fast_api.domain.token.sources.token_feature import getUserEmail
+from eb_fast_api.domain.token.eb_token.testings.mock_eb_token_feature import (
+    mockGetUserEmail,
+)
+from eb_fast_api.domain.token.eb_token.sources.eb_token_feature import getUserEmail
 
 
 @pytest.fixture(scope="function")

@@ -30,8 +30,8 @@ def add_job_send_schedule_notification(
     scheduler.add_job(
         lambda: send_schedule_notification(),
         "interval",
-        # minutes=1,
-        seconds=10,
+        minutes=1,
+        # seconds=10,
     )
 
 

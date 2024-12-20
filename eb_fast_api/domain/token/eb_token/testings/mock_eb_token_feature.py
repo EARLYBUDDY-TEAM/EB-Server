@@ -4,12 +4,12 @@ from fastapi import Security, HTTPException
 from fastapi.security import APIKeyHeader
 from eb_fast_api.domain.schema.sources.schemas import TokenInfo
 from eb_fast_api.database.sources.crud.cruds import UserCRUD
-from eb_fast_api.domain.token.sources import token_feature
+from eb_fast_api.domain.token.eb_token.sources import eb_token_feature
 
 
 def patcher_update_refresh_token_SUCCESS():
     return patch.object(
-        token_feature,
+        eb_token_feature,
         "update_refresh_token",
         return_value=None,
     )
@@ -24,7 +24,7 @@ def patcher_update_refresh_token_FAIL():
         raise Exception()
 
     return patch.object(
-        token_feature,
+        eb_token_feature,
         "update_refresh_token",
         new=raise_exception,
     )
@@ -32,7 +32,7 @@ def patcher_update_refresh_token_FAIL():
 
 def patcher_verifyToken_SUCCESS(email: str):
     return patch.object(
-        token_feature,
+        eb_token_feature,
         "verifyToken",
         return_value=email,
     )
@@ -50,7 +50,7 @@ def patcher_verifyToken_FAIL():
         )
 
     return patch.object(
-        token_feature,
+        eb_token_feature,
         "verifyToken",
         new=raise_exception,
     )
@@ -58,7 +58,7 @@ def patcher_verifyToken_FAIL():
 
 def patcher_create_token_info(tokenInfo: TokenInfo):
     return patch.object(
-        token_feature,
+        eb_token_feature,
         "create_token_info",
         return_value=tokenInfo,
     )

@@ -35,7 +35,8 @@ async def send_transport_notification(
             user_crud=user_crud,
             user_email=user_email,
         )
-        if fcm_token == None:
+
+        if not fcm_token:
             continue
 
         title = noti_transport.noti_content.schedule_name

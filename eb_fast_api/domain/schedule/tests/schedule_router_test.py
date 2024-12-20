@@ -3,8 +3,10 @@ from fastapi.testclient import TestClient
 
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo
-from eb_fast_api.domain.token.testings.mock_token_feature import mockGetUserEmail
-from eb_fast_api.domain.token.sources.token_feature import getUserEmail
+from eb_fast_api.domain.token.eb_token.testings.mock_eb_token_feature import (
+    mockGetUserEmail,
+)
+from eb_fast_api.domain.token.eb_token.sources.eb_token_feature import getUserEmail
 from eb_fast_api.domain.schedule.testings import mock_schedule_feature as msf
 
 
