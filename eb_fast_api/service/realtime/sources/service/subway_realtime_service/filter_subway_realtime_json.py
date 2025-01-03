@@ -1,11 +1,25 @@
 from eb_fast_api.snippets.sources import dictionary, eb_datetime
-from eb_fast_api.service.realtime.sources.realtime_service_schema import (
-    RealTimeInfo,
-    ArrivalInfo,
-)
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 
+"""
+"02005성수0",
+상하행코드(1자리),
+순번(첫번째, 두번째 열차, 1자리),
+첫번째 도착예정 정류장 - 현재 정류장(3자리),
+목적지 정류장,
+급행여부(1자리)
+
+1. 역이름으로 호출
+2. 호선으로 필터링
+3. 상행 하행 필터링
+leftstation - ordkey, arrivalsec - barvlDt
+
+데이터 생성시간 + 남은시간 = 실제 열차의 도착시간
+열차 도착시간 - 현재시간 = 실제 열차 도착까지의 남은시간
+
+(0 : 상행/내선, 1 : 하행/외선)
+"""
 
 SubwayID = {
     "1001": "1호선",
@@ -111,6 +125,44 @@ def lambda_realtime_arrival_list_filter(
         return False
 
 
+def filter_dup_realtime_arrival_list(
+    realtime_arrival_list: List[dict],
+) -> List[dict]:
+    def lambda_realtime_arrival_list_sort(
+        realtime_arrival: dict,
+    ) -> datetime:
+        data_create_time = dictionary.safeDict(
+            keyList=["recptnDt"],
+            fromDict=realtime_arrival,
+        )
+        if data_create_time is None:
+            return datetime.min
+        data_create_time = datetime.strptime(data_create_time, "%Y-%m-%d %H:%M:%S")
+        return data_create_time
+
+    sorted_realtime_arrival_list = sorted(
+        realtime_arrival_list,
+        key=lambda realtime_arrival: lambda_realtime_arrival_list_sort(
+            realtime_arrival
+        ),
+        reverse=True,
+    )
+
+    tmp_filtered_dict = dict()
+    for realtime_arrival in sorted_realtime_arrival_list:
+        transport_plate = dictionary.safeDict(
+            keyList=["btrainNo"],
+            fromDict=realtime_arrival,
+        )
+        if transport_plate is None:
+            continue
+        if transport_plate in tmp_filtered_dict:
+            continue
+        tmp_filtered_dict[transport_plate] = realtime_arrival
+
+    return list(tmp_filtered_dict.values())
+
+
 def filter_subway_realtime_json(
     json: dict,
     line_name: str,
@@ -120,23 +172,32 @@ def filter_subway_realtime_json(
         keyList=["realtimeArrivalList"], fromDict=json
     )
 
-    realtimeArrivalList = list(
-        filter(
-            lambda realtime_json: lambda_realtime_arrival_list_filter(
-                up_or_down=up_or_down,
-                line_name=line_name,
-                realtime_json=realtime_json,
-            ),
-            realtimeArrivalList,
-        )
+    # 가장 최신 데이터(recptnDt)로 중복된 열차(btrainNo) 제거
+    realtimeArrivalList = filter_dup_realtime_arrival_list(
+        realtime_arrival_list=realtimeArrivalList,
     )
 
-    realtimeArrivalList.sort(
-        key=lambda realtime_json: lambda_realtime_arrival_list_sort(
+    # 1. 상하행선
+    # 2. 호선
+    # 3. 남은 정거장 수 != 0
+    realtimeArrivalList = filter(
+        lambda realtime_json: lambda_realtime_arrival_list_filter(
+            up_or_down=up_or_down,
+            line_name=line_name,
             realtime_json=realtime_json,
+        ),
+        realtimeArrivalList,
+    )
+
+    # 남은 정거장수 적은순
+    realtimeArrivalList = list(
+        sorted(
+            realtimeArrivalList,
+            key=lambda realtime_json: lambda_realtime_arrival_list_sort(
+                realtime_json=realtime_json,
+            ),
         )
     )
-    realtimeArrivalList = realtimeArrivalList[:2]
 
     return realtimeArrivalList
 
@@ -411,23 +472,3 @@ def filter_subway_realtime_json(
 #         direction=direction,
 #     )
 #     return [real_time_info]
-
-
-"""
-"02005성수0",
-상하행코드(1자리),
-순번(첫번째, 두번째 열차, 1자리),
-첫번째 도착예정 정류장 - 현재 정류장(3자리),
-목적지 정류장,
-급행여부(1자리)
-
-1. 역이름으로 호출
-2. 호선으로 필터링
-3. 상행 하행 필터링
-leftstation - ordkey, arrivalsec - barvlDt
-
-데이터 생성시간 + 남은시간 = 실제 열차의 도착시간
-열차 도착시간 - 현재시간 = 실제 열차 도착까지의 남은시간
-
-(0 : 상행/내선, 1 : 하행/외선)
-"""
