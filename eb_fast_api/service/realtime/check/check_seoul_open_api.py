@@ -7,9 +7,9 @@ from eb_fast_api.service.realtime.check import json_helper as jh
 
 
 if __name__ == "__main__":
-    station_name = "논현"
-    line_name = "7호선"
-    up_or_down = 0
+    station_name = "왕십리"
+    line_name = "수인분당선"
+    up_or_down = 1
 
     realtime_info = asyncio.run(
         srs.request(
