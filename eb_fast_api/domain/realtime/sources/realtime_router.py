@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from eb_fast_api.service.realtime.sources.service import bus_realtime_service as brs
-from eb_fast_api.service.realtime.sources.service import subway_realtime_service as srs
+from eb_fast_api.service.realtime.sources.service.subway_realtime_service import (
+    subway_realtime_service as srs,
+)
 from eb_fast_api.domain.realtime.sources.realtime_schema import RealTimeInfoList
 
 

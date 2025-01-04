@@ -15,6 +15,13 @@ class ArrivalInfo(BaseModel):
             left_station=1,
         )
 
+    def is_optional(self) -> bool:
+        return (
+            self.transport_plate is None
+            or self.arrival_sec is None
+            or self.left_station is None
+        )
+
 
 class RealTimeInfo(BaseModel):
     transport_number: str

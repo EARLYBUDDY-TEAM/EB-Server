@@ -1,7 +1,9 @@
 import httpx, pytest
 from unittest.mock import patch
 from datetime import datetime, timedelta
-from eb_fast_api.service.realtime.sources.service import subway_realtime_service as srs
+from eb_fast_api.service.realtime.sources.service.subway_realtime_service import (
+    subway_realtime_service as srs,
+)
 from eb_fast_api.service.realtime.sources.realtime_service_schema import RealTimeInfo
 from eb_fast_api.service.realtime.testings.mock_subway_realtime_info import (
     mockSubwayRealtimeJson,
