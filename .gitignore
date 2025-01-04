@@ -1,7 +1,15 @@
+.vscode/
+
 __pycache__
 .pytest_cache
 
-eb_server/database/earlybuddy.db
-eb_server/env/.env
+*.db
 
-jenkins/
+eb_fast_api/env/dot_env_files/.api
+eb_fast_api/env/dot_env_files/.mysql
+eb_fast_api/env/dot_env_files/.test_user
+mysql/
+
+fcm_oauth.json
+
+eb_fast_api/service/realtime/check/dummy/
