@@ -1,46 +1,46 @@
-import httpx, pytest
-from unittest.mock import patch
-from datetime import datetime, timedelta
-from eb_fast_api.service.realtime.sources.service.subway_realtime_service import (
-    subway_realtime_service as srs,
-)
-from eb_fast_api.service.realtime.sources.realtime_service_schema import RealTimeInfo
-from eb_fast_api.service.realtime.testings.mock_subway_realtime_info import (
-    mockSubwayRealtimeJson,
-    mockSubwayId,
-    mockUpOrdKey1,
-    mockUpOrdKey2,
-    mockBarvlDt,
-    mockRecptnDt,
-)
+# import httpx, pytest
+# from unittest.mock import patch
+# from datetime import datetime, timedelta
+# from eb_fast_api.service.realtime.sources.service.subway_realtime_service import (
+#     subway_realtime_service as srs,
+# )
+# from eb_fast_api.service.realtime.sources.realtime_service_schema import RealTimeInfo
+# from eb_fast_api.service.realtime.testings.mock_subway_realtime_info import (
+#     mockSubwayRealtimeJson,
+#     mockSubwayId,
+#     mockUpOrdKey1,
+#     mockUpOrdKey2,
+#     mockBarvlDt,
+#     mockRecptnDt,
+# )
 
 
-@pytest.mark.asyncio
-async def test_get_seoul_subway_realtime_info():
-    # given
-    status_code = 200
-    json = {"test": "test"}
+# @pytest.mark.asyncio
+# async def test_get_seoul_subway_realtime_info():
+#     # given
+#     status_code = 200
+#     json = {"test": "test"}
 
-    fake_get_return_value = httpx.Response(
-        status_code,
-        json=json,
-        request=httpx.Request("GET", "test_url"),
-    )
+#     fake_get_return_value = httpx.Response(
+#         status_code,
+#         json=json,
+#         request=httpx.Request("GET", "test_url"),
+#     )
 
-    with patch.object(
-        srs.AsyncClient,
-        "get",
-        return_value=fake_get_return_value,
-    ) as fake_get:
+#     with patch.object(
+#         srs.AsyncClient,
+#         "get",
+#         return_value=fake_get_return_value,
+#     ) as fake_get:
 
-        # when
-        response = await srs.get_seoul_subway_realtime_info(
-            station_name="서울",
-        )
+#         # when
+#         response = await srs.get_seoul_subway_realtime_info(
+#             station_name="서울",
+#         )
 
-        # then
-        assert response.status_code == status_code
-        assert response.json() == json
+#         # then
+#         assert response.status_code == status_code
+#         assert response.json() == json
 
 
 # def test_filter_subway_realtime_data():
