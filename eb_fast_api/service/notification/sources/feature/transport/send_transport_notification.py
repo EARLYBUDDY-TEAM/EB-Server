@@ -49,7 +49,6 @@ async def send_transport_notification(
             fcm_token=fcm_token,
             title=title,
             body=body,
-            topic="transport",
         )
     else:
         del user_crud
