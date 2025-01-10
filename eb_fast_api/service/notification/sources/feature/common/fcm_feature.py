@@ -29,6 +29,7 @@ def send_notification(
         token=fcm_token,
     )
     response = firebase_admin.messaging.send(message)
+    return response
 
 
 def get_fcm_token(

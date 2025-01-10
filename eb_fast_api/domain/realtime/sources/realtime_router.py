@@ -4,6 +4,7 @@ from eb_fast_api.service.realtime.sources.service.subway_realtime_service import
     subway_realtime_service as srs,
 )
 from eb_fast_api.domain.realtime.sources.realtime_schema import RealTimeInfoList
+from eb_fast_api.domain.realtime.sources import realtime_feature as rf
 
 
 router = APIRouter(prefix="/realtime")
@@ -31,12 +32,14 @@ async def get_subway_realtime_info(
     direction: int,
 ) -> RealTimeInfoList:
     try:
+        station_name = rf.remove_last_station_name(station_name=station_name)
+
         result = await srs.request(
             station_name=station_name,
             line_name=line_name,
-            direction=direction,
+            up_or_down=direction,
         )
-        return RealTimeInfoList(real_time_info_list=result)
+        return RealTimeInfoList(real_time_info_list=[result])
     except Exception as e:
         print(e)
         raise HTTPException(
