@@ -1,8 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from eb_fast_api.database.sources.database import EBDataBase
-from eb_fast_api.database.sources.crud.cruds import UserCRUD
-from eb_fast_api.domain.schema.sources.schemas import TokenInfo, LoginInfo, RegisterInfo
-from eb_fast_api.domain.auth.sources.auth_schema import ChangePasswordInfo
+from eb_fast_api.domain.schema.sources.schemas import LoginInfo, RegisterInfo
+from eb_fast_api.domain.auth.sources.auth_schema import ChangePasswordInfo, LoginResult
 from eb_fast_api.service.jwt.sources.jwt_service import getJWTService
 from eb_fast_api.domain.auth.sources.auth_feature import (
     delete_user_feature,
@@ -11,6 +10,7 @@ from eb_fast_api.domain.auth.sources.auth_feature import (
     change_password_feature,
 )
 from eb_fast_api.domain.token.eb_token.sources.eb_token_feature import getUserEmail
+from eb_fast_api.snippets.sources import dictionary
 
 
 router = APIRouter(prefix="/auth")
@@ -21,12 +21,13 @@ def login(
     loginInfo: LoginInfo,
     userCRUD=Depends(EBDataBase.user.getCRUD),
     jwtService=Depends(getJWTService),
-) -> TokenInfo:
+) -> LoginResult:
     try:
         user = login_feature.check_password(
             user_crud=userCRUD,
             login_info=loginInfo,
         )
+        nick_name = dictionary.safeDict(keyList=["nickName"], fromDict=user) or ""
     except Exception as e:
         print(e)
         raise HTTPException(
@@ -45,7 +46,12 @@ def login(
             token_info=token_info,
             login_info=loginInfo,
         )
-        return token_info
+
+        return LoginResult(
+            nick_name=nick_name,
+            token_info=token_info,
+        )
+
     except Exception as e:
         print(e)
         raise HTTPException(

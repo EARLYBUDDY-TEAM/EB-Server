@@ -1,5 +1,11 @@
 from pydantic import BaseModel
 from typing import Self
+from eb_fast_api.domain.schema.sources.schemas import TokenInfo
+
+
+class LoginResult(BaseModel):
+    nick_name: str
+    token_info: TokenInfo
 
 
 class ChangePasswordInfo(BaseModel):
