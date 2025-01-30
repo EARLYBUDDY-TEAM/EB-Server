@@ -178,6 +178,7 @@ class NotificationTransport:
     def cal_noti_start_end_time(
         cls,
         schedule_time: datetime,
+        path_time: Optional[int],
         notify_transport_range: Optional[int],
         now: datetime,
     ) -> Optional[tuple]:
@@ -187,13 +188,17 @@ class NotificationTransport:
 
         schedule_only_time = eb_datetime.get_only_time(schedule_time)
         now_time = eb_datetime.get_only_time(now)
-
         if schedule_only_time < now_time:
             print("schedule_only_time < now_time")
             return None
 
-        noti_start_time = schedule_time - timedelta(minutes=notify_transport_range)
-        noti_end_time = schedule_time
+        if path_time == None:
+            print("No data path_time")
+            return None
+
+        expect_start_time = schedule_time - timedelta(minutes=path_time)
+        noti_start_time = expect_start_time - timedelta(minutes=notify_transport_range)
+        noti_end_time = expect_start_time
         noti_start_time = eb_datetime.get_only_time(noti_start_time)
         noti_end_time = eb_datetime.get_only_time(noti_end_time)
         return (noti_start_time, noti_end_time)
@@ -225,8 +230,10 @@ class NotificationTransport:
         path_dict: dict,
         now: datetime,
     ) -> Optional[Self]:
+        path_time = dictionary.safeDict(["time"], path_dict)
         noti_start_end_time = cls.cal_noti_start_end_time(
             schedule_time=schedule_time,
+            path_time=path_time,
             notify_transport_range=notify_transport_range,
             now=now,
         )
