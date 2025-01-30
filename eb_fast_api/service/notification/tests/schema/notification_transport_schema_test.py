@@ -112,6 +112,7 @@ def test_cal_noti_start_end_time_FAIL_not_today():
     # when
     noti_start_end_time = NotificationTransport.cal_noti_start_end_time(
         schedule_time=schedule_time,
+        path_time=10,
         notify_transport_range=notify_transport_range,
         now=mock_now,
     )
@@ -131,6 +132,7 @@ def test_cal_noti_start_end_time_FAIL_out_of_schedule_time():
     # when
     noti_start_end_time = NotificationTransport.cal_noti_start_end_time(
         schedule_time=schedule_time,
+        path_time=10,
         notify_transport_range=notify_transport_range,
         now=mock_now,
     )
@@ -146,17 +148,19 @@ def test_cal_noti_start_end_time():
     pather.start()
     schedule_time: datetime = mock_now + timedelta(hours=3)
     notify_transport_range: Optional[int] = 30
-
+    path_time = 10
     # when
     noti_start_end_time = NotificationTransport.cal_noti_start_end_time(
         schedule_time=schedule_time,
+        path_time=path_time,
         notify_transport_range=notify_transport_range,
         now=mock_now,
     )
 
-    expect_noti_start_time = schedule_time - timedelta(minutes=notify_transport_range)
+    expect_start_time = schedule_time - timedelta(minutes=path_time)
+    expect_noti_start_time = expect_start_time - timedelta(minutes=notify_transport_range)
     expect_noti_start_time = eb_datetime.get_only_time(expect_noti_start_time)
-    expect_noti_end_time = schedule_time
+    expect_noti_end_time = expect_start_time
     expect_noti_end_time = eb_datetime.get_only_time(expect_noti_end_time)
     expect_noti_start_end_time = (expect_noti_start_time, expect_noti_end_time)
     assert noti_start_end_time == expect_noti_start_end_time

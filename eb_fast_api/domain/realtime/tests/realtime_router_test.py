@@ -59,7 +59,7 @@ def test_get_subway_realtime_info_SUCCESS():
     # given
     mock_realtime_info = RealTimeInfo.mock()
     patcher_request = msrs.patcher_request(
-        return_value=[mock_realtime_info],
+        return_value=mock_realtime_info,
     )
     patcher_request.start()
 

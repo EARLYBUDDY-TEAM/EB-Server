@@ -59,7 +59,7 @@ def add_notification_transport_to_provider(
     noti_transport_provider: NotificationTransportProvider,
     now: datetime,
 ) -> bool:
-    noti_schedule = NotificationTransport.init(
+    noti_transport = NotificationTransport.init(
         user_email=user_email,
         schedule_id=schedule_id,
         schedule_name=schedule_name,
@@ -70,11 +70,11 @@ def add_notification_transport_to_provider(
         now=now,
     )
 
-    if noti_schedule == None:
+    if noti_transport == None:
         return False
 
     add_result = noti_transport_provider.add_notification(
-        noti_schema=noti_schedule,
+        noti_schema=noti_transport,
         now=now,
     )
     return add_result
