@@ -19,7 +19,7 @@ async def send_transport_notification(
 
     noti_transport_list = provider.get_notification(now=now)
     user_crud = EBDataBase.user.createCRUD()
-
+    user_crud.session.rollback()
     for noti_transport in noti_transport_list:
         provider.add_notification(
             noti_schema=noti_transport,

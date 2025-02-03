@@ -67,5 +67,7 @@ def initialize_notification_scheduler(
         scheduler=scheduler,
     )
 
-    add_job_empty_notification(scheduler)
+    add_job_empty_notification(
+        scheduler=scheduler,
+    )
     scheduler.start()

@@ -4,11 +4,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Response
 from eb_fast_api.service.notification.sources.notification_scheduler import (
     initialize_notification_scheduler,
-)
-from eb_fast_api.snippets.sources.logger import logger
-from eb_fast_api.service.notification.sources.notification_scheduler import (
     background_scheduler,
 )
+from eb_fast_api.snippets.sources.logger import logger
 
 
 @asynccontextmanager
