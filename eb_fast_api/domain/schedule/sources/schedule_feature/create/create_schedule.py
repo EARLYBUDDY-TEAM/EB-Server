@@ -43,10 +43,9 @@ def create_my_schedule(
     session: Session,
     engine: Engine,
     user_email: str,
-    schedule_id: str,
     schedule_info: ScheduleInfo,
 ):
-    to_create_schedule = schedule_info.toSchedule(id=schedule_id)
+    to_create_schedule = schedule_info.toSchedule()
     schedule_crud = EBDataBase.schedule.createCRUD(
         session=session,
         engine=engine,
@@ -76,12 +75,10 @@ def create_schedule(
         place_info=schedule_info.endPlaceInfo,
     )
 
-    schedule_id = str(uuid4())
     create_my_schedule(
         session=session,
         engine=engine,
         user_email=user_email,
-        schedule_id=schedule_id,
         schedule_info=schedule_info,
     )
 
@@ -90,7 +87,7 @@ def create_schedule(
             session=session,
             engine=engine,
             user_email=user_email,
-            path_id=schedule_id,
+            path_id=schedule_info.id,
             path_info=path_info,
         )
 

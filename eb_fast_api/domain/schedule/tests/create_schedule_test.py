@@ -63,23 +63,20 @@ def test_create_my_schedule(
     schedule_MockEngine,
 ):
     # given
-    schedule_id = str(uuid4())
-    scheduleInfo = ScheduleInfo.mock()
-    scheduleInfo.id = None
+    scheduleInfo = ScheduleInfo.mock(id=str(uuid4()))
 
     # when
     cs.create_my_schedule(
         session=schedule_MockSession,
         engine=schedule_MockEngine,
         user_email=schedule_MockUser.email,
-        schedule_id=schedule_id,
         schedule_info=scheduleInfo,
     )
 
     # then
     fetched_schedule_dict = schedule_MockScheduleCRUD.read(
         user_email=schedule_MockUser.email,
-        schedule_id=schedule_id,
+        schedule_id=scheduleInfo.id,
     )
-    schedule = scheduleInfo.toSchedule(id=schedule_id)
+    schedule = scheduleInfo.toSchedule()
     assert schedule.to_dict() == fetched_schedule_dict
