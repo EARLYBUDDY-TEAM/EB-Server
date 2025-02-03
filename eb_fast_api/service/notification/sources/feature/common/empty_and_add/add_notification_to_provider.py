@@ -107,6 +107,7 @@ def add_notification_to_provider(
 ):
     schedule_dict_list = schedule_crud.read_all(userEmail=user_email)
     if not schedule_dict_list:
+        logger.debug(f"{user_email} empty schedule")
         return
 
     now = eb_datetime.get_datetime_now()
@@ -121,6 +122,7 @@ def add_notification_to_provider(
     )
 
     if schedule_dict_list[left]["time"].date() != now_date:
+        logger.debug(f"{user_email} no schedule today")
         return
 
     schedule_noti_count = 0
@@ -167,7 +169,6 @@ def add_notification_to_provider(
                 now=now,
             ):
                 transport_noti_count += 1
-    else:
-        logger.debug(f"user_email : {user_email}")
-        logger.debug(f"add_today_schedule_notification count : {schedule_noti_count}")
-        logger.debug(f"add_today_transport_notification count : {transport_noti_count}")
+
+    logger.debug(f"add_today_schedule_notification count : {schedule_noti_count}")
+    logger.debug(f"add_today_transport_notification count : {transport_noti_count}")

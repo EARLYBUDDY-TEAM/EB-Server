@@ -183,17 +183,14 @@ class NotificationTransport:
         now: datetime,
     ) -> Optional[tuple]:
         if now.date() != schedule_time.date():
-            print("not today")
             return None
 
         schedule_only_time = eb_datetime.get_only_time(schedule_time)
         now_time = eb_datetime.get_only_time(now)
         if schedule_only_time < now_time:
-            print("schedule_only_time < now_time")
             return None
 
         if path_time == None:
-            print("No data path_time")
             return None
 
         expect_start_time = schedule_time - timedelta(minutes=path_time)

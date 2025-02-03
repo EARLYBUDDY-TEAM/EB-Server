@@ -13,6 +13,9 @@ from eb_fast_api.snippets.sources.eb_datetime import KST_HOUR
 import asyncio
 
 
+background_scheduler = BackgroundScheduler()
+
+
 def add_job_send_transport_notification(
     scheduler: BackgroundScheduler,
 ):
@@ -51,10 +54,11 @@ def add_job_empty_notification(
     )
 
 
-def initialize_notification_scheduler():
+def initialize_notification_scheduler(
+    scheduler: BackgroundScheduler,
+):
     empty_and_add_all_user_notification()
 
-    scheduler = BackgroundScheduler()
     add_job_send_schedule_notification(
         scheduler=scheduler,
     )

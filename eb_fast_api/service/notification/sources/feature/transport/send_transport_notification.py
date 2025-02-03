@@ -41,9 +41,13 @@ async def send_transport_notification(
 
         title = noti_transport.noti_content.schedule_name
 
+        logger.debug("--------------------------------")
         logger.debug("send_transport_notification")
         logger.debug(f"title : {title}")
         logger.debug(f"body : {body}")
+        logger.debug(f"fcm_token : {fcm_token}")
+        logger.debug(f"schedule_id : {noti_transport.schedule_id}")
+        logger.debug("--------------------------------")
 
         ff.send_notification(
             fcm_token=fcm_token,

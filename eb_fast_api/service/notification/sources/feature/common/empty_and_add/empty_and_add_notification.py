@@ -10,6 +10,7 @@ from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.service.notification.sources.feature.common.empty_and_add import (
     add_notification_to_provider as antp,
 )
+from eb_fast_api.snippets.sources.logger import logger
 
 
 def get_all_user(
@@ -43,6 +44,11 @@ def empty_and_add_all_user_notification(
 
     for user in all_users:
         user_email = user["email"]
+
+        logger.debug("--------------------------------")
+        logger.debug(f"{user_email} START add_notification_to_provider")
+        logger.debug("")
+
         antp.add_notification_to_provider(
             user_email=user_email,
             schedule_crud=schedule_crud,
@@ -50,3 +56,7 @@ def empty_and_add_all_user_notification(
             noti_schedule_provider=noti_schedule_provider,
             noti_transport_provider=noti_transport_provider,
         )
+
+        logger.debug("")
+        logger.debug(f"{user_email} END add_notification_to_provider")
+        logger.debug("--------------------------------")

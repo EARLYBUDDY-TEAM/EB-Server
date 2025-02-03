@@ -29,9 +29,12 @@ def send_schedule_notification(
         if not fcm_token:
             continue
 
+        logger.debug("--------------------------------")
         logger.debug("send_schedule_notification")
         logger.debug(f"title : {title}")
         logger.debug(f"body : {body}")
+        logger.debug(f"fcm_token : {fcm_token}")
+        logger.debug("--------------------------------")
 
         ff.send_notification(
             fcm_token=fcm_token,
