@@ -19,7 +19,7 @@ async def send_transport_notification(
 
     noti_transport_list = provider.get_notification(now=now)
     user_crud = EBDataBase.user.createCRUD()
-    user_crud.session.rollback()
+    user_crud.rollback()
     for noti_transport in noti_transport_list:
         provider.add_notification(
             noti_schema=noti_transport,
@@ -45,8 +45,6 @@ async def send_transport_notification(
         logger.debug("send_transport_notification")
         logger.debug(f"title : {title}")
         logger.debug(f"body : {body}")
-        logger.debug(f"fcm_token : {fcm_token}")
-        logger.debug(f"schedule_id : {noti_transport.schedule_id}")
         logger.debug("--------------------------------")
 
         ff.send_notification(

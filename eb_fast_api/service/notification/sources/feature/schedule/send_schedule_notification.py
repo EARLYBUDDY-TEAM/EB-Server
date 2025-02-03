@@ -16,7 +16,7 @@ def send_schedule_notification(
 
     noti_schedule_list = provider.get_notification(now=now)
     user_crud = EBDataBase.user.createCRUD()
-    user_crud.session.rollback()
+    user_crud.rollback()
     for noti_schedule in noti_schedule_list:
         title = noti_schedule.schedule_name
         body = f"일정 시작 {noti_schedule.schedule_remain_time}분 전입니다."
@@ -34,7 +34,6 @@ def send_schedule_notification(
         logger.debug("send_schedule_notification")
         logger.debug(f"title : {title}")
         logger.debug(f"body : {body}")
-        logger.debug(f"fcm_token : {fcm_token}")
         logger.debug("--------------------------------")
 
         ff.send_notification(

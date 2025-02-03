@@ -178,8 +178,8 @@ class NotificationTransport:
     def cal_noti_start_end_time(
         cls,
         schedule_time: datetime,
-        path_time: Optional[int],
-        notify_transport_range: Optional[int],
+        path_time: int,
+        notify_transport_range: int,
         now: datetime,
     ) -> Optional[tuple]:
         if now.date() != schedule_time.date():
@@ -188,9 +188,6 @@ class NotificationTransport:
         schedule_only_time = eb_datetime.get_only_time(schedule_time)
         now_time = eb_datetime.get_only_time(now)
         if schedule_only_time < now_time:
-            return None
-
-        if path_time == None:
             return None
 
         expect_start_time = schedule_time - timedelta(minutes=path_time)
@@ -203,9 +200,9 @@ class NotificationTransport:
     @classmethod
     def create_request_real_time_info(
         cls,
-        path_dict: dict,
+        path_data: dict,
     ) -> Optional[RequestRealTimeInfo]:
-        subpath_list = dictionary.safeDict(["subPaths"], path_dict)
+        subpath_list = dictionary.safeDict(["subPaths"], path_data)
         if subpath_list == None:
             return None
 
@@ -227,7 +224,13 @@ class NotificationTransport:
         path_dict: dict,
         now: datetime,
     ) -> Optional[Self]:
-        path_time = dictionary.safeDict(["time"], path_dict)
+        path_data = dictionary.safeDict(["data"], path_dict)
+        if path_data == None:
+            return None
+
+        path_time = dictionary.safeDict(["time"], path_data)
+        if path_time == None:
+            return None
         noti_start_end_time = cls.cal_noti_start_end_time(
             schedule_time=schedule_time,
             path_time=path_time,
@@ -241,7 +244,7 @@ class NotificationTransport:
         noti_start_time, noti_end_time = noti_start_end_time
 
         request_real_time_info = cls.create_request_real_time_info(
-            path_dict=path_dict,
+            path_data=path_data,
         )
         if request_real_time_info == None:
             return None
