@@ -18,8 +18,8 @@ def add_job_send_transport_notification(scheduler):
     scheduler.add_job(
         lambda: asyncio.run(send_transport_notification()),
         "interval",
-        # minutes=1,
-        seconds=10,
+        minutes=1,
+        # seconds=10,
     )
 
 
@@ -27,8 +27,8 @@ def add_job_send_schedule_notification(scheduler):
     scheduler.add_job(
         lambda: send_schedule_notification(),
         "interval",
-        # minutes=1,
-        seconds=10,
+        minutes=1,
+        # seconds=10,
     )
 
 
