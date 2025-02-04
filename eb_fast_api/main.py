@@ -4,7 +4,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Response
 from eb_fast_api.service.notification.sources.notification_scheduler import (
     initialize_notification_scheduler,
-    background_scheduler,
 )
 from eb_fast_api.snippets.sources.logger import logger
 
@@ -12,7 +11,7 @@ from eb_fast_api.snippets.sources.logger import logger
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.debug("lifespan start")
-    initialize_notification_scheduler(scheduler=background_scheduler)
+    initialize_notification_scheduler()
     yield
 
 

@@ -1,10 +1,11 @@
 from eb_fast_api.service.notification.sources.provider.notification_schedule_provider import (
     noti_schedule_provider,
 )
-from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.snippets.sources.logger import logger
 from eb_fast_api.service.notification.sources.feature.common import fcm_feature as ff
 from eb_fast_api.snippets.sources import eb_datetime
+from eb_fast_api.database.sources.crud.cruds import UserCRUD
+from eb_fast_api.database.sources.database import EBDataBase
 
 
 def send_schedule_notification(
@@ -42,4 +43,5 @@ def send_schedule_notification(
             body=body,
         )
     else:
+        user_crud.session.close()
         del user_crud
