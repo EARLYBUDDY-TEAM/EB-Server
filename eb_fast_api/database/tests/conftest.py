@@ -12,7 +12,6 @@ from eb_fast_api.database.testings.mock_connection import (
 from eb_fast_api.database.sources.connection import checkConnection
 from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.database.sources.model.models import Base, User, Schedule, Path
-from sqlalchemy import Engine
 
 
 my_mock_user = User.mock()

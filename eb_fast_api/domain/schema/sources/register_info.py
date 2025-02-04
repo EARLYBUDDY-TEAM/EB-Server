@@ -20,6 +20,7 @@ class RegisterInfo(BaseModel):
             hashedPassword=pwdcrypt.hash(self.password),
             refreshToken=refreshToken,
             fcm_token=fcm_token,
+            is_notify=True,
         )
 
     @classmethod

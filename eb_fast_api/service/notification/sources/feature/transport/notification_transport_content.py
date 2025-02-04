@@ -30,16 +30,16 @@ async def make_subway_notification_body(
     arrival_before: int,
 ) -> Optional[str]:
     line_name = subway_request_real_time_info.line_name
-    direction = subway_request_real_time_info.direction
+    up_or_down = subway_request_real_time_info.direction
 
-    realtime_info_list = await srs.request(
+    realtime_info = await srs.request(
         station_name=station_name,
         line_name=line_name,
-        direction=direction,
+        up_or_down=up_or_down,
     )
 
     subway_arrival_info = ntch.get_arrival_info(
-        realtime_info_list=realtime_info_list,
+        realtime_info_list=[realtime_info],
         request_real_time_info=subway_request_real_time_info,
         arrival_before=arrival_before,
     )

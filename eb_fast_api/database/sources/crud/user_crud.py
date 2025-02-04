@@ -31,6 +31,7 @@ class UserCRUD(BaseCRUD):
         hashedPassword: Optional[str] = None,
         refreshToken: Optional[str] = None,
         fcm_token: Optional[str] = None,
+        is_notify: Optional[bool] = None,
     ):
         self.__delete_exist_fcm_token(fcm_token=fcm_token)
 
@@ -38,10 +39,13 @@ class UserCRUD(BaseCRUD):
         if not user:
             raise Exception("User not found")
 
+        is_notify = is_notify if is_notify != None else user.is_notify
+
         user.nickName = nickName or user.nickName
         user.hashedPassword = hashedPassword or user.hashedPassword
         user.refreshToken = refreshToken or user.refreshToken
         user.fcm_token = fcm_token or user.fcm_token
+        user.is_notify = is_notify
         self.session.flush()
 
     def read_all(self) -> List[dict]:

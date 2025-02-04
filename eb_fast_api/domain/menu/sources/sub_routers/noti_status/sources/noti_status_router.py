@@ -4,11 +4,11 @@ from eb_fast_api.database.sources.database import EBDataBase
 from eb_fast_api.snippets.sources import dictionary
 
 
-router = APIRouter(prefix="/token/fcm")
+router = APIRouter()
 
 
-@router.get("/is_authorized")
-def is_authorized(
+@router.get("/get")
+def get_noti_status(
     user_email: str,
     userCRUD=Depends(EBDataBase.user.getCRUD),
 ) -> bool:
@@ -19,16 +19,16 @@ def is_authorized(
             detail="유저 정보가 없습니다",
         )
 
-    fcm_token = dictionary.safeDict(
-        keyList=["fcm_token"],
+    is_notify = dictionary.safeDict(
+        keyList=["is_notify"],
         fromDict=user,
     )
 
-    return False if not fcm_token else True
+    return is_notify
 
 
 @router.post("/enable")
-def update_fcm_token(
+def enable_noti_status(
     user_email: str,
     fcm_token=Security(
         APIKeyHeader(name="fcm_token"),
@@ -45,23 +45,32 @@ def update_fcm_token(
         userCRUD.update(
             key_email=user_email,
             fcm_token=fcm_token,
+            is_notify=True,
         )
         userCRUD.commit()
     except Exception as e:
         print(e)
         raise HTTPException(
             status_code=401,
-            detail="FCM 토큰 업데이트 실패",
+            detail="알림 가능 설정 실패",
         )
 
 
 @router.post("/disable")
-def delete_fcm_token(
+def disable_noti_status(
     user_email: str,
     userCRUD=Depends(EBDataBase.user.getCRUD),
 ):
-    userCRUD.update(
-        key_email=user_email,
-        fcm_token="",
-    )
-    userCRUD.commit()
+    try:
+        userCRUD.update(
+            key_email=user_email,
+            fcm_token="",
+            is_notify=False,
+        )
+        userCRUD.commit()
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=401,
+            detail="알림 불가능 설정 실패",
+        )
