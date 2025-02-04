@@ -3,6 +3,35 @@ from sqlalchemy import inspect
 from eb_fast_api.database.testings.mock_connection import def_create_mock_engine
 
 
+def test_user_update_one_user(
+    mockUser,
+    mockUserCRUD,
+):
+    # given
+    newHashedPassword = "NEW" + mockUser.hashedPassword
+    newRefreshToken = "NEW" + mockUser.refreshToken
+    newFcmToken = "NEW" + mockUser.fcm_token
+    new_is_notify = False
+
+    # when
+
+    mockUserCRUD.update(
+        key_email=mockUser.email,
+        hashedPassword=newHashedPassword,
+        refreshToken=newRefreshToken,
+        fcm_token=newFcmToken,
+        is_notify=new_is_notify,
+    )
+
+    # then
+    fetched_user_dict = mockUserCRUD.read(email=mockUser.email)
+
+    assert fetched_user_dict["hashedPassword"] == newHashedPassword
+    assert fetched_user_dict["refreshToken"] == newRefreshToken
+    assert fetched_user_dict["fcm_token"] == newFcmToken
+    assert fetched_user_dict["is_notify"] == new_is_notify
+
+
 def test_user_read_and_create(
     mockUserCRUD,
     mockEngine,
@@ -117,31 +146,6 @@ def test_user_update_two_user(
             engine=def_create_mock_engine(),
             user_email=second_user.email,
         )
-
-
-def test_user_update_one_user(
-    mockUser,
-    mockUserCRUD,
-):
-    # given
-    newHashedPassword = "NEW" + mockUser.hashedPassword
-    newRefreshToken = "NEW" + mockUser.refreshToken
-    newFcmToken = "NEW" + mockUser.fcm_token
-
-    # when
-
-    mockUserCRUD.update(
-        key_email=mockUser.email,
-        hashedPassword=newHashedPassword,
-        refreshToken=newRefreshToken,
-        fcm_token=newFcmToken,
-    )
-
-    # then
-    fetched_user_dict = mockUserCRUD.read(email=mockUser.email)
-    assert fetched_user_dict["hashedPassword"] == newHashedPassword
-    assert fetched_user_dict["refreshToken"] == newRefreshToken
-    assert fetched_user_dict["fcm_token"] == newFcmToken
 
 
 def test_user_get_all_user(
