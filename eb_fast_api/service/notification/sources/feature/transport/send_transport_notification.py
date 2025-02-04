@@ -3,11 +3,12 @@ from eb_fast_api.service.notification.sources.provider.notification_transport_pr
     noti_transport_provider,
 )
 from eb_fast_api.snippets.sources.logger import logger
-from eb_fast_api.database.sources.database import EBDataBase
+from eb_fast_api.database.sources.crud.cruds import UserCRUD
 from eb_fast_api.service.notification.sources.feature.transport import (
     notification_transport_content as ntc,
 )
 from eb_fast_api.snippets.sources import eb_datetime
+from eb_fast_api.database.sources.database import EBDataBase
 
 
 async def send_transport_notification(
@@ -19,7 +20,7 @@ async def send_transport_notification(
 
     noti_transport_list = provider.get_notification(now=now)
     user_crud = EBDataBase.user.createCRUD()
-
+    user_crud.rollback()
     for noti_transport in noti_transport_list:
         provider.add_notification(
             noti_schema=noti_transport,
@@ -41,9 +42,12 @@ async def send_transport_notification(
 
         title = noti_transport.noti_content.schedule_name
 
+        logger.debug("--------------------------------")
         logger.debug("send_transport_notification")
         logger.debug(f"title : {title}")
         logger.debug(f"body : {body}")
+        logger.debug(f"fcm_token : {fcm_token}")
+        logger.debug("--------------------------------")
 
         ff.send_notification(
             fcm_token=fcm_token,
@@ -51,4 +55,5 @@ async def send_transport_notification(
             body=body,
         )
     else:
+        user_crud.session.close()
         del user_crud

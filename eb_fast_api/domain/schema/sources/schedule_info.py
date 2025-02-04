@@ -17,17 +17,12 @@ class ScheduleInfo(BaseModel):
     startPlaceInfo: Optional[PlaceInfo]
     endPlaceInfo: Optional[PlaceInfo]
 
-    def toSchedule(self, id: Optional[str] = None) -> Schedule:
+    def toSchedule(self) -> Schedule:
         startPlaceID = self.startPlaceInfo.id if self.startPlaceInfo != None else None
         endPlaceID = self.endPlaceInfo.id if self.endPlaceInfo != None else None
-        schedule_id = self.id
-        if schedule_id == None:
-            schedule_id = id
-            if schedule_id == None:
-                schedule_id = str(uuid4())
 
         schedule = Schedule(
-            id=schedule_id,
+            id=self.id,
             title=self.title,
             memo=self.memo,
             time=self.time,

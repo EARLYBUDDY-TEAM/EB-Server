@@ -18,6 +18,7 @@ from eb_fast_api.service.notification.sources.feature.common.empty_and_add impor
 )
 from datetime import datetime
 from typing import Optional
+from eb_fast_api.snippets.sources import dictionary
 
 
 def add_notification_schedule_to_provider(
@@ -55,7 +56,7 @@ def add_notification_transport_to_provider(
     schedule_time: datetime,
     notify_transport: int,
     notify_transport_range: int,
-    path_dict: dict,
+    path_data: dict,
     noti_transport_provider: NotificationTransportProvider,
     now: datetime,
 ) -> bool:
@@ -66,7 +67,7 @@ def add_notification_transport_to_provider(
         schedule_time=schedule_time,
         notify_transport=notify_transport,
         notify_transport_range=notify_transport_range,
-        path_dict=path_dict,
+        path_data=path_data,
         now=now,
     )
 
@@ -83,12 +84,12 @@ def add_notification_transport_to_provider(
 def prepare_add_noti_transport_to_provider(
     notify_transport: Optional[int],
     notify_transport_range: Optional[int],
-    path_dict: Optional[dict],
+    path_data: Optional[dict],
 ) -> bool:
     return (
         notify_transport is not None
         and notify_transport_range is not None
-        and path_dict is not None
+        and path_data is not None
     )
 
 
@@ -107,6 +108,7 @@ def add_notification_to_provider(
 ):
     schedule_dict_list = schedule_crud.read_all(userEmail=user_email)
     if not schedule_dict_list:
+        logger.debug(f"{user_email} empty schedule")
         return
 
     now = eb_datetime.get_datetime_now()
@@ -121,6 +123,7 @@ def add_notification_to_provider(
     )
 
     if schedule_dict_list[left]["time"].date() != now_date:
+        logger.debug(f"{user_email} no schedule today")
         return
 
     schedule_noti_count = 0
@@ -150,10 +153,11 @@ def add_notification_to_provider(
             user_email=user_email,
             path_id=schedule_id,
         )
+        path_data = dictionary.safeDict(["data"], path_dict)
         if prepare_add_noti_transport_to_provider(
             notify_transport=notify_transport,
             notify_transport_range=notify_transport_range,
-            path_dict=path_dict,
+            path_data=path_data,
         ):
             if add_notification_transport_to_provider(
                 user_email=user_email,
@@ -162,12 +166,11 @@ def add_notification_to_provider(
                 schedule_time=schedule_time,
                 notify_transport=notify_transport,
                 notify_transport_range=notify_transport_range,
-                path_dict=path_dict,
+                path_data=path_data,
                 noti_transport_provider=noti_transport_provider,
                 now=now,
             ):
                 transport_noti_count += 1
-    else:
-        logger.debug(f"user_email : {user_email}")
-        logger.debug(f"add_today_schedule_notification count : {schedule_noti_count}")
-        logger.debug(f"add_today_transport_notification count : {transport_noti_count}")
+
+    logger.debug(f"add_today_schedule_notification count : {schedule_noti_count}")
+    logger.debug(f"add_today_transport_notification count : {transport_noti_count}")

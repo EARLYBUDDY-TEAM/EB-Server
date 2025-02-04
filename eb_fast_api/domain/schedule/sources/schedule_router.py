@@ -29,6 +29,7 @@ from eb_fast_api.service.notification.sources.provider.notification_transport_pr
 )
 from eb_fast_api.snippets.sources.logger import logger
 from eb_fast_api.snippets.sources import eb_datetime
+from uuid import uuid4
 
 
 router = APIRouter(prefix="/schedule")
@@ -43,6 +44,7 @@ def create_schedule(
     engine=Depends(EBDataBase.get_engine),
 ):
     scheduleInfo.time = scheduleInfo.time.replace(microsecond=0, tzinfo=None)
+    scheduleInfo.id = str(uuid4())
 
     try:
         cs.create_schedule(

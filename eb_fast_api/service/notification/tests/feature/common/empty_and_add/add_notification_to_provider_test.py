@@ -67,7 +67,7 @@ def test_add_notification_transport_to_provider():
         schedule_time=now,
         notify_transport=0,
         notify_transport_range=0,
-        path_dict={},
+        path_data={},
         noti_transport_provider=noti_transport_provider,
         now=now,
     )

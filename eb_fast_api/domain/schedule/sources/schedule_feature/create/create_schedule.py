@@ -3,8 +3,6 @@ from sqlalchemy import Engine
 from eb_fast_api.domain.schema.sources.schemas import ScheduleInfo, PathInfo, PlaceInfo
 from eb_fast_api.database.sources.database import EBDataBase
 from typing import Optional
-from uuid import uuid4
-from eb_fast_api.snippets.sources.logger import logger
 
 
 def create_path(
@@ -43,15 +41,13 @@ def create_my_schedule(
     session: Session,
     engine: Engine,
     user_email: str,
-    schedule_id: str,
     schedule_info: ScheduleInfo,
 ):
-    to_create_schedule = schedule_info.toSchedule(id=schedule_id)
+    to_create_schedule = schedule_info.toSchedule()
     schedule_crud = EBDataBase.schedule.createCRUD(
         session=session,
         engine=engine,
     )
-    logger.debug(f"create_my_schedule: {to_create_schedule.to_dict()}")
     schedule_crud.create(
         userEmail=user_email,
         schedule=to_create_schedule,
@@ -76,12 +72,10 @@ def create_schedule(
         place_info=schedule_info.endPlaceInfo,
     )
 
-    schedule_id = str(uuid4())
     create_my_schedule(
         session=session,
         engine=engine,
         user_email=user_email,
-        schedule_id=schedule_id,
         schedule_info=schedule_info,
     )
 
@@ -90,7 +84,7 @@ def create_schedule(
             session=session,
             engine=engine,
             user_email=user_email,
-            path_id=schedule_id,
+            path_id=schedule_info.id,
             path_info=path_info,
         )
 

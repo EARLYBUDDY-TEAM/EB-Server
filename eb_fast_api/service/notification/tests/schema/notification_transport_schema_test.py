@@ -158,7 +158,9 @@ def test_cal_noti_start_end_time():
     )
 
     expect_start_time = schedule_time - timedelta(minutes=path_time)
-    expect_noti_start_time = expect_start_time - timedelta(minutes=notify_transport_range)
+    expect_noti_start_time = expect_start_time - timedelta(
+        minutes=notify_transport_range
+    )
     expect_noti_start_time = eb_datetime.get_only_time(expect_noti_start_time)
     expect_noti_end_time = expect_start_time
     expect_noti_end_time = eb_datetime.get_only_time(expect_noti_end_time)
