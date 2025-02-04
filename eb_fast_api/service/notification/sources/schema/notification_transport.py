@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import Optional, Self, List
 from eb_fast_api.snippets.sources import eb_datetime
 from eb_fast_api.snippets.sources import dictionary
+from eb_fast_api.snippets.sources.logger import logger
 
 
 class RequestRealTimeInfo:
@@ -221,13 +222,9 @@ class NotificationTransport:
         schedule_time: datetime,
         notify_transport: int,
         notify_transport_range: int,
-        path_dict: dict,
+        path_data: dict,
         now: datetime,
     ) -> Optional[Self]:
-        path_data = dictionary.safeDict(["data"], path_dict)
-        if path_data == None:
-            return None
-
         path_time = dictionary.safeDict(["time"], path_data)
         if path_time == None:
             return None

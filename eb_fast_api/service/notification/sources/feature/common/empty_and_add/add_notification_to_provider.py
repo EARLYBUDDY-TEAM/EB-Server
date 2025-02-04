@@ -18,6 +18,7 @@ from eb_fast_api.service.notification.sources.feature.common.empty_and_add impor
 )
 from datetime import datetime
 from typing import Optional
+from eb_fast_api.snippets.sources import dictionary
 
 
 def add_notification_schedule_to_provider(
@@ -55,7 +56,7 @@ def add_notification_transport_to_provider(
     schedule_time: datetime,
     notify_transport: int,
     notify_transport_range: int,
-    path_dict: dict,
+    path_data: dict,
     noti_transport_provider: NotificationTransportProvider,
     now: datetime,
 ) -> bool:
@@ -66,7 +67,7 @@ def add_notification_transport_to_provider(
         schedule_time=schedule_time,
         notify_transport=notify_transport,
         notify_transport_range=notify_transport_range,
-        path_dict=path_dict,
+        path_data=path_data,
         now=now,
     )
 
@@ -83,12 +84,12 @@ def add_notification_transport_to_provider(
 def prepare_add_noti_transport_to_provider(
     notify_transport: Optional[int],
     notify_transport_range: Optional[int],
-    path_dict: Optional[dict],
+    path_data: Optional[dict],
 ) -> bool:
     return (
         notify_transport is not None
         and notify_transport_range is not None
-        and path_dict is not None
+        and path_data is not None
     )
 
 
@@ -152,10 +153,11 @@ def add_notification_to_provider(
             user_email=user_email,
             path_id=schedule_id,
         )
+        path_data = dictionary.safeDict(["data"], path_dict)
         if prepare_add_noti_transport_to_provider(
             notify_transport=notify_transport,
             notify_transport_range=notify_transport_range,
-            path_dict=path_dict,
+            path_data=path_data,
         ):
             if add_notification_transport_to_provider(
                 user_email=user_email,
@@ -164,7 +166,7 @@ def add_notification_to_provider(
                 schedule_time=schedule_time,
                 notify_transport=notify_transport,
                 notify_transport_range=notify_transport_range,
-                path_dict=path_dict,
+                path_data=path_data,
                 noti_transport_provider=noti_transport_provider,
                 now=now,
             ):

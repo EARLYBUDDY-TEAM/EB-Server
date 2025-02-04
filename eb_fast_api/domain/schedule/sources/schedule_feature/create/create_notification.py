@@ -23,12 +23,12 @@ def create_notification_transport(
     notify_transport_range = schedule_info.notify_transport_range
     if path_info is None:
         return False
-    path_dict = path_info.model_dump(mode="json")
+    path_data = path_info.model_dump(mode="json")
 
     if not antp.prepare_add_noti_transport_to_provider(
         notify_transport=notify_transport,
         notify_transport_range=notify_transport_range,
-        path_dict=path_dict,
+        path_data=path_data,
     ):
         return False
 
@@ -39,7 +39,7 @@ def create_notification_transport(
         schedule_time=schedule_info.time,
         notify_transport=notify_transport,
         notify_transport_range=notify_transport_range,
-        path_dict=path_dict,
+        path_data=path_data,
         noti_transport_provider=noti_transport_provider,
         now=now,
     )
