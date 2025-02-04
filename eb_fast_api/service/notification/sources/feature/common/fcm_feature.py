@@ -38,8 +38,18 @@ def get_fcm_token(
 ) -> Optional[str]:
     user_dict = user_crud.read(email=user_email)
 
+    is_notify = dictionary.safeDict(
+        keyList=["is_notify"],
+        fromDict=user_dict,
+    )
+    if not is_notify:
+        return None
+
     fcm_token = dictionary.safeDict(
         keyList=["fcm_token"],
         fromDict=user_dict,
     )
+    if not fcm_token:
+        return None
+
     return fcm_token

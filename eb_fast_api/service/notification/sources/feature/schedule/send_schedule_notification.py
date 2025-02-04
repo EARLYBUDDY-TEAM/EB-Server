@@ -28,9 +28,6 @@ def send_schedule_notification(
             user_email=user_email,
         )
 
-        if not fcm_token:
-            continue
-
         logger.debug("--------------------------------")
         logger.debug("send_schedule_notification")
         logger.debug(f"title : {title}")
