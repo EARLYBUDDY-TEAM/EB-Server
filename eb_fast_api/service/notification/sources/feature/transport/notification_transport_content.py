@@ -11,6 +11,7 @@ from eb_fast_api.service.notification.sources.feature.transport import (
     notification_transport_content_helper as ntch,
 )
 from typing import Optional
+from eb_fast_api.snippets.sources.logger import logger
 
 
 """
@@ -31,6 +32,13 @@ async def make_subway_notification_body(
 ) -> Optional[str]:
     line_name = subway_request_real_time_info.line_name
     up_or_down = subway_request_real_time_info.direction
+
+    logger.debug("#########################")
+    logger.debug("make_subway_notification_body")
+    logger.debug(f"station_name : {station_name}")
+    logger.debug(f"line_name : {line_name}")
+    logger.debug(f"up_or_down : {up_or_down}")
+    logger.debug("#########################")
 
     realtime_info = await srs.request(
         station_name=station_name,

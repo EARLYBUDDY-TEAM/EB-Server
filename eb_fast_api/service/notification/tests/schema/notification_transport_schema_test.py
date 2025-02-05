@@ -59,6 +59,7 @@ def test_get_request_real_time_info_subway():
         subpath_list=mock_subpath_list,
     )
 
+    expect_subway_realtimeinfo.direction -= 1
     assert request_real_time_info == expect_subway_realtimeinfo
 
 

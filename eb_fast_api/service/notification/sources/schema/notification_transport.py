@@ -159,10 +159,12 @@ class NotificationTransport:
             try:
                 type = subpath["type"]
                 if type == 1:
+                    way_code = int(subpath["way_code"])
+                    way_code -= 1
                     return SubwayRequestRealTimeInfo(
                         station_name=subpath["startName"],
                         line_name=subpath["transports"][0]["subwayType"],
-                        direction=subpath["way_code"],
+                        direction=way_code,
                     )
                 elif type == 2:
                     return BusRequestRealTimeInfo(

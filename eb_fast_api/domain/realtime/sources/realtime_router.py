@@ -33,7 +33,6 @@ async def get_subway_realtime_info(
 ) -> RealTimeInfoList:
     try:
         station_name = rf.remove_last_station_name(station_name=station_name)
-
         result = await srs.request(
             station_name=station_name,
             line_name=line_name,

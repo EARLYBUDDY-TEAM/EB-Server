@@ -5,7 +5,6 @@ from eb_fast_api.service.realtime.sources.realtime_service_schema import RealTim
 from typing import List
 from typing import Optional
 from eb_fast_api.snippets.sources import dictionary
-from eb_fast_api.snippets.sources.logger import logger
 
 
 def is_transport_duplicate(

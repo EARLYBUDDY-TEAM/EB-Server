@@ -1,4 +1,3 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from eb_fast_api.service.notification.sources.feature.schedule.send_schedule_notification import (
     send_schedule_notification,

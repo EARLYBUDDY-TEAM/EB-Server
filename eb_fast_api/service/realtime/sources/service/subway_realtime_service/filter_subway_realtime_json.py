@@ -2,6 +2,7 @@ from eb_fast_api.snippets.sources import dictionary, eb_datetime
 from datetime import datetime
 from typing import List
 
+
 """
 "02005성수0",
 상하행코드(1자리),
