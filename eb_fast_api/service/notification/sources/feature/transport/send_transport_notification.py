@@ -8,10 +8,10 @@ from eb_fast_api.service.notification.sources.feature.transport import (
     notification_transport_content as ntc,
 )
 from eb_fast_api.snippets.sources import eb_datetime
-from eb_fast_api.database.sources.database import EBDataBase
 
 
 async def send_transport_notification(
+    user_crud: UserCRUD,
     provider=noti_transport_provider,
 ):
     now = eb_datetime.get_datetime_now()
@@ -19,8 +19,6 @@ async def send_transport_notification(
     logger.debug(f"transport provider data count : {len(provider.data)}")
 
     noti_transport_list = provider.get_notification(now=now)
-    user_crud = EBDataBase.user.createCRUD()
-    user_crud.rollback()
 
     for noti_transport in noti_transport_list:
         provider.add_notification(
@@ -43,18 +41,15 @@ async def send_transport_notification(
 
         title = noti_transport.noti_content.schedule_name
 
-        logger.debug("--------------------------------")
+        logger.debug("#################################")
         logger.debug("send_transport_notification")
         logger.debug(f"title : {title}")
         logger.debug(f"body : {body}")
         logger.debug(f"fcm_token : {fcm_token}")
-        logger.debug("--------------------------------")
+        logger.debug("#################################")
 
         ff.send_notification(
             fcm_token=fcm_token,
             title=title,
             body=body,
         )
-    else:
-        user_crud.session.close()
-        del user_crud
