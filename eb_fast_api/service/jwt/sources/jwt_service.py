@@ -7,6 +7,7 @@ from eb_fast_api.service.jwt.interfaces.abc_jwt_serialization import (
     ABC_JWTDecoder,
     ABC_JWTEncoder,
 )
+from eb_fast_api.snippets.sources.logger import logger
 
 
 class JWTEncoder(ABC_JWTEncoder):
@@ -18,7 +19,9 @@ class JWTEncoder(ABC_JWTEncoder):
         algorithm: str,
     ) -> str:
         toEncode = data.copy()
-        toEncode.update({"exp": expireDate})
+        exp = int(datetime.timestamp(expireDate))
+        toEncode.update({"exp": exp})
+
         return jwt.encode(toEncode, secretKey, algorithm=algorithm)
 
 
@@ -93,6 +96,7 @@ class JWTService:
             self.secretKey,
             self.algorithm,
         )
+        logger.debug(f"decoded: {decoded}")
         now = datetime.timestamp(self.dateTimeNow())
         return decoded["sub"] if decoded and now < decoded["exp"] else None
 

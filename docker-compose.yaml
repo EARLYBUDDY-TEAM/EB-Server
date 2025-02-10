@@ -25,7 +25,7 @@ services:
       context: .
       dockerfile: eb_fast_api.Dockerfile
     ports:
-      - 8000:8000
+      - 2001:8000
     volumes:
       - ./eb_fast_api:/api/eb_fast_api
     networks:

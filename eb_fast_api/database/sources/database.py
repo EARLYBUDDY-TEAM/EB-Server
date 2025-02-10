@@ -131,6 +131,7 @@ class EBDataBase(Enum):
                 hashedPassword=hashedPassword,
                 refreshToken="",
                 fcm_token=test_ios_token,
+                is_notify=True,
             )
             userCRUD.create(user=testUser)
 

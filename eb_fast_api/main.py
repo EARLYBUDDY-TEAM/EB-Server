@@ -6,13 +6,24 @@ from eb_fast_api.service.notification.sources.notification_scheduler import (
     initialize_notification_scheduler,
 )
 from eb_fast_api.snippets.sources.logger import logger
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.debug("lifespan start")
-    initialize_notification_scheduler()
+    logger.debug("EB Fast API Start")
+    blocking_scheduler = BackgroundScheduler()
+    initialize_notification_scheduler(blocking_scheduler)
+    try:
+        blocking_scheduler.start()
+    except Exception as e:
+        logger.error(f"Error in setup_notification_scheduler: {e}")
+        blocking_scheduler.shutdown(wait=False)
+
     yield
+
+    logger.debug("EB Fast API Shutdown")
+    blocking_scheduler.shutdown(wait=False)
 
 
 app = FastAPI(lifespan=lifespan)
@@ -44,6 +55,7 @@ async def add_process_time_header(request: Request, call_next):
     request_body = await request.body()
     print(f"REQUEST_URL : {request.url}")
     print(f"REQUEST_BODY : {request_body}")
+    print(f"REQUEST_HEADERS : {request.headers}")
 
     response = await call_next(request)
 

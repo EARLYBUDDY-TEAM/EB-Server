@@ -208,7 +208,7 @@ def test_delete_user_SUCCESS(testClient):
 
     # when
     path = "/auth/delete_user"
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
     response = testClient.delete(
         path,
         headers=headers,
@@ -228,7 +228,7 @@ def test_delete_user_FAIL(testClient):
 
     # when
     path = "/auth/delete_user"
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
     response = testClient.delete(
         path,
         headers=headers,

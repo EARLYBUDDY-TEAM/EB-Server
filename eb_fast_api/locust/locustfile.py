@@ -31,7 +31,7 @@ class ScheduleBehavior(HttpUser):
             "scheduleInfo": schedule_info.model_dump(mode="json"),
             "pathInfo": path_info.model_dump(mode="json"),
         }
-        headers = {"access_token": access_token}
+        headers = {"access-token": access_token}
         self.client.post(
             path,
             json=json,

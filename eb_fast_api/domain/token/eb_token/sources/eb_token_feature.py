@@ -3,6 +3,7 @@ from fastapi.security import APIKeyHeader
 from eb_fast_api.service.jwt.sources.jwt_service import jwtService, JWTService
 from eb_fast_api.domain.schema.sources.schemas import TokenInfo
 from eb_fast_api.database.sources.crud.cruds import UserCRUD
+from eb_fast_api.snippets.sources.logger import logger
 
 
 def update_refresh_token(
@@ -46,7 +47,7 @@ def verifyToken(
 
 def getUserEmail(
     token=Security(
-        APIKeyHeader(name="access_token"),
+        APIKeyHeader(name="access-token"),
     )
 ) -> str:
     return verifyToken(token)
