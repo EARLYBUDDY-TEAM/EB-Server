@@ -44,6 +44,7 @@ async def add_process_time_header(request: Request, call_next):
     request_body = await request.body()
     print(f"REQUEST_URL : {request.url}")
     print(f"REQUEST_BODY : {request_body}")
+    print(f"REQUEST_HEADERS : {request.headers}")
 
     response = await call_next(request)
 

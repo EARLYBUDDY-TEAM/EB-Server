@@ -33,7 +33,7 @@ def test_get_all_schedules(home_MockSession, home_MockEngine):
     app.dependency_overrides[EBDataBase.get_session] = mock_def_session
     app.dependency_overrides[EBDataBase.get_engine] = mock_def_engine
     testClient = TestClient(app)
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
 
     # when
     response = testClient.get(

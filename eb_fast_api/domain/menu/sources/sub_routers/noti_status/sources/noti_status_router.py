@@ -31,7 +31,7 @@ def get_noti_status(
 def enable_noti_status(
     user_email: str,
     fcm_token=Security(
-        APIKeyHeader(name="fcm_token"),
+        APIKeyHeader(name="fcm-token"),
     ),
     userCRUD=Depends(EBDataBase.user.getCRUD),
 ):

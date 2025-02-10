@@ -69,7 +69,7 @@ mockEmail = "test@test.com"
 
 def mockGetUserEmail(
     token=Security(
-        APIKeyHeader(name="access_token"),
+        APIKeyHeader(name="access-token"),
     )
 ) -> str:
     return mockEmail

@@ -19,7 +19,7 @@ def test_create_schedule_SUCCESS(testClient):
     patcher_create_schedule_SUCCESS.start()
     patcher_create_notification_schedule_SUCCESS.start()
 
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
     json = {
@@ -45,7 +45,7 @@ def test_create_schedule_FAIL_create_schedule(testClient):
     patcher_create_schedule_FAIL = msf.patcher_create_schedule_FAIL()
     patcher_create_schedule_FAIL.start()
 
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
     json = {
@@ -74,7 +74,7 @@ def test_create_schedule_FAIL_create_notification_schedule(testClient):
     patcher_create_schedule_SUCCESS.start()
     patcher_create_notification_schedule_FAIL.start()
 
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
     json = {
@@ -104,7 +104,7 @@ def test_update_schedule_SUCCESS(testClient):
     patcher_update_schedule_SUCCESS.start()
     patcher_update_notification_schedule_SUCCESS.start()
 
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
     json = {
@@ -130,7 +130,7 @@ def test_update_schedule_FAIL(testClient):
     patcher_update_schedule_FAIL = msf.patcher_update_schedule_FAIL()
     patcher_update_schedule_FAIL.start()
 
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
     json = {
@@ -159,7 +159,7 @@ def test_update_schedule_FAIL_update_notification_schedule(testClient):
     patcher_update_schedule_SUCCESS.start()
     patcher_update_notification_schedule_FAIL.start()
 
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
     scheduleInfo = ScheduleInfo.mock()
     schedule_info_json = scheduleInfo.model_dump(mode="json")
     json = {
@@ -196,7 +196,7 @@ def test_delete_schedule_SUCCESS(
     app.dependency_overrides[getUserEmail] = mockGetUserEmail
     app.dependency_overrides[EBDataBase.get_session] = mock_def_session
     testClient = TestClient(app)
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
     params = {"schedule_id": "schedule_id"}
 
     # when
@@ -224,7 +224,7 @@ def test_delete_schedule_card_FAIL(
     app.dependency_overrides[getUserEmail] = mockGetUserEmail
     app.dependency_overrides[EBDataBase.get_session] = mock_def_session
     testClient = TestClient(app)
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
     params = {"schedule_id": "schedule_id"}
 
     # when
@@ -255,7 +255,7 @@ def test_delete_schedule_card_FAIL_delete_notification_schedule(
     app.dependency_overrides[getUserEmail] = mockGetUserEmail
     app.dependency_overrides[EBDataBase.get_session] = mock_def_session
     testClient = TestClient(app)
-    headers = {"access_token": "access_token"}
+    headers = {"access-token": "access-token"}
     params = {"schedule_id": "schedule_id"}
 
     # when

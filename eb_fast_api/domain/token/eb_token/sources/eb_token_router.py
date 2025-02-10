@@ -12,7 +12,7 @@ router = APIRouter(prefix="/token/eb")
 @router.get("/recreate")
 def recreate_token(
     refreshToken=Security(
-        APIKeyHeader(name="refresh_token"),
+        APIKeyHeader(name="refresh-token"),
     ),
     userCRUD=Depends(EBDataBase.user.getCRUD),
     jwtService=Depends(getJWTService),

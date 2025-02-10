@@ -39,6 +39,7 @@ class TestJWTSerialization:
             )
             if decoded == None:
                 raise Exception("fail test ...")
+
             assert decoded["sub"] == testEmail
             assert decoded["exp"] == exp
         except:
