@@ -6,16 +6,22 @@ services:
       - 3306:3306
     volumes:
       - ./mysql:/var/lib/mysql
-    env_file: 
-      - path: ./eb_fast_api/env/dot_env_files/.mysql
-        required: true
+    env_file:
+      - ./eb_fast_api/env/dot_env_files/.mysql
     healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD']
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - localhost
+        - -u
+        - root
+        - -p$$MYSQL_ROOT_PASSWORD
       timeout: 30s
       retries: 10
     networks:
       - eb_server
-
   eb_fast_api:
     depends_on:
       eb_database:
@@ -25,12 +31,11 @@ services:
       context: .
       dockerfile: eb_fast_api.Dockerfile
     ports:
-      - 2001:8000
+      - 2003:8000
     volumes:
       - ./eb_fast_api:/api/eb_fast_api
     networks:
       - eb_server
-
 networks:
   eb_server:
     name: eb_server
