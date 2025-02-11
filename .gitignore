@@ -13,3 +13,5 @@ mysql/
 fcm_oauth.json
 
 eb_fast_api/service/realtime/check/dummy/
+
+.env

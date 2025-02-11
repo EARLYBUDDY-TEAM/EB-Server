@@ -3,7 +3,7 @@ services:
     image: mysql:9.0.1
     container_name: eb_database
     ports:
-      - 3306:3306
+      - ${DB_EXTERNAL_PORT}:3306
     volumes:
       - ./mysql:/var/lib/mysql
     env_file:
@@ -31,7 +31,7 @@ services:
       context: .
       dockerfile: eb_fast_api.Dockerfile
     ports:
-      - 2003:8000
+      - ${API_EXTERNAL_PORT}:8000
     volumes:
       - ./eb_fast_api:/api/eb_fast_api
     networks:
